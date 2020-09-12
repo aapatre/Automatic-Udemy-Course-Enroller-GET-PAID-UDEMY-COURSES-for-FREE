@@ -11,18 +11,18 @@ Video Proof:
 
 ## Requirements:
 
-Requests module for Python:
+**Requests module for Python:**
 pip install requests
 
-BeautifulSoup Web-Scraping Library for Python:
+**BeautifulSoup Web-Scraping Library for Python:**
 pip install pip install beautifulsoup4
 
-Selenium Browser Automation Tool  for Python:
+**Selenium Browser Automation Tool  for Python:**
 pip install selenium
 
-Required Python version: Python 3.8
+**Required Python version:** Python 3.8
 
-A webdriver for the browser of your choice: [Edge](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/), [Chrome](https://chromedriver.chromium.org/), [Firefox](https://github.com/mozilla/geckodriver/releases), etc. (Make sure that the driver version matches your browser)
+**A webdriver for the browser of your choice:** [Edge](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/), [Chrome](https://chromedriver.chromium.org/), [Firefox](https://github.com/mozilla/geckodriver/releases), etc. (Make sure that the driver version matches your browser)
 
 ---
 
