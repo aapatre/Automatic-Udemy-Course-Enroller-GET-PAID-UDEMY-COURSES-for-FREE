@@ -29,7 +29,7 @@ In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter
 
 ---
 
-***Disclaimer:***
-**1. Make sure you have cleared any saved Debit/Credit Card info from your Udemy account before using the script!**
-***2. Also, the script has only been tested on the Microsoft Edge Browser but I'm pretty sure it will work on any browser that provides a webdriver for automation.***
-***3. Make sure web-scraping is legal in your region and I'm not responsible for any kind of issue caused by the code.***
+***Disclaimer:***</br>
+***1. Make sure you have cleared any saved Debit/Credit Card info from your Udemy account before using the script!***</br>
+***2. Also, the script has only been tested on the Microsoft Edge Browser but I'm pretty sure it will work on any browser that provides a webdriver for automation.***</br>
+***3. Make sure web-scraping is legal in your region and I'm not responsible for any kind of issue caused by the code.***</br>
