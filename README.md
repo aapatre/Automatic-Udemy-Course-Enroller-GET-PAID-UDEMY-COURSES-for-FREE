@@ -1,7 +1,7 @@
 # Automatic Udemy Course Enroller: GET PAID UDEMY COURSES for FREE
 Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of web-scraping and automation, this script will find the necessary Udemy Coupons &amp; enroll you for PAID UDEMY COURSES, ABSOLUTELY FREE!
 
-In case of any bugs or issues, feel free to ping me on (twitter.com/Antariksh_Patre)
+In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter.com/Antariksh_Patre)
 
 Video Proof:
 
