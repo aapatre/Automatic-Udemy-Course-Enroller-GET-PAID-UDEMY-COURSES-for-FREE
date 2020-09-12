@@ -1,6 +1,8 @@
 # Automatic Udemy Course Enroller: GET PAID UDEMY COURSES for FREE
 Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of web-scraping and automation, this script will find the necessary Udemy Coupons &amp; enroll you for PAID UDEMY COURSES, ABSOLUTELY FREE!
 
+The code scrapes course links and coupons from tutorialbar.com
+
 In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter.com/Antariksh_Patre)
 
 ***Video Proof:***
@@ -27,4 +29,7 @@ In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter
 
 ---
 
-***Disclaimer: Make sure you have cleared any saved Debit/Credit Card info from your Udemy account before using the script! Also, the script has only been tested on the Microsoft Edge Browser but I'm pretty sure it will work on any browser that provides a webdriver for automation.***
+***Disclaimer:***
+**1. Make sure you have cleared any saved Debit/Credit Card info from your Udemy account before using the script!**
+***2. Also, the script has only been tested on the Microsoft Edge Browser but I'm pretty sure it will work on any browser that provides a webdriver for automation.***
+***3. Make sure web-scraping is legal in your region and I'm not responsible for any kind of issue caused by the code.***
