@@ -24,6 +24,7 @@ Video Proof:
 
 <strong><li>A webdriver for the browser of your choice:</strong> [Edge](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/), [Chrome](https://chromedriver.chromium.org/), [Firefox](https://github.com/mozilla/geckodriver/releases), etc. (Make sure that the driver version matches your browser)</li>
 </ul>
+
 ---
 
 ***Disclaimer: Make sure you have cleared any saved Debit/Credit Card info from your Udemy account before using the script! Also, the script has only been tested on the Microsoft Edge Browser but I'm pretty sure it will work on any browser that provides a webdriver for automation.***
