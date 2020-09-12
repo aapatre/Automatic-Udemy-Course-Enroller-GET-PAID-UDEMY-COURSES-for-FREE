@@ -12,13 +12,13 @@ Video Proof:
 ## Requirements:
 
 **Requests module for Python:**
-pip install requests
+<pre><code>pip install requests</code></pre>
 
 **BeautifulSoup Web-Scraping Library for Python:**
-pip install pip install beautifulsoup4
+<pre><code>pip install pip install beautifulsoup4</code></pre>
 
 **Selenium Browser Automation Tool  for Python:**
-pip install selenium
+<pre><code>pip install selenium</code></pre>
 
 **Required Python version:** Python 3.8
 
