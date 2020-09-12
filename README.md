@@ -1,2 +1,26 @@
 # Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE
-Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of web-scraping and automation, this script will find the necessary Udemy coupons &amp; enroll you for PAID UDEMY COURSES, ABSOLUTELY FREE!
+Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of web-scraping and automation, this script will find the necessary Udemy Coupons &amp; enroll you for PAID UDEMY COURSES, ABSOLUTELY FREE!
+
+In case of any bugs or issues, feel free to ping me on twitter.com/Antariksh_Patre
+
+Video Proof:
+[![Udemy Auto-Course-Enroller](http://i3.ytimg.com/vi/bnqLOncUrw0/maxresdefault.jpg)](https://www.youtube.com/watch?v=bnqLOncUrw0)
+
+---
+
+## Requirements:
+
+Requests module for Python:
+pip install requests
+
+BeautifulSoup Web-Scraping Library for Python:
+pip install pip install beautifulsoup4
+
+Selenium Browser Automation Tool  for Python:
+pip install selenium
+
+Required Python version: Python 3.8
+
+A webdriver for the browser of your choice: [Edge](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/), [Chrome](https://chromedriver.chromium.org/), [Firefox](https://github.com/mozilla/geckodriver/releases), etc. (Make sure that the driver version matches your browser)
+
+**Disclaimer: Make sure you have cleared any saved Debit/Credit Card info from your Udemy account before using the script! Also, the script has only been tested on the Microsoft Edge Browser but I'm pretty sure it will work on any browser that provides a webdriver for automation.**
