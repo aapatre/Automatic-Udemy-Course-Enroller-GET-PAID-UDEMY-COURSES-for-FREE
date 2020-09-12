@@ -3,7 +3,7 @@ Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of web-scra
 
 In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter.com/Antariksh_Patre)
 
-Video Proof:
+***Video Proof:***
 
 [![Udemy Auto-Course-Enroller](https://img.youtube.com/vi/bnqLOncUrw0/0.jpg)](https://www.youtube.com/watch?v=bnqLOncUrw0 "GET PAID UDEMY Courses for FREE, Automatically with this Python Script!")
 
