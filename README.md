@@ -35,6 +35,19 @@ In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter
 
 ---
 
+## Instructions
+<ol>
+  <li>Make sure to install all the requirements above.</li>
+  <li>Choose either format of the code: the .py file (highly recommended) or the jupyter notebook (untested).</li>
+  <li>Open the .py file in IDLE. Then click on <strong>Options->Show Line Numbers</strong> in the IDLE Menu Bar.</li>
+  <li>Enter your Udemy credentials in the <strong>email</strong> & <strong>password</strong> variables on line 43 & 44 of the code.</li>
+  <li>Enter the location of you webdriver in the path variable on line 52.</li>
+  <li>Choose the appropriate browser in the driver variable on line 53.</li>
+  <li>The bot starts scraping the course links from the first <strong>All Courses</strong> page on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1) and starts enrolling you to Udemy courses. After it has enrolled you to courses from the first page, it then moves to the next Tutorial Bar page and the cycle continues. However, you can change the starting page in the <strong>page</strong> variable on line 121.</li>
+</ol>
+
+---
+
 ***Disclaimer:***</br>
 ***1. Make sure you have cleared any saved Debit/Credit Card info from your Udemy account before using the script!***</br>
 ***2. Also, the script has only been tested on the Microsoft Edge Browser but I'm pretty sure it will work on any browser that provides a webdriver for automation.***</br>
