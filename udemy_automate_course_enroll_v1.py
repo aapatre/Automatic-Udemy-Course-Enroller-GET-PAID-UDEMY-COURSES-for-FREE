@@ -49,8 +49,8 @@ By default, the webdriver for Microsoft Edge browser has been chosen in the code
 Also, enter the location of your webdriver.
 """
 
-path = "..location\msedgedriver.exe" #Enter this string with the path for your webdriver
-driver = webdriver.Edge(path)
+path = "..location\msedgedriver.exe" #Replace this string with the path for your webdriver
+driver = webdriver.Edge(path)   # webdriver.Chrome(path) for Google Chrome, webdriver.Firefox(path) for Mozilla Firefox, webdriver.Edge(path) for Microsoft Edge, webdriver.Safari(path) for Apple Safari
 
 driver.maximize_window()  #Maximizes the browser window since Udemy has a responsive design and the code only works in the maximized layout
 
