@@ -22,7 +22,7 @@ In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter
 <strong><li>Selenium Browser Automation Tool  for Python:</li></strong>
 <pre><code>pip install selenium</code></pre>
 
-<strong><li>Required Python version:</strong> Python 3.8</li>
+<strong><li>Required Python version:</strong> [Python 3.8](https://www.python.org/downloads/release/python-380/)</li>
 
 <strong><li>A webdriver for the browser of your choice:</strong> 
 <ul>
@@ -39,3 +39,4 @@ In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter
 ***1. Make sure you have cleared any saved Debit/Credit Card info from your Udemy account before using the script!***</br>
 ***2. Also, the script has only been tested on the Microsoft Edge Browser but I'm pretty sure it will work on any browser that provides a webdriver for automation.***</br>
 ***3. Make sure web-scraping is legal in your region and I'm not responsible for any kind of issue caused by the code.***</br>
+***4. This is NOT a hacking script, i.e., it can't enroll you for a specific course! Instead it finds courses that provide coupon links to make the transaction free and then LEGALLY enroll you to the course!***</br>
