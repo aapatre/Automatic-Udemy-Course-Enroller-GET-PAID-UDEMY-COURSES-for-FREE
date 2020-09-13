@@ -31,7 +31,8 @@ In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter
   <li>Firefox- https://github.com/mozilla/geckodriver/releases</li>
   <li>Safari- https://webkit.org/blog/6900/webdriver-support-in-safari-10/ .etc</li>
 </ul>
-(Make sure that the driver version matches your browser)</li>
+
+<strong>Note:</strong> Make sure that the driver version matches your browser.</li>
 </ul>
 
 ---
