@@ -73,7 +73,8 @@ It used to be my daily habit to redeem courses and it was an extremely tedious t
 Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser and the webdriver, and simply re-run the bot. Easy peasy lemon squeezy! 🍋🙃
 
 ### 5. Which is the best way to run the script?
-It is highly recommended to run the script using Python's IDLE IDE. Pro-tip: Create a batch file, to launch the script instantly, using these instructions: https://datatofish.com/batch-python-script/
+It is highly recommended to run the script using Python's IDLE IDE. <br />
+**Pro-tip:** Create a batch file, to launch the script instantly, using these instructions: https://datatofish.com/batch-python-script/
 
 ---
 
