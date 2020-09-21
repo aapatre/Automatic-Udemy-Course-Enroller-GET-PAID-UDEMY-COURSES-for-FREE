@@ -52,21 +52,24 @@ In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter
 
 ## FAQs
 
-### Can I get a specific course for free with this script?
+### 1. Can I get a specific course for free with this script?
 Unfortunately no, but let me assure you that you may be lucky enough to get a particular course for free when the instructor posts it's coupon code in order to promote it. Also, over time you would build a library of courses by running the script often and have all the required courses in your collection. In fact, I made this course after completing a [Python automation course](https://www.udemy.com/course/automate/) and selenium, which of course I got for free! :)
 
-### How frequently should you run the script?
-Daily, at least once! If you are using it for the first time, I recommend that you allow it to scrape through all pages on Tutorial Bar. I've painstakingly amassed over 4000 courses in the last four years! And out of those 4000, I've only paid for 4 of these courses:
+### 2. How frequently should you run the script?
+Daily, at least once! If you are using it for the first time, I recommend that you allow it to scrape through all pages on Tutorial Bar (might take a few hours since there are >500 pages on the site). I've painstakingly amassed over 4000 courses in the last four years! And out of those 4000, I've only paid for 4 of these courses:
 <div style="text-align: center;"><img src="https://i.imgur.com/p79IcDJ.png" width= 50%; height= 50%; /></div>
 
 So, a mere **0.001%** of courses are **actually paid** in my collection! Thankfully, you can get more than what I gathered in 4 years, in a matter of weeks! 🙌🏻
 
-### Why did I create this?
+### 3. Why did I create this?
 It used to be my daily habit to redeem courses and it was an extremely tedious task that took around 15 minutes, for 10 courses. And then I suddenly got the idea to automate it, after I found the automation course, as mentioned above. I bet, it will save your precious time too! :)
 
-### "Udemy has detected that I'm using automation tools to browse the website! What should I do?"
+### 4. "Udemy has detected that I'm using automation tools to browse the website! What should I do?"
 <img src="https://i.imgur.com/pBrFinT.png" />
 Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser and the webdriver, and simply re-run the bot. Easy peasy lemon squeezy! 🍋🙃
+
+### 5. Which is the best way to run the script?
+It is highly recommended to run the script using Python's IDLE IDE. Pro-tip: Create a batch file, to launch the script instantly, using these instructions: https://datatofish.com/batch-python-script/
 
 ---
 
