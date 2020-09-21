@@ -66,12 +66,11 @@ Daily, at least once! If you are using it for the first time, I recommend that y
 So, a mere **0.001%** of courses are **actually paid** in my collection! Thankfully, you can get more than what I gathered in 4 years, in a matter of weeks! 🙌🏻
 
 ### 3. Why did I create this?
-It used to be my daily habit to redeem courses and it was an extremely tedious task that took around 15 minutes, for 10 courses. And then I suddenly got the idea to automate it, after I found the automation course, as mentioned above. I bet, it will save your precious time too! :)
+It used to be my daily habit to redeem courses and it was an extremely tedious task that took around 15 minutes, for 10 courses. And then I suddenly got the idea to automate it, after I found the automation course mentioned above. I bet, it will save your precious time too! :)
 
 ### 4. "Udemy has detected that I'm using automation tools to browse the website! What should I do?"
 <p align="center"><kbd><img src="https://i.imgur.com/pwseilE.jpg" /></kbd></p>
-Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser and the webdriver, and simply re-run the bot. Easy peasy lemon squeezy! 🍋🙃 <br />
-
+Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser and the webdriver, and simply re-run the bot. Easy peasy lemon squeezy! 🍋🙃 <br /><br />
 <p align="center"><kbd><img src="https://i.imgur.com/yMYtOUK.jpg" /></kbd></p>
 
 ### 5. Which is the best way to run the script?
