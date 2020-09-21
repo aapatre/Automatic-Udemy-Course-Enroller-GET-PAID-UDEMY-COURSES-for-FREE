@@ -59,21 +59,27 @@ In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter
 ### 1. Can I get a specific course for free with this script?
 Unfortunately no, but let me assure you that you may be lucky enough to get a particular course for free when the instructor posts it's coupon code in order to promote it. Also, over time you would build a library of courses by running the script often and have all the required courses in your collection. In fact, I made this course after completing a [Python automation course](https://www.udemy.com/course/automate/) and selenium, which of course I got for free! :)
 
-### 2. How frequently should you run the script?
+### 2. How the bot works?
+The bot retrieves coupon links from Tutorial Bar's list to cut the prices and then uses Selenium's Browser automation features to login and enroll to the courses. Think of it this way: Epic Games & other clients like Steam provide you a handful of games each week, for free; Only in this case, we need a coupon code to make those courses free. 
+
+### 3. How frequently should you run the script?
 Daily, at least once! If you are using it for the first time, I recommend that you allow it to scrape through all pages on Tutorial Bar (might take a few hours since there are >500 pages on the site). I've painstakingly amassed over 4000 courses in the last four years! And out of those 4000, I've only paid for 4 of these courses:
 <p align="center"><img src="https://i.imgur.com/p79IcDJ.png" width= 50%; height= 50%; /><p>
 
 So, a mere **0.001%** of courses are **actually paid** in my collection! Thankfully, you can get more than what I gathered in 4 years, in a matter of weeks! 🙌🏻
 
-### 3. Why did I create this?
+### 4. Why did I create this?
 It used to be my daily habit to redeem courses and it was an extremely tedious task that took around 15 minutes, for 10 courses. And then I suddenly got the idea to automate it, after I found the automation course mentioned above. I bet, it will save your precious time too! :)
 
-### 4. "Udemy has detected that I'm using automation tools to browse the website! What should I do?"
+### 5. "Udemy has detected that I'm using automation tools to browse the website! What should I do?"
 <p align="center"><kbd><img src="https://i.imgur.com/pwseilE.jpg" /></kbd></p>
 Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser and the webdriver, and simply re-run the bot. Easy peasy lemon squeezy! 🍋🙃 <br /><br />
 <p align="center"><kbd><img src="https://i.imgur.com/yMYtOUK.jpg" /></kbd></p>
 
-### 5. Which is the best way to run the script?
+### 6. The code compiles successfully but it's taking too long to work! IS there any way to fix that?
+Since we are heavily dependent on a third-party site to retrieve coupons links, there may be issues when the site is down. Needless to mention the connectivity issues too. If everything is working fine, you can see the courses being retrieved in the Python console/shell, which may take a while.
+
+### 7. Which is the best way to run the script?
 It is highly recommended to run the script using Python's IDLE IDE. <br />
 **Pro-tip:** Create a batch file, to launch the script instantly, using these instructions: https://datatofish.com/batch-python-script/
 
