@@ -61,7 +61,7 @@ Unfortunately no, but let me assure you that you may be lucky enough to get a pa
 
 ### 2. How frequently should you run the script?
 Daily, at least once! If you are using it for the first time, I recommend that you allow it to scrape through all pages on Tutorial Bar (might take a few hours since there are >500 pages on the site). I've painstakingly amassed over 4000 courses in the last four years! And out of those 4000, I've only paid for 4 of these courses:
-<div style="text-align: center;"><img src="https://i.imgur.com/p79IcDJ.png" width= 50%; height= 50%; /></div>
+<p align="center"><img src="https://i.imgur.com/p79IcDJ.png" width= 50%; height= 50%; /><p>
 
 So, a mere **0.001%** of courses are **actually paid** in my collection! Thankfully, you can get more than what I gathered in 4 years, in a matter of weeks! 🙌🏻
 
@@ -69,10 +69,10 @@ So, a mere **0.001%** of courses are **actually paid** in my collection! Thankfu
 It used to be my daily habit to redeem courses and it was an extremely tedious task that took around 15 minutes, for 10 courses. And then I suddenly got the idea to automate it, after I found the automation course, as mentioned above. I bet, it will save your precious time too! :)
 
 ### 4. "Udemy has detected that I'm using automation tools to browse the website! What should I do?"
-<img src="https://i.imgur.com/pwseilE.jpg" />
+<p align="center"><kbd><img src="https://i.imgur.com/pwseilE.jpg" /></kbd></p>
 Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser and the webdriver, and simply re-run the bot. Easy peasy lemon squeezy! 🍋🙃 <br />
 
-<img src="https://i.imgur.com/yMYtOUK.jpg" />
+<p align="center"><kbd><img src="https://i.imgur.com/yMYtOUK.jpg" /></kbd></p>
 
 ### 5. Which is the best way to run the script?
 It is highly recommended to run the script using Python's IDLE IDE. <br />
