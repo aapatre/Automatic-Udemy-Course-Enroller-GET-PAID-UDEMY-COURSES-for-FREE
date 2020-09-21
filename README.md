@@ -66,6 +66,7 @@ It used to be my daily habit to redeem courses and it was an extremely tedious t
 
 ### "Udemy has detected that I'm using automation tools to browse the website! What should I do?"
 <img src="https://i.imgur.com/pBrFinT.png" />
+Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser and the webdriver, and simply re-run the bot. Easy peasy lemon squeezy! 🍋🙃
 
 ---
 
