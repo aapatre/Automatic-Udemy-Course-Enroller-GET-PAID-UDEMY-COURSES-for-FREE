@@ -32,7 +32,11 @@ In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter
   <li>Safari- https://webkit.org/blog/6900/webdriver-support-in-safari-10/ .etc</li>
 </ul>
 
-<strong>Note:</strong> Make sure that the driver version matches your browser.</li>
+<strong>Note:</strong> Make sure that the driver version matches your browser. <br /> <br />
+<strong>Note for Ubuntu/Linux Users:</strong> Run these commands in the terminal before installing the previous requirements: </br>
+<pre><code>sudo apt-get update</code></pre>
+<pre><code>sudo apt-get upgrade</code></pre>
+<pre><code>sudo apt install python3-pip</code></pre></li>
 </ul>
 
 ---
