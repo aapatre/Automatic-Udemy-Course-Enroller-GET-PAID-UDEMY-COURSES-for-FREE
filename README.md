@@ -69,8 +69,10 @@ So, a mere **0.001%** of courses are **actually paid** in my collection! Thankfu
 It used to be my daily habit to redeem courses and it was an extremely tedious task that took around 15 minutes, for 10 courses. And then I suddenly got the idea to automate it, after I found the automation course, as mentioned above. I bet, it will save your precious time too! :)
 
 ### 4. "Udemy has detected that I'm using automation tools to browse the website! What should I do?"
-<img src="https://i.imgur.com/pBrFinT.png" />
-Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser and the webdriver, and simply re-run the bot. Easy peasy lemon squeezy! 🍋🙃
+<img src="https://i.imgur.com/pwseilE.jpg" />
+Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser and the webdriver, and simply re-run the bot. Easy peasy lemon squeezy! 🍋🙃 <br />
+
+<img src="https://i.imgur.com/yMYtOUK.jpg" />
 
 ### 5. Which is the best way to run the script?
 It is highly recommended to run the script using Python's IDLE IDE. <br />
