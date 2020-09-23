@@ -3,7 +3,7 @@ Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of web-scra
 
 The code scrapes course links and coupons from [tutorialbar.com](https://tutorialbar.com)
 
-In case of any bugs or issues, feel free to ping me on [Twitter](https://twitter.com/Antariksh_Patre)
+In case of any bugs or issues, **feel free to ping me on [LinkedIn](https://www.linkedin.com/in/aapatre/) or [Twitter](https://twitter.com/Antariksh_Patre)**
 
 Also, don't forget to **Fork & Star the repository if you like it! ❤**
 
