@@ -54,7 +54,7 @@ Also, enter the location of your webdriver.
 """
 
 path = "..location\msedgedriver.exe" #Replace this string with the path for your webdriver
-driver = webdriver.Edge(path)   # webdriver.Chrome(path) for Google Chrome, webdriver.Firefox(path) for Mozilla Firefox, webdriver.Edge(path) for Microsoft Edge, webdriver.Safari(path) for Apple Safari
+driver = webdriver.Edge(path)   #webdriver.Chrome(path) for Google Chrome, webdriver.Firefox(path) for Mozilla Firefox, webdriver.Edge(path) for Microsoft Edge, webdriver.Safari(path) for Apple Safari
 
 driver.maximize_window()  #Maximizes the browser window since Udemy has a responsive design and the code only works in the maximized layout
 
@@ -122,7 +122,7 @@ def redeemUdemyCourse(url):
         zipcode_element = driver.find_element_by_id("billingAddressSecondaryInput")
         zipcode_element.send_keys(zipcode)
 
-        # After you put the zip code in, the page refreshes itself and disables the enroll button for a split second.
+        #After you put the zip code in, the page refreshes itself and disables the enroll button for a split second.
         time.sleep(1)
     except NoSuchElementException: pass
 
