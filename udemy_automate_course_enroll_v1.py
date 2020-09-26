@@ -43,6 +43,7 @@ import time
 email="ENTER_YOUR_UDEMY_REGISTERED_EMAIL_ID_HERE"
 password="ENTER_YOUR_UDEMY_PASSWORD_HERE"
 
+
 """### **If you're in the USA, enter a zipcode here, leave it blank to skip.**"""
 
 zipcode="ENTER_YOUR_ZIPCODE_HERE"
@@ -53,8 +54,9 @@ By default, the webdriver for Microsoft Edge browser has been chosen in the code
 Also, enter the location of your webdriver.
 """
 
-path = "..location\msedgedriver.exe" #Replace this string with the path for your webdriver
-driver = webdriver.Edge(path)   #webdriver.Chrome(path) for Google Chrome, webdriver.Firefox(path) for Mozilla Firefox, webdriver.Edge(path) for Microsoft Edge, webdriver.Safari(path) for Apple Safari
+# On windows you need the r (raw string) in front of the string to deal with backslashes.
+path = r"..location\msedgedriver.exe" #Replace this string with the path for your webdriver
+driver = webdriver.Edge(path)   # webdriver.Chrome(path) for Google Chrome, webdriver.Firefox(path) for Mozilla Firefox, webdriver.Edge(path) for Microsoft Edge, webdriver.Safari(path) for Apple Safari
 
 driver.maximize_window()  #Maximizes the browser window since Udemy has a responsive design and the code only works in the maximized layout
 
