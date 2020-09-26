@@ -42,14 +42,14 @@ import time
 
 email="ENTER_YOUR_UDEMY_REGISTERED_EMAIL_ID_HERE"
 password="ENTER_YOUR_UDEMY_PASSWORD_HERE"
-
+zipcode="12345"
 """### **Enter the path/location of your webdriver**
 By default, the webdriver for Microsoft Edge browser has been chosen in the code below.
 
 Also, enter the location of your webdriver.
 """
 
-path = "..location\msedgedriver.exe" #Replace this string with the path for your webdriver
+path = r"C:\users\username\desktop\msedgedriver.exe" #Replace this string with the path for your webdriver
 driver = webdriver.Edge(path)   # webdriver.Chrome(path) for Google Chrome, webdriver.Firefox(path) for Mozilla Firefox, webdriver.Edge(path) for Microsoft Edge, webdriver.Safari(path) for Apple Safari
 
 driver.maximize_window()  #Maximizes the browser window since Udemy has a responsive design and the code only works in the maximized layout
@@ -112,6 +112,14 @@ def redeemUdemyCourse(url):
     #Enroll Now 2
     element_present = EC.presence_of_element_located((By.XPATH, "//*[@id=\"udemy\"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button"))
     WebDriverWait(driver, 10).until(element_present)
+
+    # Add zipcode
+    inputElement = driver.find_element_by_id("billingAddressSecondaryInput")
+    inputElement.send_keys(zipcode)
+
+    # After you put the zip code in, the page refreshes itself and disables the enroll button for a split second.
+    time.sleep(1)
+
 
     udemyEnroll = driver.find_element_by_xpath("//*[@id=\"udemy\"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button") #Udemy
     udemyEnroll.click()
