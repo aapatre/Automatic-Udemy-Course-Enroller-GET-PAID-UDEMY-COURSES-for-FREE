@@ -43,7 +43,6 @@ import time
 email="ENTER_YOUR_UDEMY_REGISTERED_EMAIL_ID_HERE"
 password="ENTER_YOUR_UDEMY_PASSWORD_HERE"
 
-
 """### **If you're in the USA, enter a zipcode here, leave it blank to skip.**"""
 
 zipcode="ENTER_YOUR_ZIPCODE_HERE"
