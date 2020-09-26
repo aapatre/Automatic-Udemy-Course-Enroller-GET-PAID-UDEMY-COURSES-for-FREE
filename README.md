@@ -19,7 +19,7 @@ Also, don't forget to **Fork & Star the repository if you like it! ❤**
 <pre><code>pip install requests</code></pre>
 
 <strong><li>BeautifulSoup Web-Scraping Library for Python:</li></strong>
-<pre><code>pip install pip install beautifulsoup4</code></pre>
+<pre><codepip install beautifulsoup4</code></pre>
 
 <strong><li>Selenium Browser Automation Tool  for Python:</li></strong>
 <pre><code>pip install selenium</code></pre>
