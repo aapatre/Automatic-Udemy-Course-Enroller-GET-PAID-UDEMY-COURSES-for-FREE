@@ -62,7 +62,7 @@ Simply run the <a href="">requirements.py</a> in Python's IDLE Editor. If all th
 ## Instructions
 <ol>
   <li>Make sure to install all the requirements above.</li>
-  <li>Open <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings.txt">settings.txt</a> file and insert your <strong>Udemy registered email on the first line</strong>, your <strong>Udemy password on the second line</strong>, and the <strong>ZIP Code on the third (only if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else clear the line and leave it blank)</strong>. Please refer to <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings_example.txt">settings_example.txt</a> as a reference.</li>
+  <li>Open <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings.txt">settings.txt</a> file and insert your <strong>Udemy registered email on the first line</strong>, your <strong>Udemy password on the second line</strong>, and the <strong>ZIP Code on the third (only if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else clear the line and leave it blank)</strong>. Make sure there are no extra spaces or line breaks anywhere! <strong>Please use <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings_example.txt">settings_example.txt</a> as a reference.</strong></li>
   <li>Choose the appropriate file for your browser (from the list below) in Python's IDLE Editor: </li>
   <ol>
     <li><strong>Tested and works perfectly: </strong></li>
@@ -84,7 +84,8 @@ Simply run the <a href="">requirements.py</a> in Python's IDLE Editor. If all th
     <li><strong>Should never be used by anyone with self-respect and dignity (and of course has bugs):</strong></li>
     <ol><li>Internet Explorer: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_internet_explorer.py">udemy_enroller_internet_explorer.py</a></li></ol>
   </ol>
-  <li>The bot starts scraping the course links from the first <strong>All Courses</strong> page on <a href='https://www.tutorialbar.com/all-courses/page/1'>Tutorial Bar</a> and starts enrolling you to Udemy courses. After it has enrolled you to courses from the first page, it then moves to the next Tutorial Bar page and the cycle continues. However, you can change the starting page in the <strong><em>page</em></strong> variable on line 121. (not recommended, except when you are trying to redeem old coupons, which may or may not be valid at this point of time; But sometimes, by a stroke of luck, the coupons may still work!)</li>
+  <li>Run the chosen script in Python's IDLE Editor.</li>
+  <li>The bot starts scraping the course links from the first <strong>All Courses</strong> page on <a href='https://www.tutorialbar.com/all-courses/page/1'>Tutorial Bar</a> and starts enrolling you to Udemy courses. After it has enrolled you to courses from the first page, it then moves to the next Tutorial Bar page and the cycle continues. <strong>Optional:</strong> However, you can change the starting page in the <strong><em>page</em></strong> variable inside the <em><strong>main_function()</em></strong>. (Not recommended, except when you are trying to redeem old coupons, which may or may not be valid at this point of time; But sometimes, by a stroke of luck, the coupons may still work!)</li>
 </ol>
 
 ---
