@@ -62,6 +62,7 @@ Simply run the <a href="">requirements.py</a> in Python's IDLE Editor. If all th
 ## Instructions
 <ol>
   <li>Make sure to install all the requirements above.</li>
+  </br>
   <li>Open <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings.txt">settings.txt</a> file and insert your <strong>Udemy registered email on the first line</strong>, your <strong>Udemy password on the second line</strong>, and the <strong>ZIP Code on the third (only if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else clear the line and leave it blank)</strong>. Make sure there are no extra spaces or line breaks anywhere! <strong>Please use <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings_example.txt">settings_example.txt</a> as a reference.</strong></li>
   </br>
   <li>Choose the appropriate file for your browser (from the list below) in Python's IDLE Editor: </li>
@@ -87,7 +88,10 @@ Simply run the <a href="">requirements.py</a> in Python's IDLE Editor. If all th
   </ol>
   </br>
   <li>Run the chosen script in Python's IDLE Editor.</li>
+  </br>
   <li>The bot starts scraping the course links from the first <strong>All Courses</strong> page on <a href='https://www.tutorialbar.com/all-courses/page/1'>Tutorial Bar</a> and starts enrolling you to Udemy courses. After it has enrolled you to courses from the first page, it then moves to the next Tutorial Bar page and the cycle continues.</br><strong>Optional:</strong> However, you can change the starting page in the <strong><em>page</em></strong> variable inside the <em><strong>main_function()</em></strong>. (Not recommended, except when you are trying to redeem old coupons, which may or may not be valid at this point of time; But sometimes, by a stroke of luck, the coupons may still work!)</li>
+  </br>
+  <li>Close the browser window, the web-driver and the Python shell to stop the enrollment process.</li>
 </ol>
 
 ---
