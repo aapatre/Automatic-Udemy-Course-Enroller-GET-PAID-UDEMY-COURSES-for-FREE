@@ -12,18 +12,27 @@ Also, don't forget to **Fork & Star the repository if you like it! ❤**
 [![Udemy Auto-Course-Enroller](https://img.youtube.com/vi/IW8CCtv2k2A/0.jpg)](https://www.youtube.com/watch?v=IW8CCtv2k2A "GET PAID UDEMY Courses for FREE, Automatically with this Python Script!")
 
 ---
+## Updates:
+Moved the credentials and driver path to a settings.json file just copy the "default_settings.json" then rename it to settings.json and update it with
+your info 
+<code>
+{ 
+    "settings": [
+        {
+        "username": "email@emailprovider.com", 
+        "password": "Hunter2!",
+        "driver_path":"//Path/to/dirver"
+        }
+    ]
+}
+<code>
 
 ## Requirements:
 <ul>
   <strong><li>Requests module for Python:</li></strong>
-<pre><code>pip install requests</code></pre>
-
-<strong><li>BeautifulSoup Web-Scraping Library for Python:</li></strong>
-<pre><code>pip install beautifulsoup4</code></pre>
-
-<strong><li>Selenium Browser Automation Tool  for Python:</li></strong>
-<pre><code>pip install selenium</code></pre>
-
+  <strong><li>BeautifulSoup Web-Scraping Library for Python:</li></strong>
+  <strong><li>Selenium Browser Automation Tool  for Python:</li></strong>
+</ul>
 <strong><li>Required Python version:</strong> [Python 3.8](https://www.python.org/downloads/release/python-380/)</li>
 
 <strong><li>A webdriver for the browser of your choice:</strong> 
@@ -39,6 +48,7 @@ Also, don't forget to **Fork & Star the repository if you like it! ❤**
 <pre><code>sudo apt-get update</code></pre>
 <pre><code>sudo apt-get upgrade</code></pre>
 <pre><code>sudo apt install python3-pip</code></pre></li>
+<pre><strongRun <code>pip3 install -r requirements.txt<code> to install the required modules</strong>
 </ul>
 
 ---

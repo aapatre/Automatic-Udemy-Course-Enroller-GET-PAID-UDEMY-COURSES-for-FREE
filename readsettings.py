@@ -3,9 +3,9 @@ import json
 f = open("./settings.json",)
 settings = json.load(f)
 
-for i in settings ['settings']:
-    print(i['username'])
-    print(i['password'])
-    print(i['driver_path'])
+for setting in settings ['settings']:
+    print(setting['username'])
+    print(setting['password'])
+    print(setting['driver_path'])
     
 f.close()
