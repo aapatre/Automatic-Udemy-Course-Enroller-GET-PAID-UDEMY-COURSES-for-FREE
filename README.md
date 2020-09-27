@@ -79,7 +79,7 @@ Simply run the <a href="">requirements.py</a> in Python's IDLE Editor. If all th
     <ol>
       <li>Opera: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_opera.py">udemy_enroller_opera.py</a></li>
     </ol>
-    <li><strong>Experimentation or other Browsers:</strong></li>
+    <li><strong>Experimentation or other Browsers (especially Safari):</strong></li>
     <ol><li>Vanilla (aka the old bot- requires manual driver setup): <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_vanilla.py">udemy_enroller_vanilla.py</a></li></ol>
     <li><strong>Should never be used by anyone with self-respect and dignity (and of course has bugs):</strong></li>
     <ol><li>Internet Explorer: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_internet_explorer.py">udemy_enroller_internet_explorer.py</a></li></ol>
