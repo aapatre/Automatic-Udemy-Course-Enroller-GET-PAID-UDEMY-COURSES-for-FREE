@@ -53,14 +53,13 @@ Also, don't forget to **Fork & Star the repository if you like it! ❤**
 
 ## Instructions
 <ol>
-  <li>Make sure to install all the requirements above.</li>
-  <li>Choose either format of the code: the .py file (highly recommended) or the jupyter notebook (untested).</li>
+  <li>Make sure to install all the requirements above. You can even install all the necessary requirements by simply running this command in the command-prompt or the terminal:
+  <pre><code>pip install requirements.txt</code></pre></li>
+  <li>Open <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings.txt">settings.txt</a> file and insert your <strong>Udemy registered email on the first line</strong>, your <strong>Udemy password on the second line</strong>, and the <strong>ZIP Code on the third (only if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else clear the line and leave it blank)</strong>. Please refer to <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings_example.txt">settings_example.txt</a> as a reference.</li>
   <li>Open the .py file in IDLE. Then click on <strong>Options->Show Line Numbers</strong> in the IDLE Menu Bar.</li>
-  <li>Enter your Udemy credentials in the <strong>email</strong> & <strong>password</strong> variables on line 43 & 44 of the code.</li>
-  <li>If located in the USA, enter a zipcode in the <strong>zipcode</strong> variable on line 48 of the code.</li>
-  <li>Enter the location of you webdriver in the path variable on line 56.</li>
-  <li>Choose the appropriate browser in the driver variable on line 57.</li>
-  <li>The bot starts scraping the course links from the first <strong>All Courses</strong> page on <a href='https://www.tutorialbar.com/all-courses/page/1'>Tutorial Bar</a> and starts enrolling you to Udemy courses. After it has enrolled you to courses from the first page, it then moves to the next Tutorial Bar page and the cycle continues. However, you can change the starting page in the <strong>page</strong> variable on line 121. (not recommended, except when you are trying to redeem old coupons, which may or may not be valid at this point of time; But sometimes, by a stroke of luck, the coupons may still work!)</li>
+  <li>Enter the location of you webdriver in the <strong><em>path</strong></em> variable on line 53.</li>
+  <li>Choose the appropriate browser in the <strong><em>driver</strong></em> variable on line 54.</li>
+  <li>The bot starts scraping the course links from the first <strong>All Courses</strong> page on <a href='https://www.tutorialbar.com/all-courses/page/1'>Tutorial Bar</a> and starts enrolling you to Udemy courses. After it has enrolled you to courses from the first page, it then moves to the next Tutorial Bar page and the cycle continues. However, you can change the starting page in the <strong><em>page</em></strong> variable on line 121. (not recommended, except when you are trying to redeem old coupons, which may or may not be valid at this point of time; But sometimes, by a stroke of luck, the coupons may still work!)</li>
 </ol>
 
 ---
