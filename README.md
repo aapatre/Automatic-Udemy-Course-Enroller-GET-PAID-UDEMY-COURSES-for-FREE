@@ -65,20 +65,23 @@ Simply run the <a href="">requirements.py</a> in Python's IDLE Editor. If all th
   <li>Open <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings.txt">settings.txt</a> file and insert your <strong>Udemy registered email on the first line</strong>, your <strong>Udemy password on the second line</strong>, and the <strong>ZIP Code on the third (only if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else clear the line and leave it blank)</strong>. Please refer to <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings_example.txt">settings_example.txt</a> as a reference.</li>
   <li>Choose the appropriate file for your browser (from the list below) in Python's IDLE Editor: </li>
   <ol>
-    <li>Tested and works perfectly: </li>
+    <li><strong>Tested and works perfectly: </strong></li>
     <ol>
       <li>Chrome: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_chrome.py">udemy_enroller_chrome.py</a></li>
       <li>Chromium: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_chromium.py">udemy_enroller_chromium.py</a></li>
       <li>Edge: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_edge.py">udemy_enroller_edge.py</a></li>
     </ol>
-    <li>Has issues: </li>
+    <li><strong>Has issues: </strong></li>
     <ol>
       <li>Firefox: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py">udemy_enroller_firefox.py</a></li>
-      <li>Chromium: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_opera.py">udemy_enroller_opera.py</a></li>
     </ol>
-    <li>Experimentation or other Browsers:</li>
+    <li><strong>Untested: </strong></li>
+    <ol>
+      <li>Opera: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_opera.py">udemy_enroller_opera.py</a></li>
+    </ol>
+    <li><strong>Experimentation or other Browsers:</strong></li>
     <ol><li>Vanilla (aka the old bot- requires manual driver setup): <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_vanilla.py">udemy_enroller_vanilla.py</a></li></ol>
-    <li>Should never be used by anyone with self-respect and dignity (and of course has bugs):</li>
+    <li><strong>Should never be used by anyone with self-respect and dignity (and of course has bugs):</strong></li>
     <ol><li>Internet Explorer: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_internet_explorer.py">udemy_enroller_internet_explorer.py</a></li></ol>
   </ol>
   <li>The bot starts scraping the course links from the first <strong>All Courses</strong> page on <a href='https://www.tutorialbar.com/all-courses/page/1'>Tutorial Bar</a> and starts enrolling you to Udemy courses. After it has enrolled you to courses from the first page, it then moves to the next Tutorial Bar page and the cycle continues. However, you can change the starting page in the <strong><em>page</em></strong> variable on line 121. (not recommended, except when you are trying to redeem old coupons, which may or may not be valid at this point of time; But sometimes, by a stroke of luck, the coupons may still work!)</li>
