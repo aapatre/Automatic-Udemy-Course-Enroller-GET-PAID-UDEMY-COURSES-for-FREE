@@ -22,6 +22,10 @@ Also, don't forget to **Fork & Star the repository if you like it! ❤**
 ---
 
 ## Requirements:
+
+### How to Install the Requirements?
+Simply run the <a href="">requirements.py</a> in Python's IDLE Editor. If all the requirements are installed, you are good to go but, in case of errors I've listed the individual requirements which can be installed by running the given commands in the terminal or the command prompt. You can even run <em>pip install requirements.txt</em> in the command prompt but if you are a beginner, I urge you to try either of the above mentioned methods.
+
 <ul>
   <strong><li>Requests module for Python:</li></strong>
 <pre><code>pip install requests</code></pre>
@@ -34,12 +38,14 @@ Also, don't forget to **Fork & Star the repository if you like it! ❤**
 
 <strong><li>Required Python version:</strong> [Python 3.8](https://www.python.org/downloads/release/python-380/)</li>
 
-<strong><li>A webdriver for the browser of your choice:</strong> 
+<strong><li>Webdrivers are now automatically installed! Hurray! But here are some links in case you are using the vanilla script or the Safari Browser:</strong> 
 <ul>
   <li>Edge- https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/</li>
   <li>Chrome- https://chromedriver.chromium.org/</li>
   <li>Firefox- https://github.com/mozilla/geckodriver/releases</li>
   <li>Safari- https://webkit.org/blog/6900/webdriver-support-in-safari-10/ .etc</li>
+  <li>Opera- https://github.com/operasoftware/operachromiumdriver/releases</li>
+  <li>Internet Explorer- <a href='https://www.selenium.dev/downloads/'>Wait, who even uses this anymore!?</a></li>
 </ul>
 
 <strong>Note:</strong> Make sure that the driver version matches your browser. <br /> <br />
@@ -53,12 +59,9 @@ Also, don't forget to **Fork & Star the repository if you like it! ❤**
 
 ## Instructions
 <ol>
-  <li>Make sure to install all the requirements above. You can even install all the necessary requirements by simply running this command in the command-prompt or the terminal:
-  <pre><code>pip install requirements.txt</code></pre></li>
+  <li>Make sure to install all the requirements above.</li>
   <li>Open <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings.txt">settings.txt</a> file and insert your <strong>Udemy registered email on the first line</strong>, your <strong>Udemy password on the second line</strong>, and the <strong>ZIP Code on the third (only if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else clear the line and leave it blank)</strong>. Please refer to <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings_example.txt">settings_example.txt</a> as a reference.</li>
   <li>Open the .py file in IDLE. Then click on <strong>Options->Show Line Numbers</strong> in the IDLE Menu Bar.</li>
-  <li>Enter the location of you webdriver in the <strong><em>path</strong></em> variable on line 53.</li>
-  <li>Choose the appropriate browser in the <strong><em>driver</strong></em> variable on line 54.</li>
   <li>The bot starts scraping the course links from the first <strong>All Courses</strong> page on <a href='https://www.tutorialbar.com/all-courses/page/1'>Tutorial Bar</a> and starts enrolling you to Udemy courses. After it has enrolled you to courses from the first page, it then moves to the next Tutorial Bar page and the cycle continues. However, you can change the starting page in the <strong><em>page</em></strong> variable on line 121. (not recommended, except when you are trying to redeem old coupons, which may or may not be valid at this point of time; But sometimes, by a stroke of luck, the coupons may still work!)</li>
 </ol>
 
