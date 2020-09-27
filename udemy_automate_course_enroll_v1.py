@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """udemy_automate_course_enroll_v1
 
@@ -37,20 +38,28 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import time
-
+import json
+f = open("./settings.json",)
+settings = json.load(f)
 """### **Enter your Udemy Credentials below:**"""
+for s in settings ['settings']:
+    email= s['username']
+    password = s['password']
+    driver_path = s['driver_path']
+f.close()
 
-email="ENTER_YOUR_UDEMY_REGISTERED_EMAIL_ID_HERE"
-password="ENTER_YOUR_UDEMY_PASSWORD_HERE"
+print (email,password)
+#"ENTER_YOUR_UDEMY_REGISTERED_EMAIL_ID_HERE"
+#"ENTER_YOUR_UDEMY_PASSWORD_HERE"
 
 """### **Enter the path/location of your webdriver**
 By default, the webdriver for Microsoft Edge browser has been chosen in the code below.
 
 Also, enter the location of your webdriver.
 """
-
-path = "..location\msedgedriver.exe" #Replace this string with the path for your webdriver
-driver = webdriver.Edge(path)   # webdriver.Chrome(path) for Google Chrome, webdriver.Firefox(path) for Mozilla Firefox, webdriver.Edge(path) for Microsoft Edge, webdriver.Safari(path) for Apple Safari
+driver = webdriver.Chrome(executable_path=r'C:\webdriver\chrome\chromedriver.exe')
+#path = "..\webdrivers\chrome\chromedriver.exe" #driver_path #Replace this string with the path for your webdriver
+#driver = webdriver.Chrome(path)   # webdriver.Chrome(path) for Google Chrome, webdriver.Firefox(path) for Mozilla Firefox, webdriver.Edge(path) for Microsoft Edge, webdriver.Safari(path) for Apple Safari
 
 driver.maximize_window()  #Maximizes the browser window since Udemy has a responsive design and the code only works in the maximized layout
 

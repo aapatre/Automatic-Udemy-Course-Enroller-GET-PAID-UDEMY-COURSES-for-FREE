@@ -1,0 +1,9 @@
+{ 
+    "settings": [
+        {
+        "username": "email@emailprovider.com",
+        "password": "Hunter2!",
+        "driver_path":"Path/to/dirver"
+        }
+    ]
+}
