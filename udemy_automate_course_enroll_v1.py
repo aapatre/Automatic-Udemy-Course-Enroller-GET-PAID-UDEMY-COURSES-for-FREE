@@ -38,14 +38,10 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import time
 
-"""### **Enter your Udemy Credentials below:**"""
 
-email="ENTER_YOUR_UDEMY_REGISTERED_EMAIL_ID_HERE"
-password="ENTER_YOUR_UDEMY_PASSWORD_HERE"
+f = open("settings.txt", "r")
+email, password, zipcode = f.readline().rstrip('\n'), f.readline().rstrip('\n'), f.readline().rstrip('\n')
 
-"""### **If you're in the USA, enter a zipcode here, leave it blank to skip.**"""
-
-zipcode="ENTER_YOUR_ZIPCODE_HERE"
 
 """### **Enter the path/location of your webdriver**
 By default, the webdriver for Microsoft Edge browser has been chosen in the code below.
