@@ -5,7 +5,7 @@
 Requests module for Python:
 > pip install requests
 BeautifulSoup Web-Scraping Library for Python:
-> pip install pip install beautifulsoup4
+> pip install beautifulsoup4
 Selenium Browser Automation Tool  for Python:
 > pip install selenium
 Required Python version:
