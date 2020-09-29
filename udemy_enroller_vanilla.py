@@ -162,6 +162,10 @@ def main_function():
         page = page + 1
         loop_run_count = loop_run_count + 1
         
+        if page == 6:
+            print("Last page complete")
+            break
+            
         print("Moving on to the next page of the course list on tutorialbar.com")
 
 main_function()
