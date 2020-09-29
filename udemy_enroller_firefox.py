@@ -21,7 +21,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from webdriver_manager.firefox import GeckoDriverManager
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
 
 
@@ -29,9 +28,8 @@ f = open("settings.txt", "r")
 
 email, password, zipcode = f.readline().rstrip('\n'), f.readline().rstrip('\n'), f.readline().rstrip('\n')
 
-cap = DesiredCapabilities().FIREFOX
-cap["marionette"] = False
-driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver = webdriver.Firefox()
 
 driver.maximize_window()  #Maximizes the browser window since Udemy has a responsive design and the code only works in the maximized layout
 
