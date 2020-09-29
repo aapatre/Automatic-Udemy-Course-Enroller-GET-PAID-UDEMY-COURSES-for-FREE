@@ -38,6 +38,9 @@ Simply run the <a href="">requirements.py</a> in Python's IDLE Editor. If all th
 <strong><li>Selenium Browser Automation Tool  for Python:</li></strong>
 <pre><code>pip install selenium</code></pre>
 
+<strong><li>Webdriver Manager for Python:</li></strong>
+<pre><code>pip install webdriver_manager</code></pre>
+
 <strong><li>Required Python version:</strong> [Python 3.8](https://www.python.org/downloads/release/python-380/)</li>
 
 <strong><li>Webdrivers are now automatically installed! Hurray! But here are some links in case you are using the vanilla script or the Safari Browser:</strong> 
