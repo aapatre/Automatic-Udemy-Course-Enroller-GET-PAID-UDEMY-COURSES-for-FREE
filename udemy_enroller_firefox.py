@@ -17,7 +17,7 @@ f = open("settings.txt", "r")
 
 email, password, zipcode = f.readline().rstrip('\n'), f.readline().rstrip('\n'), f.readline().rstrip('\n')
 
-driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver = webdriver.Firefox()
 
 driver.maximize_window()  #Maximizes the browser window since Udemy has a responsive design and the code only works in the maximized layout
 
