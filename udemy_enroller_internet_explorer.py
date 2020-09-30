@@ -1,16 +1,5 @@
-"""
-# **Get Paid Udemy Courses for Free with this Python Script!**
-## **Install the necessary dependencies before running the code**
----
-Requests module for Python:
-> pip install requests
-BeautifulSoup Web-Scraping Library for Python:
-> pip install pip install beautifulsoup4
-Selenium Browser Automation Tool  for Python:
-> pip install selenium
-Required Python version:
-> Python 3.8
-"""
+# Install all the requirements by running requirements.py in IDLE or follow the alternate instructions at https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/
+# Make sure you have cleared all saved payment details on your Udemy account & the browser!
 
 from bs4 import BeautifulSoup
 import requests
