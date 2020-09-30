@@ -15,4 +15,4 @@ def install(package):
 install("beautifulsoup4")
 install("selenium")
 install("requests")
-install("webdriver-manager")
+install("webdriver_manager")
