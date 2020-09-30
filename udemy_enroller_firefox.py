@@ -1,6 +1,3 @@
-# Install all the requirements by running requirements.py in IDLE or follow the alternate instructions at https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/
-# Make sure you have cleared all saved payment details on your Udemy account & the browser!
-
 from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
@@ -17,7 +14,8 @@ f = open("settings.txt", "r")
 
 email, password, zipcode = f.readline().rstrip('\n'), f.readline().rstrip('\n'), f.readline().rstrip('\n')
 
-driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver = webdriver.Firefox()
 
 driver.maximize_window()  #Maximizes the browser window since Udemy has a responsive design and the code only works in the maximized layout
 
