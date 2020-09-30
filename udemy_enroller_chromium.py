@@ -1,17 +1,3 @@
-"""
-# **Get Paid Udemy Courses for Free with this Python Script!**
-## **Install the necessary dependencies before running the code**
----
-Requests module for Python:
-> pip install requests
-BeautifulSoup Web-Scraping Library for Python:
-> pip install beautifulsoup4
-Selenium Browser Automation Tool  for Python:
-> pip install selenium
-Required Python version:
-> Python 3.8
-"""
-
 from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
