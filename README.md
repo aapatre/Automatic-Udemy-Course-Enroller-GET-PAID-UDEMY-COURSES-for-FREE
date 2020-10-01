@@ -24,7 +24,7 @@ Also, don't forget to **Fork & Star the repository if you like it! ❤**
 ## Requirements:
 
 ### How to Install the Requirements?
-Simply run the <a href="">requirements.py</a> in Python's IDLE Editor. If all the requirements are installed, you are good to go but, in case of errors I've listed the individual requirements which can be installed by running the given commands in the terminal or the command prompt. You can even run <em>pip install requirements.txt</em> in the command prompt but if you are a beginner, I urge you to try either of the above mentioned methods. **Or click on the image below to watch a short tutorial:**
+Simply run the <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/requirements.py">requirements.py</a> in Python's IDLE Editor. If all the requirements are installed, you are good to go but, in case of errors I've listed the individual requirements which can be installed by running the given commands in the terminal or the command prompt. You can even run <em>pip install requirements.txt</em> in the command prompt but if you are a beginner, I urge you to try either of the above mentioned methods. **Or click on the image below to watch a short tutorial:**
 
 [![pip install tutorial](http://i3.ytimg.com/vi/bij66_Jtoqs/maxresdefault.jpg)](https://www.youtube.com/watch?v=bij66_Jtoqs "Tutorial to install Python Modules with pip")
 
@@ -78,7 +78,7 @@ Simply run the <a href="">requirements.py</a> in Python's IDLE Editor. If all th
     </ol>
     <li><strong>Has issues: </strong></li>
     <ol>
-      <li>Firefox: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py">udemy_enroller_firefox.py</a></li>
+      <li>Firefox: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py">udemy_enroller_firefox.py</a></li> (issue fixed by a contributor but still requires manual driver installation)
     </ol>
     <li><strong>Untested: </strong></li>
     <ol>
