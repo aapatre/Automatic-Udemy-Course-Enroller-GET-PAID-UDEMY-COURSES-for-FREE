@@ -1,0 +1,4 @@
+udemy:
+  email: "Example@gmail.com" # Enter your Udemy registered email here
+  password: "ExamplePa$$w0rd" # Enter your Udemy password here
+  zipcode: "12345" # If Udemy requires a zipcode for your country, enter it here.
