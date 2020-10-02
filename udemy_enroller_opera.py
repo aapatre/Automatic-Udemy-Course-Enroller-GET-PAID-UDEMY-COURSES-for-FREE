@@ -1,21 +1,23 @@
 # Install all the requirements by running requirements.py in IDLE or follow the alternate instructions at https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/
 # Make sure you have cleared all saved payment details on your Udemy account & the browser!
 
-from bs4 import BeautifulSoup
-import requests
-from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
-from webdriver_manager.opera import OperaDriverManager
 import time
 
+import requests
+from bs4 import BeautifulSoup
+from ruamel.yaml import YAML
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
 
-f = open("settings.txt", "r")
+yaml = YAML()
+with open('settings.yaml') as f:    
+    settings = yaml.load(f)
 
-email, password, zipcode = f.readline().rstrip('\n'), f.readline().rstrip('\n'), f.readline().rstrip('\n')
+email, password, zipcode = settings['udemy']['email'], settings['udemy']['password'], settings['udemy']['zipcode']
 
 driver = webdriver.Opera(executable_path=OperaDriverManager().install())
 
