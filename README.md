@@ -32,6 +32,9 @@ Simply run the <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroll
   <strong><li>Requests module for Python:</li></strong>
 <pre><code>pip install requests</code></pre>
 
+<strong><li>ruamel.yaml for Python:</li></strong>
+<pre><code>pip install ruamel.yaml</code></pre>
+
 <strong><li>BeautifulSoup Web-Scraping Library for Python:</li></strong>
 <pre><code>pip install beautifulsoup4</code></pre>
 
@@ -66,7 +69,7 @@ Simply run the <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroll
 <ol>
   <li>Make sure to install all the requirements above.</li>
   </br>
-  <li>Open <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings.txt">settings.txt</a> file and insert your <strong>Udemy registered email on the first line</strong>, your <strong>Udemy password on the second line</strong>, and the <strong>ZIP Code on the third (only if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else clear the line and leave it blank)</strong>. Make sure there are no extra spaces or line breaks anywhere! <strong>Please use <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/settings_example.txt">settings_example.txt</a> as a reference.</strong></li>
+  <li>Open <a href="settings.yaml">settings.yaml</a> file and insert your <strong>Udemy registered email in the email section</strong>, your <strong>Udemy password in the password section</strong>, and the <strong>ZIP Code in the zipcode section (only if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info)</strong>.</li>
   </br>
   <li>Choose the appropriate file for your browser (from the list below) in Python's IDLE Editor: </li>
   <ol>
