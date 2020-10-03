@@ -1,4 +1,4 @@
-# Automatic Udemy Course Enroller: GET PAID UDEMY COURSES for FREE
+# Udemy Coupon-Scraper & Auto-Enroller: GET PAID UDEMY COURSES for FREE LEGALLY!
 Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of web-scraping and automation, this script will find the necessary Udemy Coupons &amp; enroll you for PAID UDEMY COURSES, ABSOLUTELY FREE!
 
 The code scrapes course links and coupons from [tutorialbar.com](https://tutorialbar.com)
@@ -131,5 +131,10 @@ Since we are heavily dependent on a third-party site to retrieve coupons links, 
 It is highly recommended to run the script using Python's IDLE IDE. <br />
 **Pro-tip:** Create a batch file, to launch the script instantly, using these instructions: https://datatofish.com/batch-python-script/
 
+### 8. What's the roadmap?
+Here are the planned features so if you want to help you can send PR implementing the following changes :
+- Implement CI/CD via github action.
+- Test and fix more platform and browser (chromium variation browsers like Brave is priority)
+- Implement support for localized udemy sites. Currently Spanish udemy is known not to work. 
 ---
 
