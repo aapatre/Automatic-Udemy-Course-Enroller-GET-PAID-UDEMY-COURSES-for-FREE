@@ -1,4 +1,4 @@
-# Automatic Udemy Course Enroller: GET PAID UDEMY COURSES for FREE
+# Udemy Coupon-Scraper & Auto-Enroller: GET PAID UDEMY COURSES for FREE LEGALLY!
 Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of web-scraping and automation, this script will find the necessary Udemy Coupons &amp; enroll you for PAID UDEMY COURSES, ABSOLUTELY FREE!
 
 The code scrapes course links and coupons from [tutorialbar.com](https://tutorialbar.com)
