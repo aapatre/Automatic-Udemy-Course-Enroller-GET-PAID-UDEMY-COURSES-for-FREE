@@ -135,6 +135,5 @@ It is highly recommended to run the script using Python's IDLE IDE. <br />
 Here are the planned features so if you want to help you can send PR implementing the following changes :
 - Implement CI/CD via github action.
 - Test and fix more platform and browser (chromium variation browsers like Brave is priority)
-- Implement support for localized udemy sites. Currently Spanish udemy is known not to work. 
 ---
 

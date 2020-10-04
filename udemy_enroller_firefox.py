@@ -85,7 +85,7 @@ def redeemUdemyCourse(url):
 
     # Enroll Now 2
     element_present = EC.presence_of_element_located(
-        (By.XPATH, "//*[@id=\"udemy\"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button"))
+        (By.XPATH, "//*[@class=\"udemy pageloaded\"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button"))
     WebDriverWait(driver, 10).until(element_present)
 
     # Assume sometimes zip is not required because script was originally pushed without this
@@ -99,7 +99,7 @@ def redeemUdemyCourse(url):
         pass
 
     udemyEnroll = driver.find_element_by_xpath(
-        "//*[@id=\"udemy\"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button")  # Udemy
+        "//*[@class=\"udemy pageloaded\"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button")  # Udemy
     udemyEnroll.click()
 
 
