@@ -5,6 +5,7 @@
 
 from bs4 import BeautifulSoup
 import requests
+from ruamel.yaml import YAML
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
@@ -14,9 +15,11 @@ from selenium.common.exceptions import NoSuchElementException
 from webdriver_manager.firefox import GeckoDriverManager
 import time
 
-f = open("settings.txt", "r")
+yaml = YAML()
+with open('settings.yaml') as f:    
+    settings = yaml.load(f)
 
-email, password, zipcode = f.readline().rstrip('\n'), f.readline().rstrip('\n'), f.readline().rstrip('\n')
+email, password, zipcode = settings['udemy']['email'], settings['udemy']['password'], settings['udemy']['zipcode']
 
 driver = webdriver.Firefox()
 

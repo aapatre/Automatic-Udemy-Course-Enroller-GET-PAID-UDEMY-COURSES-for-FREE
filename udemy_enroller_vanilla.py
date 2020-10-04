@@ -4,6 +4,7 @@
 
 from bs4 import BeautifulSoup
 import requests
+from ruamel.yaml import YAML
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
@@ -12,8 +13,11 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import time
 
-f = open("settings.txt", "r")
-email, password, zipcode = f.readline().rstrip('\n'), f.readline().rstrip('\n'), f.readline().rstrip('\n')
+yaml = YAML()
+with open('settings.yaml') as f:    
+    settings = yaml.load(f)
+
+email, password, zipcode = settings['udemy']['email'], settings['udemy']['password'], settings['udemy']['zipcode']
 
 """### **Enter the path/location of your webdriver**
 By default, the webdriver for Microsoft Edge browser has been chosen in the code below.
