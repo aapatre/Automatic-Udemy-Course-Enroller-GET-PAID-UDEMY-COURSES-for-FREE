@@ -30,12 +30,18 @@ email, password, zipcode = (
 )
 
 is_ci_build = os.environ.get("CI", False)
-# We need to run headless in this instance
 chrome_options = None
 if is_ci_build:
     from selenium.webdriver.chrome.options import Options
+
+    # Having the user-agent with Headless param was always leading to robot check
+    user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 " \
+                 "Safari/537.36"
     chrome_options = Options()
+    # We need to run headless when using github CI
     chrome_options.add_argument("--headless")
+    chrome_options.add_argument('user-agent={0}'.format(user_agent))
+    print("This is a CI run")
 
 driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 
@@ -158,11 +164,10 @@ def main_function():
             try:
                 redeemUdemyCourse(link)
                 if is_ci_build:
-                    driver.close()
-                    print("We have attempted to subscribe to 1 udemy course")
-                    print("Ending test")
                     return
             except BaseException as e:
+                if is_ci_build:
+                    return
                 print(
                     "Unable to enroll for this course either because you have already claimed it or the browser "
                     "window has been closed!")
@@ -174,3 +179,6 @@ def main_function():
 
 
 main_function()
+if is_ci_build:
+    print("We have attempted to subscribe to 1 udemy course")
+    print("Ending test")
