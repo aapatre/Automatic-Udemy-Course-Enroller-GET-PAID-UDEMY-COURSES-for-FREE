@@ -2,6 +2,7 @@
 # https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/ Make sure you have
 # cleared all saved payment details on your Udemy account & the browser!
 
+from multiprocessing.dummy import Pool
 from bs4 import BeautifulSoup
 import requests
 from ruamel.yaml import YAML
@@ -45,6 +46,20 @@ def getUdemyLink(url):
     linkForUdemy = soup.find('span', class_="rh_button_wrapper").find('a').get('href')
 
     return linkForUdemy
+
+
+def gatherUdemyCourseLinks(courses):
+    """
+    Threaded fetching of the udemy course links from tutorialbar.com
+
+    :param list courses: A list of tutorialbar.com course links we want to fetch the udemy links for
+    :return: list of udemy links
+    """
+    thread_pool = Pool()
+    results = thread_pool.map(getUdemyLink, courses)
+    thread_pool.close()
+    thread_pool.join()
+    return results
 
 
 def getTutorialBarLinks(url):
@@ -123,13 +138,10 @@ def main_function():
         url = "https://www.tutorialbar.com/all-courses/" + "page/" + str(page) + "/"
         courses = getTutorialBarLinks(url)
 
-        udemyLinks = []
-        linkCounter = 0
+        udemyLinks = gatherUdemyCourseLinks(courses)
 
-        for course in courses:
-            udemyLinks.append(getUdemyLink(course))
-            print("Received Link " + str(linkCounter + 1) + ": " + udemyLinks[linkCounter])
-            linkCounter = linkCounter + 1
+        for counter, course in enumerate(udemyLinks):
+            print("Received Link {} : {}".format((counter + 1), course))
 
         if loop_run_count == 0:
             udemyLogin(email, password)
