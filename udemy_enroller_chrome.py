@@ -30,8 +30,14 @@ email, password, zipcode = (
 )
 
 is_ci_build = os.environ.get("CI", False)
+# We need to run headless in this instance
+chrome_options = None
+if is_ci_build:
+    from selenium.webdriver.chrome.options import Options
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
 
-driver = webdriver.Chrome(ChromeDriverManager().install())
+driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 
 driver.maximize_window()  # Maximizes the browser window since Udemy has a responsive design and the code only works
 # in the maximized layout
