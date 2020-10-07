@@ -30,7 +30,7 @@ email, password, zipcode = (
     settings["udemy"]["zipcode"],
 )
 
-is_ci_build = strtobool(os.environ.get("CI"))
+is_ci_build = strtobool(os.environ.get("CI", "False"))
 chrome_options = None
 if is_ci_build:
     from selenium.webdriver.chrome.options import Options
@@ -42,6 +42,7 @@ if is_ci_build:
     # We need to run headless when using github CI
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("user-agent={0}".format(user_agent))
+    chrome_options.add_argument("--window-size=1325x744")
     print("This is a CI run")
 
 driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
