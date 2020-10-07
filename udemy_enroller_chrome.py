@@ -3,6 +3,7 @@
 # cleared all saved payment details on your Udemy account & the browser!
 
 import os
+from distutils.util import strtobool
 from multiprocessing.dummy import Pool
 from bs4 import BeautifulSoup
 import requests
@@ -29,7 +30,7 @@ email, password, zipcode = (
     settings["udemy"]["zipcode"],
 )
 
-is_ci_build = os.environ.get("CI", False)
+is_ci_build = strtobool(os.environ.get("CI"))
 chrome_options = None
 if is_ci_build:
     from selenium.webdriver.chrome.options import Options
@@ -40,7 +41,7 @@ if is_ci_build:
     chrome_options = Options()
     # We need to run headless when using github CI
     chrome_options.add_argument("--headless")
-    chrome_options.add_argument('user-agent={0}'.format(user_agent))
+    chrome_options.add_argument("user-agent={0}".format(user_agent))
     print("This is a CI run")
 
 driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
