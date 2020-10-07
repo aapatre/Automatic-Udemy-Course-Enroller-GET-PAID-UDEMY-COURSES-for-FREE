@@ -73,8 +73,8 @@ def udemyLogin(email_text, password_text):
     userEmail = driver.find_element_by_name("email")
     userPassword = driver.find_element_by_name("password")
 
-    email.send_keys(email_text)
-    password.send_keys(password_text)
+    userEmail.send_keys(email_text)
+    userPassword.send_keys(password_text)
 
     driver.find_element_by_name("submit").click()
 
