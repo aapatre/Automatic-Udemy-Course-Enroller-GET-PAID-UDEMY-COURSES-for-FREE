@@ -2,6 +2,7 @@
 # https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/ Make sure you have
 # cleared all saved payment details on your Udemy account & the browser!
 
+import os
 from multiprocessing.dummy import Pool
 from bs4 import BeautifulSoup
 import requests
@@ -19,7 +20,16 @@ yaml = YAML()
 with open('settings.yaml') as f:    
     settings = yaml.load(f)
 
-email, password, zipcode = settings['udemy']['email'], settings['udemy']['password'], settings['udemy']['zipcode']
+email, password, zipcode = (
+    os.environ.get("UDEMY_EMAIL", settings["udemy"]["email"]),
+    os.environ.get(
+        "UDEMY_PASSWORD",
+        settings["udemy"]["password"],
+    ),
+    settings["udemy"]["zipcode"],
+)
+
+is_ci_build = os.environ.get("CI", False)
 
 driver = webdriver.Chrome(ChromeDriverManager().install())
 
@@ -141,6 +151,11 @@ def main_function():
             # noinspection PyBroadException
             try:
                 redeemUdemyCourse(link)
+                if is_ci_build:
+                    driver.close()
+                    print("We have attempted to subscribe to 1 udemy course")
+                    print("Ending test")
+                    return
             except BaseException as e:
                 print(
                     "Unable to enroll for this course either because you have already claimed it or the browser "
