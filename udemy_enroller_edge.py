@@ -61,8 +61,8 @@ def getTutorialBarLinks(url):
 def udemyLogin(email_text, password_text):
     driver.get("https://www.udemy.com/join/login-popup/")
 
-    email = driver.find_element_by_name("email")
-    password = driver.find_element_by_name("password")
+    userEmail = driver.find_element_by_name("email")
+    userPassword = driver.find_element_by_name("password")
 
     email.send_keys(email_text)
     password.send_keys(password_text)
