@@ -71,7 +71,7 @@ Simply run the <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroll
 <ol>
   <li>Make sure to install all the requirements above.</li>
   </br>
-  <li>Open <a href="settings.yaml">settings.yaml</a> file and insert your <strong>Udemy registered email in the email section</strong>, your <strong>Udemy password in the password section</strong>, and the <strong>ZIP Code in the zipcode section (only if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info)</strong>.</li>
+  <li>Open <a href="settings.yaml">settings.yaml</a> file using a text editor like Notepad and insert your <strong>Udemy registered email in the email section</strong>, your <strong>Udemy password in the password section</strong>, and the <strong>ZIP Code in the zipcode section (if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else enter a random number)</strong>.</li>
   </br>
   <li>Choose the appropriate file for your browser (from the list below) in Python's IDLE Editor: </li>
   <ol>
