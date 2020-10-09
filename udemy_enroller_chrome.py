@@ -50,7 +50,8 @@ if is_ci_build:
     chrome_options.add_argument("--window-size=1325x744")
     print("This is a CI run")
 
-driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+driver = webdriver.Chrome(
+    ChromeDriverManager().install(), options=chrome_options)
 
 # Maximizes the browser window since Udemy has a responsive design and the code only works
 driver.maximize_window()
