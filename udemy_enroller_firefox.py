@@ -168,4 +168,12 @@ def main_function():
             "Moving on to the next page of the course list on tutorialbar.com")
 
 
-main_function()
+try:
+    main_function()
+except KeyboardInterrupt:
+    print("Exiting the script")
+except Exception as e:
+    print("Error: {}".format(e))
+finally:
+    print("Closing browser")
+    driver.quit()
