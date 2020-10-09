@@ -19,7 +19,12 @@ yaml = YAML()
 with open('settings.yaml') as f:    
     settings = yaml.load(f)
 
-email, password, zipcode = settings['udemy']['email'], settings['udemy']['password'], settings['udemy']['zipcode']
+email, password = settings['udemy']['email'], settings['udemy']['password']
+
+# Accounts for the edge case that someone removes the entire "zipcode" entry in settings.yaml instead of simply clearing the string or leaving it alone
+# This shouldn't have to exist, but ?? here we are
+if "zipcode" in settings["udemy"]:
+    zipcode = settings['udemy']['zipcode']
 
 driver = webdriver.Chrome(ChromeDriverManager().install())
 
@@ -101,15 +106,17 @@ def redeemUdemyCourse(url):
         (By.XPATH, "//*[@class=\"udemy pageloaded\"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button"))
     WebDriverWait(driver, 10).until(element_present)
 
-    # Assume sometimes zip is not required because script was originally pushed without this
-    try:
-        zipcode_element = driver.find_element_by_id("billingAddressSecondaryInput")
-        zipcode_element.send_keys(zipcode)
+    # Check if zipcode exists before doing this
+    if zipcode:
+        # Assume sometimes zip is not required because script was originally pushed without this
+        try:
+            zipcode_element = driver.find_element_by_id("billingAddressSecondaryInput")
+            zipcode_element.send_keys(zipcode)
 
-        # After you put the zip code in, the page refreshes itself and disables the enroll button for a split second.
-        time.sleep(1)
-    except NoSuchElementException:
-        pass
+            # After you put the zip code in, the page refreshes itself and disables the enroll button for a split second.
+            time.sleep(1)
+        except NoSuchElementException:
+            pass
 
     udemyEnroll = driver.find_element_by_xpath(
         "//*[@class=\"udemy pageloaded\"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button")  # Udemy
