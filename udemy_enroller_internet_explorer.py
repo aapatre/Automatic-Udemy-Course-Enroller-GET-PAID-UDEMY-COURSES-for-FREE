@@ -16,7 +16,7 @@ from webdriver_manager.microsoft import IEDriverManager
 import time
 
 yaml = YAML()
-with open('settings.yaml') as f:    
+with open('settings.yaml') as f:
     settings = yaml.load(f)
 
 email, password = settings['udemy']['email'], settings['udemy']['password']
@@ -28,7 +28,8 @@ if "zipcode" in settings["udemy"]:
 
 driver = webdriver.Ie(IEDriverManager().install())
 
-driver.maximize_window()  # Maximizes the browser window since Udemy has a responsive design and the code only works
+# Maximizes the browser window since Udemy has a responsive design and the code only works
+driver.maximize_window()
 
 
 # in the maximized layout
@@ -41,7 +42,8 @@ def getUdemyLink(url):
 
     soup = BeautifulSoup(response.content, 'html.parser')
 
-    linkForUdemy = soup.find('span', class_="rh_button_wrapper").find('a').get('href')
+    linkForUdemy = soup.find(
+        'span', class_="rh_button_wrapper").find('a').get('href')
 
     return linkForUdemy
 
@@ -97,10 +99,12 @@ def redeemUdemyCourse(url):
     print("Trying to Enroll for: " + driver.title)
 
     # Enroll Now 1
-    element_present = EC.presence_of_element_located((By.XPATH, "//button[@data-purpose='buy-this-course-button']"))
+    element_present = EC.presence_of_element_located(
+        (By.XPATH, "//button[@data-purpose='buy-this-course-button']"))
     WebDriverWait(driver, 10).until(element_present)
 
-    udemyEnroll = driver.find_element_by_xpath("//button[@data-purpose='buy-this-course-button']")  # Udemy
+    udemyEnroll = driver.find_element_by_xpath(
+        "//button[@data-purpose='buy-this-course-button']")  # Udemy
     udemyEnroll.click()
 
     # Enroll Now 2
@@ -112,7 +116,8 @@ def redeemUdemyCourse(url):
     if zipcode:
         # Assume sometimes zip is not required because script was originally pushed without this
         try:
-            zipcode_element = driver.find_element_by_id("billingAddressSecondaryInput")
+            zipcode_element = driver.find_element_by_id(
+                "billingAddressSecondaryInput")
             zipcode_element.send_keys(zipcode)
 
             # After you put the zip code in, the page refreshes itself and disables the enroll button for a split second.
@@ -135,7 +140,8 @@ def main_function():
         print("Please Wait: Getting the course list from tutorialbar.com...")
         print("Page: " + str(page) + ", Loop run count: " + str(loop_run_count))
 
-        url = "https://www.tutorialbar.com/all-courses/" + "page/" + str(page) + "/"
+        url = "https://www.tutorialbar.com/all-courses/" + \
+            "page/" + str(page) + "/"
         courses = getTutorialBarLinks(url)
 
         udemyLinks = gatherUdemyCourseLinks(courses)
