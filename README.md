@@ -203,11 +203,6 @@ request should be made on "develop" branch.
 
 ### 9. What's the roadmap?
 
-Here are the planned features so if you want to help you can send PR
-implementing the following changes :
-
-- Implement CI/CD via github action.
-- Test and fix more platform and browser (chromium variation browsers like Brave
-  is priority)
+Take a look at our [Roadmap here](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/projects/1) and help us on what you want or talk to us about your proposed changes.
 
 ---
