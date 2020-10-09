@@ -2,7 +2,6 @@
 # https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/ Make sure you have
 # cleared all saved payment details on your Udemy account & the browser! For firefox you need to manually install the
 # driver on Arch Linux (sudo pacman -S geckodriver). Untested on other platforms.
-
 import time
 from multiprocessing.dummy import Pool
 
@@ -10,7 +9,8 @@ import requests
 from bs4 import BeautifulSoup
 from ruamel.yaml import YAML
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
