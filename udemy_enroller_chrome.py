@@ -196,6 +196,9 @@ def main_function():
 
 try:
     main_function()
+    if is_ci_build:
+        print("We have attempted to subscribe to 1 udemy course")
+        print("Ending test")
 except KeyboardInterrupt:
     print("Exiting the script")
 except Exception as e:
@@ -203,8 +206,3 @@ except Exception as e:
 finally:
     print("Closing browser")
     driver.quit()
-
-main_function()
-if is_ci_build:
-    print("We have attempted to subscribe to 1 udemy course")
-    print("Ending test")
