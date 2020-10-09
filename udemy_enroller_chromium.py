@@ -17,18 +17,19 @@ from webdriver_manager.utils import ChromeType
 import time
 
 yaml = YAML()
-with open('settings.yaml') as f:
+with open("settings.yaml") as f:
     settings = yaml.load(f)
 
-email, password = settings['udemy']['email'], settings['udemy']['password']
+email, password = settings["udemy"]["email"], settings["udemy"]["password"]
 
 # Accounts for the edge case that someone removes the entire "zipcode" entry in settings.yaml instead of simply clearing the string or leaving it alone
 # This shouldn't have to exist, but ?? here we are
 if "zipcode" in settings["udemy"]:
-    zipcode = settings['udemy']['zipcode']
+    zipcode = settings["udemy"]["zipcode"]
 
-driver = webdriver.Chrome(ChromeDriverManager(
-    chrome_type=ChromeType.CHROMIUM).install())
+driver = webdriver.Chrome(
+    ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+)
 
 # Maximizes the browser window since Udemy has a responsive design and the code only works
 driver.maximize_window()
@@ -36,14 +37,11 @@ driver.maximize_window()
 
 
 def getUdemyLink(url):
-    response = requests.get(
-        url=url
-    )
+    response = requests.get(url=url)
 
-    soup = BeautifulSoup(response.content, 'html.parser')
+    soup = BeautifulSoup(response.content, "html.parser")
 
-    linkForUdemy = soup.find(
-        'span', class_="rh_button_wrapper").find('a').get('href')
+    linkForUdemy = soup.find("span", class_="rh_button_wrapper").find("a").get("href")
 
     return linkForUdemy
 
@@ -63,20 +61,18 @@ def gatherUdemyCourseLinks(courses):
 
 
 def getTutorialBarLinks(url):
-    response = requests.get(
-        url=url
-    )
+    response = requests.get(url=url)
 
-    soup = BeautifulSoup(response.content, 'html.parser')
+    soup = BeautifulSoup(response.content, "html.parser")
 
-    links = soup.find('div', class_="rh-post-wrapper").find_all('a')
+    links = soup.find("div", class_="rh-post-wrapper").find_all("a")
     # print(links)
 
     courses = []
 
     x = 0
     for i in range(12):
-        courses.append(links[x].get('href'))
+        courses.append(links[x].get("href"))
         x = x + 3
 
     return courses
@@ -100,24 +96,29 @@ def redeemUdemyCourse(url):
 
     # Enroll Now 1
     element_present = EC.presence_of_element_located(
-        (By.XPATH, "//button[@data-purpose='buy-this-course-button']"))
+        (By.XPATH, "//button[@data-purpose='buy-this-course-button']")
+    )
     WebDriverWait(driver, 10).until(element_present)
 
     udemyEnroll = driver.find_element_by_xpath(
-        "//button[@data-purpose='buy-this-course-button']")  # Udemy
+        "//button[@data-purpose='buy-this-course-button']"
+    )  # Udemy
     udemyEnroll.click()
 
     # Enroll Now 2
     element_present = EC.presence_of_element_located(
-        (By.XPATH, "//*[@class=\"udemy pageloaded\"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button"))
+        (
+            By.XPATH,
+            '//*[@class="udemy pageloaded"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button',
+        )
+    )
     WebDriverWait(driver, 10).until(element_present)
 
     # Check if zipcode exists before doing this
     if zipcode:
         # Assume sometimes zip is not required because script was originally pushed without this
         try:
-            zipcode_element = driver.find_element_by_id(
-                "billingAddressSecondaryInput")
+            zipcode_element = driver.find_element_by_id("billingAddressSecondaryInput")
             zipcode_element.send_keys(zipcode)
 
             # After you put the zip code in, the page refreshes itself and disables the enroll button for a split second.
@@ -126,7 +127,8 @@ def redeemUdemyCourse(url):
             pass
 
     udemyEnroll = driver.find_element_by_xpath(
-        "//*[@class=\"udemy pageloaded\"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button")  # Udemy
+        '//*[@class="udemy pageloaded"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button'
+    )  # Udemy
     udemyEnroll.click()
 
 
@@ -140,8 +142,7 @@ def main_function():
         print("Please Wait: Getting the course list from tutorialbar.com...")
         print("Page: " + str(page) + ", Loop run count: " + str(loop_run_count))
 
-        url = "https://www.tutorialbar.com/all-courses/" + \
-            "page/" + str(page) + "/"
+        url = "https://www.tutorialbar.com/all-courses/" + "page/" + str(page) + "/"
         courses = getTutorialBarLinks(url)
 
         udemyLinks = gatherUdemyCourseLinks(courses)
@@ -159,7 +160,8 @@ def main_function():
             except BaseException as e:
                 print(
                     "Unable to enroll for this course either because you have already claimed it or the browser "
-                    "window has been closed!")
+                    "window has been closed!"
+                )
 
         page = page + 1
         loop_run_count = loop_run_count + 1
