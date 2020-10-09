@@ -3,16 +3,15 @@
 # cleared all saved payment details on your Udemy account & the browser!
 
 import os
-from distutils.util import strtobool
 import time
+from distutils.util import strtobool
 from multiprocessing.dummy import Pool
 
 import requests
 from bs4 import BeautifulSoup
 from ruamel.yaml import YAML
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
