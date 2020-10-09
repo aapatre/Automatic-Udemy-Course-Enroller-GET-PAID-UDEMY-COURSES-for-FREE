@@ -1,4 +1,4 @@
 udemy:
-  email: "sam.in96@protonmail.com" # Enter your Udemy registered email here
-  password: "knight96" # Enter your Udemy password here
+  email: "Example@gmail.com" # Enter your Udemy registered email here
+  password: "ExamplePa$$w0rd" # Enter your Udemy password here
   zipcode: "12345" # If Udemy requires a zipcode for your country, enter it here.

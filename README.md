@@ -133,7 +133,7 @@ Since we are heavily dependent on a third-party site to retrieve coupons links, 
 It is highly recommended to run the script using Python's IDLE IDE. <br />
 **Pro-tip:** Create a batch file, to launch the script instantly, using these instructions: https://datatofish.com/batch-python-script/
 
-### 8. Which branch to pull for testing?
+### 8. Which branch to commit against?
 We didn't have "develop" branch before, we've added this now.From now on pull request should be made on "develop" branch
 
 ### 9. What's the roadmap?
