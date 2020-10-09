@@ -3,10 +3,7 @@
 # cleared all saved payment details on your Udemy account & the browser! For firefox you need to manually install the
 # driver on Arch Linux (sudo pacman -S geckodriver). Untested on other platforms.
 import time
-from multiprocessing.dummy import Pool
 
-import requests
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
@@ -16,6 +13,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.firefox import GeckoDriverManager
 
 from core import Settings
+from core import TutorialBarScraper
 
 settings = Settings()
 
@@ -25,49 +23,6 @@ driver = webdriver.Firefox()
 driver.maximize_window()
 
 # in the maximized layout
-
-
-def getUdemyLink(url):
-    response = requests.get(url=url)
-
-    soup = BeautifulSoup(response.content, "html.parser")
-
-    linkForUdemy = soup.find("span",
-                             class_="rh_button_wrapper").find("a").get("href")
-
-    return linkForUdemy
-
-
-def gatherUdemyCourseLinks(courses):
-    """
-    Threaded fetching of the udemy course links from tutorialbar.com
-
-    :param list courses: A list of tutorialbar.com course links we want to fetch the udemy links for
-    :return: list of udemy links
-    """
-    thread_pool = Pool()
-    results = thread_pool.map(getUdemyLink, courses)
-    thread_pool.close()
-    thread_pool.join()
-    return results
-
-
-def getTutorialBarLinks(url):
-    response = requests.get(url=url)
-
-    soup = BeautifulSoup(response.content, "html.parser")
-
-    links = soup.find("div", class_="rh-post-wrapper").find_all("a")
-    # print(links)
-
-    courses = []
-
-    x = 0
-    for i in range(12):
-        courses.append(links[x].get("href"))
-        x = x + 3
-
-    return courses
 
 
 def udemyLogin(email_text, password_text):
@@ -133,39 +88,23 @@ def redeemUdemyCourse(url):
 
 
 def main_function():
-    page = 1  # Change the page number here only if necessary, else ignore
-
-    loop_run_count = 0
-
+    tb_scraper = TutorialBarScraper()
     while True:
+        udemyLinks = tb_scraper.run()
 
-        print("Please Wait: Getting the course list from tutorialbar.com...")
-        print("Page: " + str(page) + ", Loop run count: " +
-              str(loop_run_count))
-
-        url = "https://www.tutorialbar.com/all-courses/" + "page/" + str(
-            page) + "/"
-        courses = getTutorialBarLinks(url)
-
-        udemyLinks = gatherUdemyCourseLinks(courses)
-
-        for counter, course in enumerate(udemyLinks):
-            print("Received Link {} : {}".format((counter + 1), course))
-
-        if loop_run_count == 0:
+        if tb_scraper.is_first_loop():
             udemyLogin(settings.email, settings.password)
 
         for link in udemyLinks:
             # noinspection PyBroadException
             try:
                 redeemUdemyCourse(link)
-            except BaseException as e:
+            except KeyboardInterrupt:
+                raise
+            except Exception:
                 print(
                     "Unable to enroll for this course either because you have already claimed it or the browser "
                     "window has been closed!")
-
-        page = page + 1
-        loop_run_count = loop_run_count + 1
 
         print(
             "Moving on to the next page of the course list on tutorialbar.com")
