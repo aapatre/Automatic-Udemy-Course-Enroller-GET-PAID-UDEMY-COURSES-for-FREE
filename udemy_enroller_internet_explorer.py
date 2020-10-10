@@ -26,6 +26,8 @@ email, password = settings["udemy"]["email"], settings["udemy"]["password"]
 if "zipcode" in settings["udemy"]:
     zipcode = settings["udemy"]["zipcode"]
 
+languages = settings["udemy"].get("languages")
+
 driver = webdriver.Ie(IEDriverManager().install())
 
 # Maximizes the browser window since Udemy has a responsive design and the code only works
@@ -92,6 +94,17 @@ def udemyLogin(email_text, password_text):
 def redeemUdemyCourse(url):
     driver.get(url)
     print("Trying to Enroll for: " + driver.title)
+
+    # If the user has configured languages check it is a supported option
+    if languages:
+        locale_xpath = "//div[@data-purpose='lead-course-locale']"
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, locale_xpath)))
+
+        locale_element = driver.find_element_by_xpath(locale_xpath)
+        if locale_element.text not in languages:
+            print("Course language not wanted: {}".format(locale_element.text))
+            return
 
     # Enroll Now 1
     element_present = EC.presence_of_element_located(
