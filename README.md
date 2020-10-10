@@ -14,7 +14,7 @@ In case of any bugs or issues, **feel free to ping me on
 Also, don't forget to **Fork & Star the repository if you like it!**
 
 And if you are feeling extra-generous today, **Buy Me a Coffee on:
-https://ko-fi.com/utopiancorps ❤**
+https://www.buymeacoffee.com/utopiancorps ☕❤**
 
 **_Video Proof:_**
 
