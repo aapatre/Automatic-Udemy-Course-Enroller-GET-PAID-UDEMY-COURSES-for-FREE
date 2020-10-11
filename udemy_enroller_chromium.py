@@ -4,9 +4,10 @@
 import time
 from multiprocessing.dummy import Pool
 
+from core import Settings
+
 import requests
 from bs4 import BeautifulSoup
-from ruamel.yaml import YAML
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
@@ -16,18 +17,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.utils import ChromeType
 
-yaml = YAML()
-with open("settings.yaml") as f:
-    settings = yaml.load(f)
-
-email, password = settings["udemy"]["email"], settings["udemy"]["password"]
-
-# Accounts for the edge case that someone removes the entire "zipcode" entry in settings.yaml instead of simply clearing the string or leaving it alone
-# This shouldn't have to exist, but ?? here we are
-if "zipcode" in settings["udemy"]:
-    zipcode = settings["udemy"]["zipcode"]
-
-languages = settings["udemy"].get("languages")
+settings = Settings()
 
 driver = webdriver.Chrome(
     ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
@@ -97,13 +87,13 @@ def redeemUdemyCourse(url):
     print("Trying to Enroll for: " + driver.title)
 
     # If the user has configured languages check it is a supported option
-    if languages:
+    if settings.languages:
         locale_xpath = "//div[@data-purpose='lead-course-locale']"
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, locale_xpath)))
 
         locale_element = driver.find_element_by_xpath(locale_xpath)
-        if locale_element.text not in languages:
+        if locale_element.text not in settings.languages:
             print("Course language not wanted: {}".format(locale_element.text))
             return
 
@@ -124,12 +114,12 @@ def redeemUdemyCourse(url):
     WebDriverWait(driver, 10).until(element_present)
 
     # Check if zipcode exists before doing this
-    if zipcode:
+    if settings.zip_code:
         # Assume sometimes zip is not required because script was originally pushed without this
         try:
             zipcode_element = driver.find_element_by_id(
                 "billingAddressSecondaryInput")
-            zipcode_element.send_keys(zipcode)
+            zipcode_element.send_keys(settings.zip_code)
 
             # After you put the zip code in, the page refreshes itself and disables the enroll button for a split second.
             time.sleep(1)
@@ -163,7 +153,7 @@ def main_function():
             print("Received Link {} : {}".format((counter + 1), course))
 
         if loop_run_count == 0:
-            udemyLogin(email, password)
+            udemyLogin(settings.email, settings.password)
 
         for link in udemyLinks:
             # noinspection PyBroadException
