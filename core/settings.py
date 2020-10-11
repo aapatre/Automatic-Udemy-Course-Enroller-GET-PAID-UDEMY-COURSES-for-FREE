@@ -1,8 +1,7 @@
 import getpass
 import os.path
-
-from typing import Dict, List
 from distutils.util import strtobool
+from typing import Dict, List
 
 from ruamel.yaml import YAML, dump
 

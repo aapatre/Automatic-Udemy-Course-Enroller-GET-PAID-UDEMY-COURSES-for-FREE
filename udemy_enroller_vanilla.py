@@ -4,16 +4,15 @@
 import time
 from multiprocessing.dummy import Pool
 
-from core import Settings
-
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+
+from core import Settings
 
 settings = Settings()
 
