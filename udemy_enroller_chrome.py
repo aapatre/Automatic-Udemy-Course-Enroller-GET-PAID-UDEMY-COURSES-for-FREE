@@ -1,14 +1,11 @@
 # Install all the requirements by running requirements.py in IDLE or follow the alternate instructions at
 # https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/ Make sure you have
 # cleared all saved payment details on your Udemy account & the browser!
-import os
 import time
-from distutils.util import strtobool
 from multiprocessing.dummy import Pool
 
 import requests
 from bs4 import BeautifulSoup
-from ruamel.yaml import YAML
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
@@ -17,28 +14,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
-yaml = YAML()
-with open("settings.yaml") as f:
-    settings = yaml.load(f)
+from core import Settings
 
-email, password = (
-    os.environ.get("UDEMY_EMAIL", settings["udemy"]["email"]),
-    os.environ.get(
-        "UDEMY_PASSWORD",
-        settings["udemy"]["password"],
-    ),
-)
+settings = Settings()
 
-# Accounts for the edge case that someone removes the entire "zipcode" entry in settings.yaml instead of simply clearing the string or leaving it alone
-# This shouldn't have to exist, but ?? here we are
-if "zipcode" in settings["udemy"]:
-    zipcode = settings["udemy"]["zipcode"]
-
-languages = settings["udemy"].get("languages")
-
-is_ci_build = strtobool(os.environ.get("CI", "False"))
 chrome_options = None
-if is_ci_build:
+if settings.is_ci_build:
     from selenium.webdriver.chrome.options import Options
 
     # Having the user-agent with Headless param was always leading to robot check
@@ -120,13 +101,13 @@ def redeemUdemyCourse(url):
     print("Trying to Enroll for: " + driver.title)
 
     # If the user has configured languages check it is a supported option
-    if languages:
+    if settings.languages:
         locale_xpath = "//div[@data-purpose='lead-course-locale']"
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, locale_xpath)))
 
         locale_element = driver.find_element_by_xpath(locale_xpath)
-        if locale_element.text not in languages:
+        if locale_element.text not in settings.languages:
             print("Course language not wanted: {}".format(locale_element.text))
             return
 
@@ -147,12 +128,12 @@ def redeemUdemyCourse(url):
     WebDriverWait(driver, 10).until(element_present)
 
     # Check if zipcode exists before doing this
-    if zipcode:
+    if settings.zip_code:
         # Assume sometimes zip is not required because script was originally pushed without this
         try:
             zipcode_element = driver.find_element_by_id(
                 "billingAddressSecondaryInput")
-            zipcode_element.send_keys(zipcode)
+            zipcode_element.send_keys(settings.zip_code)
 
             # After you put the zip code in, the page refreshes itself and disables the enroll button for a split second.
             time.sleep(1)
@@ -186,16 +167,16 @@ def main_function():
             print("Received Link {} : {}".format((counter + 1), course))
 
         if loop_run_count == 0:
-            udemyLogin(email, password)
+            udemyLogin(settings.email, settings.password)
 
         for link in udemyLinks:
             # noinspection PyBroadException
             try:
                 redeemUdemyCourse(link)
-                if is_ci_build:
+                if settings.is_ci_build:
                     return
             except BaseException as e:
-                if is_ci_build:
+                if settings.is_ci_build:
                     return
                 print(
                     "Unable to enroll for this course either because you have already claimed it or the browser "
@@ -210,7 +191,7 @@ def main_function():
 
 try:
     main_function()
-    if is_ci_build:
+    if settings.is_ci_build:
         print("We have attempted to subscribe to 1 udemy course")
         print("Ending test")
 except KeyboardInterrupt:
