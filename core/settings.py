@@ -108,7 +108,8 @@ class Settings:
 
         :return: The users udemy zip code
         """
-        zip_code = input("Please enter your zipcode (Not necessary in some regions): ")
+        zip_code = input(
+            "Please enter your zipcode (Not necessary in some regions): ")
         return zip_code
 
     @staticmethod
@@ -130,7 +131,8 @@ class Settings:
         :return:
         """
         yaml_structure = dict()
-        save_settings = input("Do you want to save settings for future use (Y/N): ")
+        save_settings = input(
+            "Do you want to save settings for future use (Y/N): ")
         if save_settings.lower() == "y":
             yaml_structure["udemy"] = {
                 "email": str(self.email),
