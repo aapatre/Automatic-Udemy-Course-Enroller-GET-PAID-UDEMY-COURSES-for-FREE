@@ -16,7 +16,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from core import Settings
 
 settings = Settings()
-
 """### **Enter the path/location of your webdriver**
 By default, the webdriver for Microsoft Edge browser has been chosen in the code below.
 
@@ -41,7 +40,8 @@ def getUdemyLink(url):
 
     soup = BeautifulSoup(response.content, "html.parser")
 
-    linkForUdemy = soup.find("span", class_="rh_button_wrapper").find("a").get("href")
+    linkForUdemy = soup.find("span",
+                             class_="rh_button_wrapper").find("a").get("href")
 
     return linkForUdemy
 
@@ -98,8 +98,7 @@ def redeemUdemyCourse(url):
     if settings.languages:
         locale_xpath = "//div[@data-purpose='lead-course-locale']"
         WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, locale_xpath))
-        )
+            EC.presence_of_element_located((By.XPATH, locale_xpath)))
 
         locale_element = driver.find_element_by_xpath(locale_xpath)
         if locale_element.text not in settings.languages:
@@ -108,22 +107,18 @@ def redeemUdemyCourse(url):
 
     # Enroll Now 1
     element_present = EC.presence_of_element_located(
-        (By.XPATH, "//button[@data-purpose='buy-this-course-button']")
-    )
+        (By.XPATH, "//button[@data-purpose='buy-this-course-button']"))
     WebDriverWait(driver, 10).until(element_present)
 
     udemyEnroll = driver.find_element_by_xpath(
-        "//button[@data-purpose='buy-this-course-button']"
-    )  # Udemy
+        "//button[@data-purpose='buy-this-course-button']")  # Udemy
     udemyEnroll.click()
 
     # Enroll Now 2
-    element_present = EC.presence_of_element_located(
-        (
-            By.XPATH,
-            '//*[@class="udemy pageloaded"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button',
-        )
-    )
+    element_present = EC.presence_of_element_located((
+        By.XPATH,
+        '//*[@class="udemy pageloaded"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button',
+    ))
     WebDriverWait(driver, 10).until(element_present)
 
     # Assume sometimes zip is not required because script was originally pushed without this
@@ -131,7 +126,8 @@ def redeemUdemyCourse(url):
     if settings.zip_code:
         # Assume sometimes zip is not required because script was originally pushed without this
         try:
-            zipcode_element = driver.find_element_by_id("billingAddressSecondaryInput")
+            zipcode_element = driver.find_element_by_id(
+                "billingAddressSecondaryInput")
             zipcode_element.send_keys(settings.zip_code)
 
             # After you put the zip code in, the page refreshes itself and disables the enroll button for a split second.
@@ -153,9 +149,11 @@ def main_function():
     while True:
 
         print("Please Wait: Getting the course list from tutorialbar.com...")
-        print("Page: " + str(page) + ", Loop run count: " + str(loop_run_count))
+        print("Page: " + str(page) + ", Loop run count: " +
+              str(loop_run_count))
 
-        url = "https://www.tutorialbar.com/all-courses/" + "page/" + str(page) + "/"
+        url = "https://www.tutorialbar.com/all-courses/" + "page/" + str(
+            page) + "/"
         courses = getTutorialBarLinks(url)
 
         udemyLinks = gatherUdemyCourseLinks(courses)
@@ -173,13 +171,13 @@ def main_function():
             except BaseException as e:
                 print(
                     "Unable to enroll for this course either because you have already claimed it or the browser "
-                    "window has been closed!"
-                )
+                    "window has been closed!")
 
         page = page + 1
         loop_run_count = loop_run_count + 1
 
-        print("Moving on to the next page of the course list on tutorialbar.com")
+        print(
+            "Moving on to the next page of the course list on tutorialbar.com")
 
 
 try:
