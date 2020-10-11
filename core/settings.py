@@ -83,7 +83,7 @@ class Settings:
 
         :return: The users udemy email
         """
-        email = input("Please enter your udemy email address")
+        email = input("Please enter your udemy email address: ")
         if len(email) == 0:
             print("You must provide your email")
             return self._get_email()
@@ -95,7 +95,7 @@ class Settings:
 
         :return: The users udemy password
         """
-        password = getpass.getpass(prompt="Please enter your udemy password")
+        password = getpass.getpass(prompt="Please enter your udemy password: ")
         if len(password) == 0:
             print("You must provide your password")
             return self._get_password()
@@ -108,7 +108,7 @@ class Settings:
 
         :return: The users udemy zip code
         """
-        zip_code = input("Please enter your zipcode (Not necessary in some regions)")
+        zip_code = input("Please enter your zipcode (Not necessary in some regions): ")
         return zip_code
 
     @staticmethod
@@ -119,7 +119,7 @@ class Settings:
         :return: list of languages the user wants to redeem udemy courses in
         """
         languages = input(
-            "Please enter your language preferences: comma separated list e.g. English,German"
+            "Please enter your language preferences (comma separated list e.g. English,German): "
         )
         return [lang.strip() for lang in languages.split(",")] if languages else []
 
@@ -130,7 +130,7 @@ class Settings:
         :return:
         """
         yaml_structure = dict()
-        save_settings = input("Do you want to save settings for future use? (Y/N)")
+        save_settings = input("Do you want to save settings for future use (Y/N): ")
         if save_settings.lower() == "y":
             yaml_structure["udemy"] = {
                 "email": str(self.email),
