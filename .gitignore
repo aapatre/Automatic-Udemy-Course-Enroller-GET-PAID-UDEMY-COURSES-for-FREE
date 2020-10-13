@@ -222,3 +222,4 @@ Pipfile
 Pipfile.lock
 
 settings.yaml
+!/settings.yaml
