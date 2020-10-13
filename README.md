@@ -42,16 +42,13 @@ https://www.buymeacoffee.com/utopiancorps ❤**
 
 ### How to Install the Requirements?
 
-Simply run the
-<a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/requirements.py">requirements.py</a>
-in Python's IDLE Editor. If all the requirements are installed, you are good to
-go but, in case of errors I've listed the individual requirements which can be
-installed by running the given commands in the terminal or the command prompt.
-You can even run <em>pip install requirements.txt</em> in the command prompt but
-if you are a beginner, I urge you to try either of the above mentioned methods.
-**Or click on the image below to watch a short tutorial:**
+<strong>Required Python version:</strong>
+[Python 3.8+](https://www.python.org/downloads/)
 
-[![pip install tutorial](http://i3.ytimg.com/vi/bij66_Jtoqs/maxresdefault.jpg)](https://www.youtube.com/watch?v=bij66_Jtoqs "Tutorial to install Python Modules with pip")
+**You must have pip installed. Please look up how to install pip in your OS.**
+
+Download a release of this project or clone the repository then navigate to the folder where you placed the files on. Type `pip install -r requirements.txt` to get all the requirements installed in one go. If you need to install individual dependencies you can do so by inputting the commands below in your terminal.
+
 
 <ul>
   <strong><li>Requests module for Python:</li></strong>
@@ -73,10 +70,8 @@ if you are a beginner, I urge you to try either of the above mentioned methods.
 
 <pre><code>pip install webdriver_manager</code></pre>
 
-<strong><li>Required Python version:</strong>
-[Python 3.8](https://www.python.org/downloads/release/python-380/)</li>
 
-<strong><li>Webdrivers are now automatically installed! Hurray! But here are
+<strong><li>Webdrivers are now automatically installed! But here are
 some links in case you are using the vanilla script or the Safari
 Browser:</strong>
 
@@ -84,18 +79,13 @@ Browser:</strong>
   <li>Edge- https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/</li>
   <li>Chrome- https://chromedriver.chromium.org/</li>
   <li>Firefox- https://github.com/mozilla/geckodriver/releases</li>
-  <li>Safari- https://webkit.org/blog/6900/webdriver-support-in-safari-10/ .etc</li>
+  <li>Safari- https://developer.apple.com/documentation/webkit/about_webdriver_for_safari/</li>
   <li>Opera- https://github.com/operasoftware/operachromiumdriver/releases</li>
-  <li>Internet Explorer- <a href='https://www.selenium.dev/downloads/'>Wait, who even uses this anymore!?</a></li>
+  <li>Internet Explorer- <a href='https://www.selenium.dev/downloads/'>Find it on your own accord</a></li>
 </ul>
 
 <strong>Note:</strong> Make sure that the driver version matches your browser.
-<br /> <br /> <strong>Note for Ubuntu/Linux Users:</strong> Run these commands
-in the terminal before installing the previous requirements: </br>
 
-<pre><code>sudo apt-get update</code></pre>
-<pre><code>sudo apt-get upgrade</code></pre>
-<pre><code>sudo apt install python3-pip</code></pre></li>
 </ul>
 
 ---
@@ -105,9 +95,9 @@ in the terminal before installing the previous requirements: </br>
 <ol>
   <li>Make sure to install all the requirements above.</li>
   </br>
-  <li>Open <a href="settings.yaml">settings.yaml</a> file using a text editor like Notepad and insert your <strong>Udemy registered email in the email section</strong>, your <strong>Udemy password in the password section</strong>, and the <strong>ZIP Code in the zipcode section (if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else enter a random number)</strong>.</li>
+  <li>Open <a href="settings.yaml">settings.yaml</a> file using a text editor and insert your <strong>Udemy registered email in the email section</strong>, your <strong>Udemy password in the password section</strong>, and the <strong>ZIP Code in the zipcode section (if you reside in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else enter a random number)</strong>.</li>
   </br>
-  <li>Choose the appropriate file for your browser (from the list below) in Python's IDLE Editor: </li>
+  <li>Choose the appropriate file for your browser (from the list below): </li>
   <ol>
     <li><strong>Tested and works perfectly: </strong></li>
     <ol>
@@ -117,7 +107,7 @@ in the terminal before installing the previous requirements: </br>
     </ol>
     <li><strong>Has issues: </strong></li>
     <ol>
-      <li>Firefox: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py">udemy_enroller_firefox.py</a></li> (issue fixed by a contributor but still requires manual driver installation)
+      <li>Firefox: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py">udemy_enroller_firefox.py</a></li> (requires manual driver installation)
     </ol>
     <li><strong>Untested: </strong></li>
     <ol>
@@ -125,15 +115,16 @@ in the terminal before installing the previous requirements: </br>
     </ol>
     <li><strong>Experimentation or other Browsers (especially Safari):</strong></li>
     <ol><li>Vanilla (aka the old bot- requires manual driver setup): <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_vanilla.py">udemy_enroller_vanilla.py</a></li></ol>
-    <li><strong>Should never be used by anyone with self-respect and dignity 🙃 (and of course has bugs):</strong></li>
+    <li><strong>User at your own risk:</strong></li>
     <ol><li>Internet Explorer: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_internet_explorer.py">udemy_enroller_internet_explorer.py</a></li></ol>
   </ol>
   </br>
-  <li>Run the chosen script in Python's IDLE Editor.</li>
+  <li>Run the chosen script in terminal like so:  <code>python udemy_enroller_firefox.py</code>
+</li>
   </br>
-  <li>The bot starts scraping the course links from the first <strong>All Courses</strong> page on <a href='https://www.tutorialbar.com/all-courses/page/1'>Tutorial Bar</a> and starts enrolling you to Udemy courses. After it has enrolled you to courses from the first page, it then moves to the next Tutorial Bar page and the cycle continues.</br><strong>Optional:</strong> However, you can change the starting page in the <strong><em>page</em></strong> variable inside the <em><strong>main_function()</em></strong>. (Not recommended, except when you are trying to redeem old coupons, which may or may not be valid at this point of time; But sometimes, by a stroke of luck, the coupons may still work!)</li>
+  <li>The bot starts scraping the course links from the first <strong>All Courses</strong> page on <a href='https://www.tutorialbar.com/all-courses/page/1'>Tutorial Bar</a> and starts enrolling you to Udemy courses. After it has enrolled you to courses from the first page, it then moves to the next Tutorial Bar page and the cycle continues.
   </br>
-  <li>Close the browser window, the web-driver and the Python shell to stop the enrollment process.</li>
+  <li>Stop the script by pressing ctrl+c in terminal to stop the enrollment process.</li>
 </ol>
 
 ---
@@ -150,7 +141,7 @@ I made this course after completing a
 [Python automation course](https://www.udemy.com/course/automate/) and selenium,
 which of course I got for free! :)
 
-### 2. How the bot works?
+### 2. How does the bot work?
 
 The bot retrieves coupon links from Tutorial Bar's list to cut the prices and
 then uses Selenium's Browser automation features to login and enroll to the
@@ -164,9 +155,7 @@ Daily, at least once! If you are using it for the first time, I recommend that
 you allow it to scrape through all pages on Tutorial Bar (might take a few hours
 since there are >500 pages on the site). I've painstakingly amassed over 4000
 courses in the last four years! And out of those 4000, I've only paid for 4 of
-these courses:
-
-<p align="center"><img src="https://i.imgur.com/p79IcDJ.png" width= 50%; height= 50%; /><p>
+these courses.
 
 So, a mere **0.001%** of courses are **actually paid** in my collection!
 Thankfully, you can get more than what I gathered in 4 years, in a matter of
@@ -182,8 +171,8 @@ it will save your precious time too! :)
 ### 5. "Udemy has detected that I'm using automation tools to browse the website! What should I do?"
 
 <p align="center"><kbd><img src="https://i.imgur.com/pwseilE.jpg" /></kbd></p>
-Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser and the webdriver, and simply re-run the bot. Easy peasy lemon squeezy! 🍋🙃 <br /><br />
-<p align="center"><kbd><img src="https://i.imgur.com/yMYtOUK.jpg" /></kbd></p>
+Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser, and simply re-run the script. Easy peasy lemon squeezy! 🍋🙃 <br /><br />
+
 
 ### 6. The code compiles successfully but it's taking too long to work! IS there any way to fix that?
 
@@ -194,14 +183,13 @@ retrieved in the Python console/shell, which may take a while.
 
 ### 7. Which is the best way to run the script?
 
-It is highly recommended to run the script using Python's IDLE IDE. <br />
+It is recommended to run the script using Python's IDLE IDE. <br />
 **Pro-tip:** Create a batch file, to launch the script instantly, using these
 instructions: https://datatofish.com/batch-python-script/
 
 ### 8. Which branch to commit against?
 
-We didn't have "develop" branch before, we've added this now.From now on pull
-request should be made on "develop" branch.
+Pull request should be made on "develop" branch.
 
 ### 9. What's the roadmap?
 
