@@ -15,7 +15,6 @@ driver = webdriver.Opera(executable_path=OperaDriverManager().install())
 driver.maximize_window()
 # in the maximized layout
 
-
 try:
     redeem_courses(driver, settings)
 except KeyboardInterrupt:

@@ -29,7 +29,7 @@ def redeem_courses(driver: WebDriver, settings: Settings):
                     return
                 print(
                     "Unable to enroll for this course either because you have already claimed it or the browser "
-                    "window has been closed!"
-                )
+                    "window has been closed!")
 
-        print("Moving on to the next page of the course list on tutorialbar.com")
+        print(
+            "Moving on to the next page of the course list on tutorialbar.com")

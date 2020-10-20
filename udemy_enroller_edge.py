@@ -15,7 +15,6 @@ driver = webdriver.Edge(EdgeChromiumDriverManager().install())
 driver.maximize_window()
 # in the maximized layout
 
-
 try:
     redeem_courses(driver, settings)
 except KeyboardInterrupt:
