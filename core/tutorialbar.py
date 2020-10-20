@@ -1,5 +1,5 @@
-from typing import List
 from multiprocessing.dummy import Pool
+from typing import List
 
 import requests
 from bs4 import BeautifulSoup

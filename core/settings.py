@@ -1,11 +1,9 @@
 import getpass
 import os.path
 from distutils.util import strtobool
-from typing import Dict
-from typing import List
+from typing import Dict, List
 
-from ruamel.yaml import dump
-from ruamel.yaml import YAML
+from ruamel.yaml import YAML, dump
 
 
 class Settings:
@@ -109,8 +107,7 @@ class Settings:
 
         :return: The users udemy zip code
         """
-        zip_code = input(
-            "Please enter your zipcode (Not necessary in some regions): ")
+        zip_code = input("Please enter your zipcode (Not necessary in some regions): ")
         return zip_code
 
     @staticmethod
@@ -123,8 +120,7 @@ class Settings:
         languages = input(
             "Please enter your language preferences (comma separated list e.g. English,German): "
         )
-        return [lang.strip()
-                for lang in languages.split(",")] if languages else []
+        return [lang.strip() for lang in languages.split(",")] if languages else []
 
     def _save_settings(self) -> None:
         """
@@ -133,8 +129,7 @@ class Settings:
         :return:
         """
         yaml_structure = dict()
-        save_settings = input(
-            "Do you want to save settings for future use (Y/N): ")
+        save_settings = input("Do you want to save settings for future use (Y/N): ")
         if save_settings.lower() == "y":
             yaml_structure["udemy"] = {
                 "email": str(self.email),
