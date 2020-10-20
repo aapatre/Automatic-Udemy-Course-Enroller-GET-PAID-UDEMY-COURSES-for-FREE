@@ -1,9 +1,11 @@
 import getpass
 import os.path
 from distutils.util import strtobool
-from typing import Dict, List
+from typing import Dict
+from typing import List
 
-from ruamel.yaml import YAML, dump
+from ruamel.yaml import dump
+from ruamel.yaml import YAML
 
 
 class Settings:
