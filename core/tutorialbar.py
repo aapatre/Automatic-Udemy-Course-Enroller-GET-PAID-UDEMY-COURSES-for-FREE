@@ -74,7 +74,8 @@ class TutorialBarScraper:
         """
         response = requests.get(url=url)
         soup = BeautifulSoup(response.content, "html.parser")
-        udemy_link = soup.find("span", class_="rh_button_wrapper").find("a").get("href")
+        udemy_link = soup.find(
+            "span", class_="rh_button_wrapper").find("a").get("href")
         return udemy_link
 
     def gather_udemy_course_links(self, courses: List[str]) -> List:
