@@ -13,11 +13,6 @@ In case of any bugs or issues, **feel free to ping me on
 
 Also, don't forget to **Fork & Star the repository if you like it!**
 
-And if you are feeling extra-generous today, **Buy Me a Coffee on:
-https://www.buymeacoffee.com/utopiancorps ❤**
-
-**Or support me on Patreon: https://www.patreon.com/utopiancorps ❤** (One-off donations accepted! 😄)
-
 **_Video Proof:_**
 
 [![Udemy Auto-Course-Enroller](https://img.youtube.com/vi/IW8CCtv2k2A/0.jpg)](https://www.youtube.com/watch?v=IW8CCtv2k2A "GET PAID UDEMY Courses for FREE, Automatically with this Python Script!")
