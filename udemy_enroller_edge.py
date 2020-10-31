@@ -138,8 +138,7 @@ def main_function():
         print("Page: " + str(page) + ", Loop run count: " +
               str(loop_run_count))
 
-        url = "https://www.tutorialbar.com/all-courses/" + "page/" + str(
-            page) + "/"
+        url = f"https://www.tutorialbar.com/all-courses/page/{page}"
         courses = getTutorialBarLinks(url)
 
         udemyLinks = gatherUdemyCourseLinks(courses)
