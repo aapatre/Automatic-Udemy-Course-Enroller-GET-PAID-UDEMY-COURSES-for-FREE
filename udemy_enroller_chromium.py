@@ -21,6 +21,7 @@ with open("settings.yaml") as f:
     settings = yaml.load(f)
 
 email, password = settings["udemy"]["email"], settings["udemy"]["password"]
+categories = settings["udemy"].get("categories")
 
 # Accounts for the edge case that someone removes the entire "zipcode" entry in settings.yaml instead of simply clearing the string or leaving it alone
 # This shouldn't have to exist, but ?? here we are
@@ -71,9 +72,13 @@ def getTutorialBarLinks(url):
     courses = []
 
     x = 0
-    for i in range(12):
-        courses.append(links[x].get("href"))
-        x = x + 3
+    for _ in range(12):
+        if categories:  # If the categories are specified, then only add them if the category is in `categories`
+            if links[x + 2].text in categories:
+                courses.append(links[x].get("href"))
+        else:  # If the categories aren't specified, just add them
+            courses.append(links[x].get("href"))
+        x += 3
 
     return courses
 

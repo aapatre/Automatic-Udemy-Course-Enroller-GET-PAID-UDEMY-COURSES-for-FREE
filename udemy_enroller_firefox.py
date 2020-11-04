@@ -1,7 +1,10 @@
-# Install all the requirements by running requirements.py in IDLE or follow the alternate instructions at
-# https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/ Make sure you have
-# cleared all saved payment details on your Udemy account & the browser! For firefox you need to manually install the
-# driver on Arch Linux (sudo pacman -S geckodriver). Untested on other platforms.
+# Install all the requirements by running requirements.py in IDLE or follow
+# the alternate instructions at
+# https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/
+# Make sure you have cleared all saved payment details on your Udemy account &
+# the browser! For firefox you need to manually install the driver on
+# Arch Linux (sudo pacman -S geckodriver). Untested on other platforms.
+
 import time
 from multiprocessing.dummy import Pool
 
@@ -10,29 +13,27 @@ from bs4 import BeautifulSoup
 from ruamel.yaml import YAML
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.firefox import GeckoDriverManager
-
 yaml = YAML()
 with open("settings.yaml") as f:
     settings = yaml.load(f)
 
 email, password = settings["udemy"]["email"], settings["udemy"]["password"]
+categories = settings["udemy"].get("categories")
 
-# Accounts for the edge case that someone removes the entire "zipcode" entry in settings.yaml instead of simply clearing the string or leaving it alone
+# Accounts for the edge case that someone removes the entire "zipcode" entry
+# in settings.yaml instead of simply clearing the string or leaving it alone
 # This shouldn't have to exist, but ?? here we are
 if "zipcode" in settings["udemy"]:
     zipcode = settings["udemy"]["zipcode"]
 
 driver = webdriver.Firefox()
 
-# Maximizes the browser window since Udemy has a responsive design and the code only works
+# Maximizes the browser window since Udemy has a responsive design and the
+# code only works in the maximized layout
 driver.maximize_window()
-
-# in the maximized layout
 
 
 def getUdemyLink(url):
@@ -50,7 +51,8 @@ def gatherUdemyCourseLinks(courses):
     """
     Threaded fetching of the udemy course links from tutorialbar.com
 
-    :param list courses: A list of tutorialbar.com course links we want to fetch the udemy links for
+    :param list courses: A list of tutorialbar.com course links we want to
+                         fetch the udemy links for
     :return: list of udemy links
     """
     thread_pool = Pool()
@@ -71,9 +73,13 @@ def getTutorialBarLinks(url):
     courses = []
 
     x = 0
-    for i in range(12):
-        courses.append(links[x].get("href"))
-        x = x + 3
+    for _ in range(12):
+        if categories:  # If the categories are specified, then only add them if the category is in `categories`
+            if links[x + 2].text in categories:
+                courses.append(links[x].get("href"))
+        else:  # If the categories aren't specified, just add them
+            courses.append(links[x].get("href"))
+        x += 3
 
     return courses
 
@@ -106,25 +112,29 @@ def redeemUdemyCourse(url):
     # Enroll Now 2
     element_present = EC.presence_of_element_located((
         By.XPATH,
-        '//*[@class="udemy pageloaded"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button',
+        ('//*[@class="udemy pageloaded"]/div[1]/div[2]/div/div/div/div[2]/'
+         'form/div[2]/div/div[4]/button'),
     ))
     WebDriverWait(driver, 10).until(element_present)
 
     # Check if zipcode exists before doing this
     if zipcode:
-        # Assume sometimes zip is not required because script was originally pushed without this
+        # Assume sometimes zip is not required because script was originally
+        # pushed without this
         try:
             zipcode_element = driver.find_element_by_id(
                 "billingAddressSecondaryInput")
             zipcode_element.send_keys(zipcode)
 
-            # After you put the zip code in, the page refreshes itself and disables the enroll button for a split second.
+            # After you put the zip code in, the page refreshes itself and
+            # disables the enroll button for a split second.
             time.sleep(1)
         except NoSuchElementException:
             pass
 
     udemyEnroll = driver.find_element_by_xpath(
-        '//*[@class="udemy pageloaded"]/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button'
+        ('//*[@class="udemy pageloaded"]/div[1]/div[2]/div/'
+         'div/div/div[2]/form/div[2]/div/div[4]/button')
     )  # Udemy
     udemyEnroll.click()
 
