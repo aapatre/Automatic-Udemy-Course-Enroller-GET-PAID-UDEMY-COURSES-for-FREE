@@ -42,8 +42,10 @@ Also, don't forget to **Fork & Star the repository if you like it!**
 
 **You must have pip installed. Please look up how to install pip in your OS.**
 
-Download a release of this project or clone the repository then navigate to the folder where you placed the files on. Type `pip install -r requirements.txt` to get all the requirements installed in one go. If you need to install individual dependencies you can do so by inputting the commands below in your terminal.
-
+Download a release of this project or clone the repository then navigate to the
+folder where you placed the files on. Type `pip install -r requirements.txt` to
+get all the requirements installed in one go. If you need to install individual
+dependencies you can do so by inputting the commands below in your terminal.
 
 <ul>
   <strong><li>Requests module for Python:</li></strong>
@@ -65,10 +67,8 @@ Download a release of this project or clone the repository then navigate to the 
 
 <pre><code>pip install webdriver_manager</code></pre>
 
-
-<strong><li>Webdrivers are now automatically installed! But here are
-some links in case you are using the vanilla script or the Safari
-Browser:</strong>
+<strong><li>Webdrivers are now automatically installed! But here are some links
+in case you are using the vanilla script or the Safari Browser:</strong>
 
 <ul>
   <li>Edge- https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/</li>
@@ -90,7 +90,10 @@ Browser:</strong>
 <ol>
   <li>Make sure to install all the requirements above.</li>
   </br>
-  <li>Open <a href="settings.yaml">settings.yaml</a> file using a text editor and insert your <strong>Udemy registered email in the email section</strong>, your <strong>Udemy password in the password section</strong>, and the <strong>ZIP Code in the zipcode section (if you reside in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else enter a random number)</strong>.</li>
+  <ol>
+  <li>Run the script and the cli will guide you through the settings required</li>
+  <li>Otherwise you can rename the following file <a href="sample_settings.yaml">sample_settings.yaml</a> to <strong>settings.py</strong> and edit it using a text editor and insert your <strong>Udemy registered email in the email section</strong>, your <strong>Udemy password in the password section</strong>, and the <strong>ZIP Code in the zipcode section (if you reside in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else enter a random number)</strong>.</li>
+  </ol>
   </br>
   <li>Choose the appropriate file for your browser (from the list below): </li>
   <ol>
@@ -168,7 +171,6 @@ it will save your precious time too! :)
 <p align="center"><kbd><img src="https://i.imgur.com/pwseilE.jpg" /></kbd></p>
 Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser, and simply re-run the script. Easy peasy lemon squeezy! 🍋🙃 <br /><br />
 
-
 ### 6. The code compiles successfully but it's taking too long to work! IS there any way to fix that?
 
 Since we are heavily dependent on a third-party site to retrieve coupons links,
@@ -178,9 +180,9 @@ retrieved in the Python console/shell, which may take a while.
 
 ### 7. Which is the best way to run the script?
 
-It is recommended to run the script using Python's IDLE IDE. <br />
-**Pro-tip:** Create a batch file, to launch the script instantly, using these
-instructions: https://datatofish.com/batch-python-script/
+It is recommended to run the script using Python's IDLE IDE. <br /> **Pro-tip:**
+Create a batch file, to launch the script instantly, using these instructions:
+https://datatofish.com/batch-python-script/
 
 ### 8. Which branch to commit against?
 
@@ -188,6 +190,8 @@ Pull request should be made on "develop" branch.
 
 ### 9. What's the roadmap?
 
-Take a look at our [Roadmap here](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/projects/1) and help us on what you want or talk to us about your proposed changes.
+Take a look at our
+[Roadmap here](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/projects/1)
+and help us on what you want or talk to us about your proposed changes.
 
 ---
