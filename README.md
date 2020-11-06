@@ -95,9 +95,11 @@ get all the requirements installed in one go.
     [udemy_enroller_opera.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_opera.py)
 
 - **Experimentation or other Browsers (especially Safari):**
-  - Vanilla:
-    [aka the old bot- requires manual driver setup:](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_vanilla.py">udemy_enroller_vanilla.py)
+
+  [(aka the old bot- requires manual driver setup):](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_vanilla.py)
+
 - **Use at your own risk:**
+  - Vanilla
   - Internet Explorer:
     [udemy_enroller_internet_explorer.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_internet_explorer.py)
 
