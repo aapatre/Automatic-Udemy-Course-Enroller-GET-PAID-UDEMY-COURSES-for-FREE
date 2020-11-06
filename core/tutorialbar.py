@@ -15,7 +15,6 @@ class TutorialBarScraper:
     def __init__(self):
         self.current_page = 0
         self.last_page = None
-        self.all_courses_link = f"{self.DOMAIN}/all-courses/page/{self.current_page}/"
         self.links_per_page = 12
 
     def run(self) -> List:
@@ -26,7 +25,7 @@ class TutorialBarScraper:
         """
         self.current_page += 1
         print("Please Wait: Getting the course list from tutorialbar.com...")
-        course_links = self.get_course_links(self.all_courses_link)
+        course_links = self.get_course_links(f"{self.DOMAIN}/all-courses/page/{self.current_page}/")
 
         print(f"Page: {self.current_page} of {self.last_page} scraped")
         udemy_links = self.gather_udemy_course_links(course_links)
