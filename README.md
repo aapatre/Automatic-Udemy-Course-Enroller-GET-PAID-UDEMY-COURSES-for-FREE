@@ -44,7 +44,7 @@ Also, don't forget to **Fork & Star the repository if you like it!**
 
 Download a release of this project or clone the repository then navigate to the
 folder where you placed the files on. Type `pip install -r requirements.txt` to
-get all the requirements installed in one go. 
+get all the requirements installed in one go.
 
 <strong><li>Webdrivers are now automatically installed! But here are some links
 in case you are using the vanilla script or the Safari Browser:</strong>
