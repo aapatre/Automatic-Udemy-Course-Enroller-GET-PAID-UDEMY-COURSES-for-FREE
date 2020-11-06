@@ -154,7 +154,7 @@ task that took around 15 minutes, for 10 courses. And then I suddenly got the
 idea to automate it, after I found the automation course mentioned above. I bet,
 it will save your precious time too! :)
 
-### 5. "Udemy has detected that I'm using automation tools to browse the website! What should I do?"
+### 5. Udemy has detected that I'm using automation tools to browse the website! What should I do?
 
 ![](https://i.imgur.com/pwseilE.jpg) Relax! This happens when you run the script
 several times in a short interval of time. Solve the captcha, close the browser,
