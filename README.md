@@ -44,28 +44,7 @@ Also, don't forget to **Fork & Star the repository if you like it!**
 
 Download a release of this project or clone the repository then navigate to the
 folder where you placed the files on. Type `pip install -r requirements.txt` to
-get all the requirements installed in one go. If you need to install individual
-dependencies you can do so by inputting the commands below in your terminal.
-
-<ul>
-  <strong><li>Requests module for Python:</li></strong>
-<pre><code>pip install requests</code></pre>
-
-<strong><li>ruamel.yaml for Python:</li></strong>
-
-<pre><code>pip install ruamel.yaml</code></pre>
-
-<strong><li>BeautifulSoup Web-Scraping Library for Python:</li></strong>
-
-<pre><code>pip install beautifulsoup4</code></pre>
-
-<strong><li>Selenium Browser Automation Tool for Python:</li></strong>
-
-<pre><code>pip install selenium</code></pre>
-
-<strong><li>Webdriver Manager for Python:</li></strong>
-
-<pre><code>pip install webdriver_manager</code></pre>
+get all the requirements installed in one go. 
 
 <strong><li>Webdrivers are now automatically installed! But here are some links
 in case you are using the vanilla script or the Safari Browser:</strong>
