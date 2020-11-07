@@ -120,7 +120,7 @@ first page, it then moves to the next Tutorial Bar page and the cycle continues.
 ### 1. Can I get a specific course for free with this script?
 
 Unfortunately no, but let me assure you that you may be lucky enough to get a
-particular course for free when the instructor posts it's coupon code in order
+particular course for free when the instructor posts its coupon code in order
 to promote it. Also, over time you would build a library of courses by running
 the script often and have all the required courses in your collection. In fact,
 I made this course after completing a
