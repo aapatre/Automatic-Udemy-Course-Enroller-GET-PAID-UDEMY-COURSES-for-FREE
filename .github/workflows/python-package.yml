@@ -15,11 +15,6 @@ jobs:
         python-version: [3.8]
 
     steps:
-    - name: Setting env variables
-      run: echo Setting env varibles
-      env:
-        UDEMY_EMAIL: ${{ secrets.UDEMY_EMAIL }}
-        UDEMY_PASSWORD: ${{ secrets.UDEMY_PASSWORD }}
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -41,5 +36,8 @@ jobs:
         sudo apt install google-chrome-stable
         sudo apt-get install firefox
     - name: Make sure chrome crawler is working (Attempt to subscribe to 1 course)
+      env:
+        UDEMY_EMAIL: ${{ secrets.UDEMY_EMAIL }}
+        UDEMY_PASSWORD: ${{ secrets.UDEMY_PASSWORD }}
       run: |
         python udemy_enroller_chrome.py
