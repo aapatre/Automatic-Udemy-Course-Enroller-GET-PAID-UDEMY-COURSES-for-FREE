@@ -90,19 +90,10 @@ Browser:</strong>
 <ol>
   <li>Make sure to install all the requirements above.</li>
   </br>
-  <li>Open <a href="settings.yaml">settings.yaml</a> file using a text editor and insert your <strong>Udemy registered email in the email section</strong>, your <strong>Udemy password in the password section</strong>, and the <strong>ZIP Code in the zipcode section (if you reside in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else enter a random number)</strong>. You may also specify a categories key listing the categories which you want to enrol to.
-  They can be one or more of these:
-
-  * Development
-  * Business
-  * IT & Software 
-  * Office Productivity
-  * Personal Development
-  * Design
-  * Marketing
-  * Health & Fitness
-  * Music
-  </li>
+  <ol>
+  <li>Run the script and the cli will guide you through the settings required</li>
+  <li>Otherwise you can rename the following file <a href="sample_settings.yaml">sample_settings.yaml</a> to <strong>settings.py</strong> and edit it using a text editor like Notepad and insert your <strong>Udemy registered email in the email section</strong>, your <strong>Udemy password in the password section</strong>, and the <strong>ZIP Code in the zipcode section (if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else enter a random number)</strong>.</li>
+  </ol>
   </br>
   <li>Choose the appropriate file for your browser (from the list below): </li>
   <ol>
