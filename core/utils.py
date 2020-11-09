@@ -1,4 +1,8 @@
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+    WebDriverException,
+)
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from core import Settings, TutorialBarScraper, UdemyActions, exceptions
@@ -23,11 +27,16 @@ def redeem_courses(driver: WebDriver, settings: Settings):
                 print(e)
             except TimeoutException:
                 print(f"Timeout on link: {course_link}")
+            except WebDriverException as e:
+                print(f"Webdriver exception on link: {course_link}")
+                print(e)
             except KeyboardInterrupt:
                 raise
-            except (exceptions.RobotException, Exception) as e:
+            except exceptions.RobotException as e:
                 print(e)
                 raise e
+            except Exception as e:
+                print(f"Unexpected exception: {e}")
             finally:
                 if settings.is_ci_build:
                     return
