@@ -76,7 +76,7 @@ class Settings:
         self.password = self._get_password()
         self.zip_code = self._get_zip_code()
         self.languages = self._get_languages()
-        self.courses = self._get_courses()
+        self.categories = self._get_categories()
 
     def _get_email(self) -> str:
         """
@@ -128,11 +128,13 @@ class Settings:
 
 
     @staticmethod
-    def _get_courses() -> List[str]:
+    def _get_categories() -> List[str]:
         courses = input("Please enter in a list of comma separated values of"
                         " the course categories you like, for example:\n"
                         "Development, Design\n>")
-        return [course.strip() for course in courses.split(',')]
+        return [
+            course.strip() for course in courses.split(',')
+        ] if courses else []
 
     def _save_settings(self) -> None:
         """

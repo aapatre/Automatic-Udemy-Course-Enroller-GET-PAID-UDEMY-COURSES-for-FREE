@@ -11,7 +11,7 @@ def redeem_courses(driver: WebDriver, settings: Settings):
 
     :return:
     """
-    tb_scraper = TutorialBarScraper()
+    tb_scraper = TutorialBarScraper(settings)
     udemy_actions = UdemyActions(driver, settings)
     udemy_actions.login()  # login once outside while loop
     while True:

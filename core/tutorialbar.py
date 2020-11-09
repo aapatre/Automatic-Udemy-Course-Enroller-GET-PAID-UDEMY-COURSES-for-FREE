@@ -4,6 +4,8 @@ from typing import List
 import requests
 from bs4 import BeautifulSoup
 
+from core import Settings
+
 
 class TutorialBarScraper:
     """
@@ -12,11 +14,12 @@ class TutorialBarScraper:
 
     DOMAIN = "https://www.tutorialbar.com"
 
-    def __init__(self):
+    def __init__(self, settings: Settings):
         self.current_page = 0
         self.last_page = None
         self.all_courses_link = f"{self.DOMAIN}/all-courses/page/{self.current_page}/"
         self.links_per_page = 12
+        self.settings = settings
 
     def run(self) -> List:
         """
@@ -52,14 +55,21 @@ class TutorialBarScraper:
         :return: list of pages on tutorialbar.com that contain Udemy coupons
         """
         response = requests.get(url=url)
+
         soup = BeautifulSoup(response.content, "html.parser")
+
         links = soup.find("div", class_="rh-post-wrapper").find_all("a")
-        self.last_page = links[-2].text
+        # print(links)
+
         courses = []
 
         x = 0
-        for _ in range(self.links_per_page):
-            courses.append(links[x].get("href"))
+        for _ in range(12):
+            if self.settings.categories:  # If the categories are specified, then only add them if the category is in `categories`
+                if links[x + 2].text in self.settings.categories:
+                    courses.append(links[x].get("href"))
+            else:  # If the categories aren't specified, just add them
+                courses.append(links[x].get("href"))
             x += 3
 
         return courses
