@@ -11,7 +11,6 @@ class Settings:
     """
     Contains all logic related to the scripts settings
     """
-
     def __init__(self):
         self.email = None
         self.password = None
@@ -126,15 +125,13 @@ class Settings:
         return [lang.strip()
                 for lang in languages.split(",")] if languages else []
 
-
     @staticmethod
     def _get_categories() -> List[str]:
         courses = input("Please enter in a list of comma separated values of"
                         " the course categories you like, for example:\n"
                         "Development, Design\n>")
-        return [
-            course.strip() for course in courses.split(',')
-        ] if courses else []
+        return [course.strip()
+                for course in courses.split(",")] if courses else []
 
     def _save_settings(self) -> None:
         """
