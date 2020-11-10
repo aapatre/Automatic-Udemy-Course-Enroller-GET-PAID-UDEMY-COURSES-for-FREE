@@ -126,7 +126,6 @@ class Settings:
         return [lang.strip()
                 for lang in languages.split(",")] if languages else []
 
-
     @staticmethod
     def _get_categories() -> List[str]:
         courses = input("Please enter in a list of comma separated values of"
