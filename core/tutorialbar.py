@@ -17,7 +17,6 @@ class TutorialBarScraper:
     def __init__(self, settings: Settings):
         self.current_page = 0
         self.last_page = None
-        self.all_courses_link = f"{self.DOMAIN}/all-courses/page/{self.current_page}/"
         self.links_per_page = 12
         self.settings = settings
 
@@ -29,7 +28,9 @@ class TutorialBarScraper:
         """
         self.current_page += 1
         print("Please Wait: Getting the course list from tutorialbar.com...")
-        course_links = self.get_course_links(self.all_courses_link)
+        course_links = self.get_course_links(
+            f"{self.DOMAIN}/all-courses/page/{self.current_page}/"
+        )
 
         print(f"Page: {self.current_page} of {self.last_page} scraped")
         udemy_links = self.gather_udemy_course_links(course_links)
@@ -86,8 +87,7 @@ class TutorialBarScraper:
         """
         response = requests.get(url=url)
         soup = BeautifulSoup(response.content, "html.parser")
-        udemy_link = soup.find(
-            "span", class_="rh_button_wrapper").find("a").get("href")
+        udemy_link = soup.find("span", class_="rh_button_wrapper").find("a").get("href")
         return udemy_link
 
     def gather_udemy_course_links(self, courses: List[str]) -> List:
