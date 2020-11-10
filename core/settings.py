@@ -109,8 +109,7 @@ class Settings:
 
         :return: The users udemy zip code
         """
-        zip_code = input(
-            "Please enter your zipcode (Not necessary in some regions): ")
+        zip_code = input("Please enter your zipcode (Not necessary in some regions): ")
         return zip_code
 
     @staticmethod
@@ -123,17 +122,16 @@ class Settings:
         languages = input(
             "Please enter your language preferences (comma separated list e.g. English,German): "
         )
-        return [lang.strip()
-                for lang in languages.split(",")] if languages else []
+        return [lang.strip() for lang in languages.split(",")] if languages else []
 
     @staticmethod
     def _get_categories() -> List[str]:
-        courses = input("Please enter in a list of comma separated values of"
-                        " the course categories you like, for example:\n"
-                        "Development, Design\n>")
-        return [
-            course.strip() for course in courses.split(',')
-        ] if courses else []
+        courses = input(
+            "Please enter in a list of comma separated values of"
+            " the course categories you like, for example:\n"
+            "Development, Design\n>"
+        )
+        return [course.strip() for course in courses.split(",")] if courses else []
 
     def _save_settings(self) -> None:
         """
@@ -142,8 +140,7 @@ class Settings:
         :return:
         """
         yaml_structure = dict()
-        save_settings = input(
-            "Do you want to save settings for future use (Y/N): ")
+        save_settings = input("Do you want to save settings for future use (Y/N): ")
         if save_settings.lower() == "y":
             yaml_structure["udemy"] = {
                 "email": str(self.email),
