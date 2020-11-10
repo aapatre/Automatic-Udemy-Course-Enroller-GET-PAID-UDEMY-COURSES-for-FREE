@@ -1,8 +1,6 @@
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from core import Settings
-from core import TutorialBarScraper
-from core import UdemyActions
+from core import Settings, TutorialBarScraper, UdemyActions
 
 
 def redeem_courses(driver: WebDriver, settings: Settings):

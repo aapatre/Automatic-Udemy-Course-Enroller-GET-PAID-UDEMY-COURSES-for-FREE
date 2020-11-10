@@ -3,8 +3,7 @@ import os.path
 from distutils.util import strtobool
 from typing import Dict, List
 
-from ruamel.yaml import dump
-from ruamel.yaml import YAML
+from ruamel.yaml import YAML, dump
 
 
 class Settings:
