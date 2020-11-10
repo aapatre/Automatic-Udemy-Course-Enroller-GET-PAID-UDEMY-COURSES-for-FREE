@@ -1,0 +1,39 @@
+enabled: true
+
+exclude:
+  - ".github/workflows/**/*" # https://github.com/restyled-io/restyler/issues/73
+
+changed_paths:
+  maximum: 1000
+  outcome: error
+
+remote_files: []
+
+auto: false
+
+pull_requests: true
+
+comments: false
+
+statuses:
+  differences: true
+  no_differences: true
+  error: true
+
+request_review: none
+
+labels: []
+
+ignore_labels:
+  - restyled-ignore
+
+restylers_version: stable
+
+commit_template: |
+  style(${restyler.name}): apply code style
+restylers:
+  - black
+  - isort:
+      arguments:
+        - "--profile"
+        - "black"

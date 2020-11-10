@@ -1,3 +1,7 @@
+[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/it-works-why.svg)](https://forthebadge.com)
+
+
 # Automatic Udemy Course Enroller: GET PAID COURSES for FREE! (Legally!)
 
 Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of
@@ -19,17 +23,17 @@ Also, don't forget to **Fork & Star the repository if you like it!**
 
 ---
 
-## **_Disclaimer & WARNINGS:_**</br>
+## **_Disclaimer & WARNINGS:_**
 
 1. **IMPORTANT:** Make sure you **clear all saved Debit/Credit Card or any other
    saved payment info from your Browser & your Udemy account** before using the
-   script!</br>
+   script!
 2. **Use** this ONLY for **Educational Purposes!** By using this code you agree
-   that **I'm not responsible for any kind of trouble** caused by the code.</br>
-3. **Make sure web-scraping is legal in your region.**</br>
+   that **I'm not responsible for any kind of trouble** caused by the code.
+3. **Make sure web-scraping is legal in your region.**
 4. This is **NOT a hacking script**, i.e., it can't enroll you for a specific
    course! Instead it finds courses that provide coupon links to make the
-   transaction free and then LEGALLY enroll you to the course!</br>
+   transaction free and then LEGALLY enroll you to the course!
 
 ---
 
@@ -37,93 +41,81 @@ Also, don't forget to **Fork & Star the repository if you like it!**
 
 ### How to Install the Requirements?
 
-<strong>Required Python version:</strong>
-[Python 3.8+](https://www.python.org/downloads/)
+**Required Python version:** [Python 3.8+](https://www.python.org/downloads/)
 
 **You must have pip installed. Please look up how to install pip in your OS.**
 
-Download a release of this project or clone the repository then navigate to the folder where you placed the files on. Type `pip install -r requirements.txt` to get all the requirements installed in one go. If you need to install individual dependencies you can do so by inputting the commands below in your terminal.
+Download a release of this project or clone the repository then navigate to the
+folder where you placed the files on. Type `pip install -r requirements.txt` to
+get all the requirements installed in one go.
 
+- **Webdrivers are now automatically installed! But here are some links in case
+  you are using the vanilla script or the Safari Browser:**
 
-<ul>
-  <strong><li>Requests module for Python:</li></strong>
-<pre><code>pip install requests</code></pre>
+* Edge- https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
+* Chrome- https://chromedriver.chromium.org/
+* Firefox- https://github.com/mozilla/geckodriver/releases/
+* Safari-
+  https://developer.apple.com/documentation/webkit/about_webdriver_for_safari/
+* Opera- https://github.com/operasoftware/operachromiumdriver/releases
+* Internet Explorer-
+  [Find it on your own accord](https://www.selenium.dev/downloads/)
 
-<strong><li>ruamel.yaml for Python:</li></strong>
-
-<pre><code>pip install ruamel.yaml</code></pre>
-
-<strong><li>BeautifulSoup Web-Scraping Library for Python:</li></strong>
-
-<pre><code>pip install beautifulsoup4</code></pre>
-
-<strong><li>Selenium Browser Automation Tool for Python:</li></strong>
-
-<pre><code>pip install selenium</code></pre>
-
-<strong><li>Webdriver Manager for Python:</li></strong>
-
-<pre><code>pip install webdriver_manager</code></pre>
-
-
-<strong><li>Webdrivers are now automatically installed! But here are
-some links in case you are using the vanilla script or the Safari
-Browser:</strong>
-
-<ul>
-  <li>Edge- https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/</li>
-  <li>Chrome- https://chromedriver.chromium.org/</li>
-  <li>Firefox- https://github.com/mozilla/geckodriver/releases</li>
-  <li>Safari- https://developer.apple.com/documentation/webkit/about_webdriver_for_safari/</li>
-  <li>Opera- https://github.com/operasoftware/operachromiumdriver/releases</li>
-  <li>Internet Explorer- <a href='https://www.selenium.dev/downloads/'>Find it on your own accord</a></li>
-</ul>
-
-<strong>Note:</strong> Make sure that the driver version matches your browser.
-
-</ul>
+**Note:** Make sure that the driver version matches your browser.
 
 ---
 
 ## Instructions
 
-<ol>
-  <li>Make sure to install all the requirements above.</li>
-  </br>
-  <ol>
-  <li>Run the script and the cli will guide you through the settings required</li>
-  <li>Otherwise you can rename the following file <a href="sample_settings.yaml">sample_settings.yaml</a> to <strong>settings.py</strong> and edit it using a text editor like Notepad and insert your <strong>Udemy registered email in the email section</strong>, your <strong>Udemy password in the password section</strong>, and the <strong>ZIP Code in the zipcode section (if you stay in the United States or any other region where Udemy asks for ZIP Code as Billing Info, else enter a random number)</strong>.</li>
-  </ol>
-  </br>
-  <li>Choose the appropriate file for your browser (from the list below): </li>
-  <ol>
-    <li><strong>Tested and works perfectly: </strong></li>
-    <ol>
-      <li>Chrome: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_chrome.py">udemy_enroller_chrome.py</a></li>
-      <li>Chromium: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_chromium.py">udemy_enroller_chromium.py</a></li>
-      <li>Edge: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_edge.py">udemy_enroller_edge.py</a></li>
-    </ol>
-    <li><strong>Has issues: </strong></li>
-    <ol>
-      <li>Firefox: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py">udemy_enroller_firefox.py</a></li> (requires manual driver installation)
-    </ol>
-    <li><strong>Untested: </strong></li>
-    <ol>
-      <li>Opera: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_opera.py">udemy_enroller_opera.py</a></li>
-    </ol>
-    <li><strong>Experimentation or other Browsers (especially Safari):</strong></li>
-    <ol><li>Vanilla (aka the old bot- requires manual driver setup): <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_vanilla.py">udemy_enroller_vanilla.py</a></li></ol>
-    <li><strong>User at your own risk:</strong></li>
-    <ol><li>Internet Explorer: <a href="https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_internet_explorer.py">udemy_enroller_internet_explorer.py</a></li></ol>
-  </ol>
-  </br>
-  <li>Run the chosen script in terminal like so:  <code>python udemy_enroller_firefox.py</code>
-</li>
-  </br>
-  <li>The bot starts scraping the course links from the first <strong>All Courses</strong> page on <a href='https://www.tutorialbar.com/all-courses/page/1'>Tutorial Bar</a> and starts enrolling you to Udemy courses. After it has enrolled you to courses from the first page, it then moves to the next Tutorial Bar page and the cycle continues.
-  </br>
-  <li>Stop the script by pressing ctrl+c in terminal to stop the enrollment process.</li>
-</ol>
+1 . Make sure to install all the requirements above.
+
+- Run the script and the cli will guide you through the settings required
+- Otherwise you can rename the following file
+  [sample_settings.yaml](sample_settings.yaml) to **settings.py** and edit it
+  using a text editor and insert your **Udemy registered email in the email
+  section**, your **Udemy password in the password section**, and the **ZIP Code
+  in the zipcode section (if you reside in the United States or any other region
+  where Udemy asks for ZIP Code as Billing Info, else enter a random number)**.
+
+2 . Choose the appropriate file for your browser (from the list below):
+
+- **Tested and works perfectly:**
+
+  - Chrome:
+    [udemy_enroller_chrome.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_chrome.py)
+  - Chromium:
+    [udemy_enroller_chromium.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_chromium.py)
+  - Edge:
+    [udemy_enroller_edge.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_edge.py)
+
+- **Has issues:**
+
+  - Firefox:
+    [udemy_enroller_firefox.py(requires manual driver installation)](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py)
+
+- **Untested:**
+
+  - Opera:
+    [udemy_enroller_opera.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_opera.py)
+
+- **Experimentation or other Browsers (especially Safari):**
+
+  - [aka the old bot- requires manual driver setup](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_vanilla.py)
+
+- **Use at your own risk:**
+  - Vanilla
+  - Internet Explorer:
+    [udemy_enroller_internet_explorer.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_internet_explorer.py)
+
+3 . Run the chosen script in terminal like so:
+`python udemy_enroller_firefox.py`
+
+4 . The bot starts scraping the course links from the first **All Courses** page
+on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1) and starts
+enrolling you to Udemy courses. After it has enrolled you to courses from the
+first page, it then moves to the next Tutorial Bar page and the cycle continues.
+
+- Stop the script by pressing ctrl+c in terminal to stop the enrollment process.
 
 ---
 
@@ -166,11 +158,11 @@ task that took around 15 minutes, for 10 courses. And then I suddenly got the
 idea to automate it, after I found the automation course mentioned above. I bet,
 it will save your precious time too! :)
 
-### 5. "Udemy has detected that I'm using automation tools to browse the website! What should I do?"
+### 5. Udemy has detected that I'm using automation tools to browse the website! What should I do?
 
-<p align="center"><kbd><img src="https://i.imgur.com/pwseilE.jpg" /></kbd></p>
-Relax! This happens when you run the script several times in a short interval of time. Solve the captcha, close the browser, and simply re-run the script. Easy peasy lemon squeezy! 🍋🙃 <br /><br />
-
+![](https://i.imgur.com/pwseilE.jpg) Relax! This happens when you run the script
+several times in a short interval of time. Solve the captcha, close the browser,
+and simply re-run the script. Easy peasy lemon squeezy! 🍋🙃 <br /><br />
 
 ### 6. The code compiles successfully but it's taking too long to work! IS there any way to fix that?
 
@@ -181,7 +173,8 @@ retrieved in the Python console/shell, which may take a while.
 
 ### 7. Which is the best way to run the script?
 
-It is recommended to run the script using Python's IDLE IDE. <br />
+It is recommended to run the script using Python's IDLE IDE.
+
 **Pro-tip:** Create a batch file, to launch the script instantly, using these
 instructions: https://datatofish.com/batch-python-script/
 
@@ -191,6 +184,8 @@ Pull request should be made on "develop" branch.
 
 ### 9. What's the roadmap?
 
-Take a look at our [Roadmap here](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/projects/1) and help us on what you want or talk to us about your proposed changes.
+Take a look at our
+[Roadmap here](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/projects/1)
+and help us on what you want or talk to us about your proposed changes.
 
 ---
