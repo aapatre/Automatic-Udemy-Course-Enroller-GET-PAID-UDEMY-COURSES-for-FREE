@@ -66,7 +66,7 @@ class TutorialBarScraper:
         x = 0
         for _ in range(12):
             if (
-                self.settings.categories
+                    self.settings.categories
             ):  # If the categories are specified, then only add them if the category is in `categories`
                 if links[x + 2].text in self.settings.categories:
                     courses.append(links[x].get("href"))
@@ -86,7 +86,8 @@ class TutorialBarScraper:
         """
         response = requests.get(url=url)
         soup = BeautifulSoup(response.content, "html.parser")
-        udemy_link = soup.find("span", class_="rh_button_wrapper").find("a").get("href")
+        udemy_link = soup.find(
+            "span", class_="rh_button_wrapper").find("a").get("href")
         return udemy_link
 
     def gather_udemy_course_links(self, courses: List[str]) -> List:
