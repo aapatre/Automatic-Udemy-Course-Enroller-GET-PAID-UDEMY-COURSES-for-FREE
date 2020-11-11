@@ -162,25 +162,3 @@ class Settings:
             print(f"Saved your settings in {self._settings_path}")
         else:
             print("Not saving your settings as requested")
-
-
-class Constants:
-    udemy_categories = {
-        "Development": [
-            "Web Development",
-            "Mobile Development",
-            "Programming Languages",
-            "Game Development",
-            "Database Design & Development",
-            "Software Testing",
-        ],
-        "Business": {},
-        "Finance & Accounting": {},
-        "IT & Software": {},
-        "Office Productivity": {},
-        "Personal Development": {},
-        "Design": {},
-        "Marketing": {},
-        "Health & Fitness": {},
-        "Music": {},
-    }
