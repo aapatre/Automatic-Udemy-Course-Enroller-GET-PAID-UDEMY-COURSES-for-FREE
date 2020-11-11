@@ -41,4 +41,5 @@ def redeem_courses(driver: WebDriver, settings: Settings):
                 if settings.is_ci_build:
                     return
 
-        print("Moving on to the next page of the course list on tutorialbar.com")
+        print(
+            "Moving on to the next page of the course list on tutorialbar.com")
