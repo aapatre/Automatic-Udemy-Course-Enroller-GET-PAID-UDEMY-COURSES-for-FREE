@@ -60,7 +60,6 @@ class TutorialBarScraper:
         soup = BeautifulSoup(response.content, "html.parser")
 
         links = soup.find("div", class_="rh-post-wrapper").find_all("a")
-        # print(links)
 
         courses = []
 
