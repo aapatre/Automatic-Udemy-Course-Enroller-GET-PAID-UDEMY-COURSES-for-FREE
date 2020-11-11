@@ -135,8 +135,8 @@ class Settings:
         categories = input("Please enter in a list of comma separated values of"
                            " the course categories you like, for example:\n"
                            "Development, Design\n>")
-        return [course.strip()
-                for course in categories.split(",")] if categories else []
+        return [category.strip()
+                for category in categories.split(",")] if categories else []
 
     def _save_settings(self) -> None:
         """
