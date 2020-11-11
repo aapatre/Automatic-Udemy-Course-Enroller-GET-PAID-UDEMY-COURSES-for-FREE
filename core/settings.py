@@ -11,11 +11,13 @@ class Settings:
     """
     Contains all logic related to the scripts settings
     """
+
     def __init__(self):
         self.email = None
         self.password = None
         self.zip_code = None
         self.languages = []
+        self.categories = []
 
         self._settings_path = "settings.yaml"
         self.is_ci_build = strtobool(os.environ.get("CI", "False"))
@@ -63,6 +65,9 @@ class Settings:
             self.password = udemy_settings["password"]
             self.zip_code = udemy_settings.get("zipcode")
             self.languages = udemy_settings.get("languages")
+            self.categories = udemy_settings.get("categories", [])
+
+        self.categories = []
         return settings
 
     def _generate_settings(self) -> None:
@@ -127,11 +132,11 @@ class Settings:
 
     @staticmethod
     def _get_categories() -> List[str]:
-        courses = input("Please enter in a list of comma separated values of"
-                        " the course categories you like, for example:\n"
-                        "Development, Design\n>")
+        categories = input("Please enter in a list of comma separated values of"
+                           " the course categories you like, for example:\n"
+                           "Development, Design\n>")
         return [course.strip()
-                for course in courses.split(",")] if courses else []
+                for course in categories.split(",")] if categories else []
 
     def _save_settings(self) -> None:
         """
@@ -148,6 +153,7 @@ class Settings:
                 "password": str(self.password),
                 "zipcode": str(self.zip_code),
                 "languages": self.languages,
+                "categories": str(self.categories)
             }
 
             with open(self._settings_path, "w+") as f:
@@ -155,3 +161,25 @@ class Settings:
             print(f"Saved your settings in {self._settings_path}")
         else:
             print("Not saving your settings as requested")
+
+
+class Constants:
+    udemy_categories = {
+        'Development': [
+            'Web Development',
+            'Mobile Development',
+            'Programming Languages',
+            'Game Development',
+            'Database Design & Development',
+            'Software Testing'
+        ],
+        "Business": {},
+        "Finance & Accounting": {},
+        "IT & Software": {},
+        "Office Productivity": {},
+        "Personal Development": {},
+        "Design": {},
+        "Marketing": {},
+        "Health & Fitness": {},
+        "Music": {}
+    }
