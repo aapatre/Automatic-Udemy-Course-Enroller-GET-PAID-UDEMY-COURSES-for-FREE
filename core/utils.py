@@ -40,12 +40,5 @@ def redeem_courses(driver: WebDriver, settings: Settings):
             finally:
                 if settings.is_ci_build:
                     return
-<<<<<<< HEAD
-                print(
-                    "Unable to enroll for this course either because you have already claimed it or the browser "
-                    "window has been closed!"
-                )
-=======
->>>>>>> aeac10f99ddba0368914882f3bfe1fc18bb1c5f3
 
         print("Moving on to the next page of the course list on tutorialbar.com")
