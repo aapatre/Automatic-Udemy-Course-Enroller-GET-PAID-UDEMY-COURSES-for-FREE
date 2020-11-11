@@ -66,7 +66,7 @@ class TutorialBarScraper:
         x = 0
         for _ in range(12):
             if (
-                    self.settings.categories
+                self.settings.categories
             ):  # If the categories are specified, then only add them if the category is in `categories`
                 if links[x + 2].text in self.settings.categories:
                     courses.append(links[x].get("href"))

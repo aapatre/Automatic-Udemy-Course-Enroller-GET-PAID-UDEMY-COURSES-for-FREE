@@ -113,8 +113,7 @@ class Settings:
 
         :return: The users udemy zip code
         """
-        zip_code = input(
-            "Please enter your zipcode (Not necessary in some regions): ")
+        zip_code = input("Please enter your zipcode (Not necessary in some regions): ")
         return zip_code
 
     @staticmethod
@@ -127,16 +126,20 @@ class Settings:
         languages = input(
             "Please enter your language preferences (comma separated list e.g. English,German): "
         )
-        return [lang.strip()
-                for lang in languages.split(",")] if languages else []
+        return [lang.strip() for lang in languages.split(",")] if languages else []
 
     @staticmethod
     def _get_categories() -> List[str]:
-        categories = input("Please enter in a list of comma separated values of"
-                           " the course categories you like, for example:\n"
-                           "Development, Design\n>")
-        return [category.strip()
-                for category in categories.split(",")] if categories else []
+        categories = input(
+            "Please enter in a list of comma separated values of"
+            " the course categories you like, for example:\n"
+            "Development, Design\n>"
+        )
+        return (
+            [category.strip() for category in categories.split(",")]
+            if categories
+            else []
+        )
 
     def _save_settings(self) -> None:
         """
@@ -145,15 +148,14 @@ class Settings:
         :return:
         """
         yaml_structure = dict()
-        save_settings = input(
-            "Do you want to save settings for future use (Y/N): ")
+        save_settings = input("Do you want to save settings for future use (Y/N): ")
         if save_settings.lower() == "y":
             yaml_structure["udemy"] = {
                 "email": str(self.email),
                 "password": str(self.password),
                 "zipcode": str(self.zip_code),
                 "languages": self.languages,
-                "categories": str(self.categories)
+                "categories": str(self.categories),
             }
 
             with open(self._settings_path, "w+") as f:
@@ -165,13 +167,13 @@ class Settings:
 
 class Constants:
     udemy_categories = {
-        'Development': [
-            'Web Development',
-            'Mobile Development',
-            'Programming Languages',
-            'Game Development',
-            'Database Design & Development',
-            'Software Testing'
+        "Development": [
+            "Web Development",
+            "Mobile Development",
+            "Programming Languages",
+            "Game Development",
+            "Database Design & Development",
+            "Software Testing",
         ],
         "Business": {},
         "Finance & Accounting": {},
@@ -181,5 +183,5 @@ class Constants:
         "Design": {},
         "Marketing": {},
         "Health & Fitness": {},
-        "Music": {}
+        "Music": {},
     }
