@@ -68,8 +68,11 @@ class UdemyActions:
         # If the user has configured languages check it is a supported option
         if self.settings.languages:
             locale_xpath = "//div[@data-purpose='lead-course-locale']"
-            element_text = (WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, locale_xpath))).text)
+            element_text = (
+                WebDriverWait(self.driver, 10)
+                .until(EC.presence_of_element_located((By.XPATH, locale_xpath)))
+                .text
+            )
 
             if element_text not in self.settings.languages:
                 print(f"Course language not wanted: {element_text}")
@@ -79,26 +82,31 @@ class UdemyActions:
         buy_course_button_xpath = "//button[@data-purpose='buy-this-course-button']"
         # We need to wait for this element to be clickable before checking if already purchased
         WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, buy_course_button_xpath)))
+            EC.element_to_be_clickable((By.XPATH, buy_course_button_xpath))
+        )
 
         # Check if already enrolled
         already_purchased_xpath = (
-            "//div[starts-with(@class, 'buy-box--purchased-text-banner')]")
+            "//div[starts-with(@class, 'buy-box--purchased-text-banner')]"
+        )
         if self.driver.find_elements_by_xpath(already_purchased_xpath):
             print(f"Already enrolled in {course_name}")
             return
 
         # Click to enroll in the course
         element_present = EC.presence_of_element_located(
-            (By.XPATH, buy_course_button_xpath))
+            (By.XPATH, buy_course_button_xpath)
+        )
         WebDriverWait(self.driver, 10).until(element_present).click()
 
         enroll_button_xpath = "//*[@class='udemy pageloaded']/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button"
         # Enroll Now 2
-        element_present = EC.presence_of_element_located((
-            By.XPATH,
-            enroll_button_xpath,
-        ))
+        element_present = EC.presence_of_element_located(
+            (
+                By.XPATH,
+                enroll_button_xpath,
+            )
+        )
         WebDriverWait(self.driver, 10).until(element_present)
 
         # Check if zipcode exists before doing this
@@ -106,7 +114,8 @@ class UdemyActions:
             # Assume sometimes zip is not required because script was originally pushed without this
             try:
                 zipcode_element = self.driver.find_element_by_id(
-                    "billingAddressSecondaryInput")
+                    "billingAddressSecondaryInput"
+                )
                 zipcode_element.send_keys(self.settings.zip_code)
 
                 # After you put the zip code in, the page refreshes itself and disables the enroll button for a split
@@ -126,17 +135,13 @@ class UdemyActions:
                 _price = price_element.text
                 # Extract the numbers from the price text
                 # This logic should work for different locales and currencies
-                _numbers = "".join(
-                    filter(lambda x: x if x.isdigit() else None, _price))
+                _numbers = "".join(filter(lambda x: x if x.isdigit() else None, _price))
                 if _numbers.isdigit() and int(_numbers) > 0:
-                    print(
-                        f"Skipping course as it now costs {_price}: {course_name}"
-                    )
+                    print(f"Skipping course as it now costs {_price}: {course_name}")
                     return
 
         # Hit the final Enroll now button
-        udemy_enroll_element_2 = self.driver.find_element_by_xpath(
-            enroll_button_xpath)
+        udemy_enroll_element_2 = self.driver.find_element_by_xpath(enroll_button_xpath)
         udemy_enroll_element_2.click()
 
         print(f"Successfully enrolled in: {course_name}")
