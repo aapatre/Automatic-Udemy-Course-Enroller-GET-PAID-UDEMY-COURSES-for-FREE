@@ -1,8 +1,11 @@
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+    WebDriverException,
+)
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from core import Settings
-from core import TutorialBarScraper
-from core import UdemyActions
+from core import Settings, TutorialBarScraper, UdemyActions, exceptions
 
 
 def redeem_courses(driver: WebDriver, settings: Settings):
@@ -20,16 +23,22 @@ def redeem_courses(driver: WebDriver, settings: Settings):
         for course_link in udemy_course_links:
             try:
                 udemy_actions.redeem(course_link)
-                if settings.is_ci_build:
-                    return
+            except NoSuchElementException as e:
+                print(e)
+            except TimeoutException:
+                print(f"Timeout on link: {course_link}")
+            except WebDriverException as e:
+                print(f"Webdriver exception on link: {course_link}")
+                print(e)
             except KeyboardInterrupt:
                 raise
-            except Exception:
+            except exceptions.RobotException as e:
+                print(e)
+                raise e
+            except Exception as e:
+                print(f"Unexpected exception: {e}")
+            finally:
                 if settings.is_ci_build:
                     return
-                print(
-                    "Unable to enroll for this course either because you have already claimed it or the browser "
-                    "window has been closed!")
 
-        print(
-            "Moving on to the next page of the course list on tutorialbar.com")
+        print("Moving on to the next page of the course list on tutorialbar.com")
