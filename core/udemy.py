@@ -2,9 +2,9 @@ import time
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 
 from core.exceptions import RobotException
 from core.settings import Settings
