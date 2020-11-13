@@ -1,5 +1,8 @@
-from selenium.common.exceptions import (NoSuchElementException,
-                                        TimeoutException, WebDriverException)
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+    WebDriverException,
+)
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from core import Settings, TutorialBarScraper, UdemyActions, exceptions
