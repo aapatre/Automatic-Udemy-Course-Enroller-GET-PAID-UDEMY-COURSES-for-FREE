@@ -1,0 +1,57 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Chrome",
+            "type": "python",
+            "request": "launch",
+            "program": "./udemy_enroller_chrome.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug Chromium",
+            "type": "python",
+            "request": "launch",
+            "program": "./udemy_enroller_chromium.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug Edge",
+            "type": "python",
+            "request": "launch",
+            "program": "./udemy_enroller_edge.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug Firefox",
+            "type": "python",
+            "request": "launch",
+            "program": "./udemy_enroller_firefox.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug Internet Explorer",
+            "type": "python",
+            "request": "launch",
+            "program": "./udemy_enroller_internet_explorer.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug Opera",
+            "type": "python",
+            "request": "launch",
+            "program": "./udemy_enroller_opera.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug Vanilla",
+            "type": "python",
+            "request": "launch",
+            "program": "./udemy_enroller_vanilla.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}

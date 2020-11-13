@@ -97,8 +97,13 @@ class UdemyActions:
         element_present = EC.presence_of_element_located(
             (By.XPATH, buy_course_button_xpath)
         )
-        WebDriverWait(self.driver, 10).until(element_present).click()
+        
+        if(button.text == "Go to course"):
+            print("Course already registered")
+            return
 
+        button.click()
+        
         enroll_button_xpath = "//*[@class='udemy pageloaded']/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button"
         # Enroll Now 2
         element_present = EC.presence_of_element_located(
