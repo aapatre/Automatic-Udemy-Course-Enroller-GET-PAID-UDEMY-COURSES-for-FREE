@@ -4,8 +4,10 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 
 from core.exceptions import RobotException
+from core.settings import Settings
 
 
 class UdemyActions:
@@ -15,7 +17,7 @@ class UdemyActions:
 
     DOMAIN = "https://www.udemy.com"
 
-    def __init__(self, driver, settings):
+    def __init__(self, driver: WebDriver, settings: Settings):
         self.driver = driver
         self.settings = settings
         self.logged_in = False
@@ -77,6 +79,21 @@ class UdemyActions:
             if element_text not in self.settings.languages:
                 print(f"Course language not wanted: {element_text}")
                 return
+        if self.settings.categories:
+            # If the wanted categories are specified, get all the categories of the course by
+            # scraping the breadcrumbs on the top
+
+            breadcrumbs: WebElement = self.driver.find_element_by_class_name(
+                "udlite-breadcrumb"
+            )
+            breadcrumbs = breadcrumbs.find_elements_by_class_name("udlite-heading-sm")
+            breadcrumbs = [bc.text for bc in breadcrumbs]  # Get only the text
+
+            for category in self.settings.categories:
+                if category in breadcrumbs:
+                    break
+            else:
+                return print(f"Skipping course as it does not have a wanted category")
 
         # Enroll Now 1
         buy_course_button_xpath = "//button[@data-purpose='buy-this-course-button']"

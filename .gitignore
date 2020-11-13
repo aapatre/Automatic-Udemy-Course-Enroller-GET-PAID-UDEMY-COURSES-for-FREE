@@ -225,3 +225,6 @@ Pipfile.lock
 settings.yaml
 
 poetry.lock
+
+# Editor specific
+.vscode

@@ -64,9 +64,8 @@ class Settings:
             self.password = udemy_settings["password"]
             self.zip_code = udemy_settings.get("zipcode")
             self.languages = udemy_settings.get("languages")
-            self.categories = udemy_settings.get("categories", [])
+            self.categories = udemy_settings.get("categories")
 
-        self.categories = []
         return settings
 
     def _generate_settings(self) -> None:
@@ -154,7 +153,7 @@ class Settings:
                 "password": str(self.password),
                 "zipcode": str(self.zip_code),
                 "languages": self.languages,
-                "categories": str(self.categories),
+                "categories": self.categories,
             }
 
             with open(self._settings_path, "w+") as f:
