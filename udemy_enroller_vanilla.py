@@ -18,19 +18,14 @@ Also, enter the location of your webdriver.
 path = r"..location\msedgedriver.exe"
 driver = webdriver.Edge(
     path
-)  # webdriver.Chrome(path) for Google Chrome, webdriver.Firefox(path) for Mozilla Firefox, webdriver.Edge(
-# path) for Microsoft Edge, webdriver.Safari(path) for Apple Safari
+)
+# driver = webdriver.Chrome(path)  # Uncomment for Google Chrome driver
+# driver = webdriver.Firefox(path)  # Uncomment for Mozilla Firefox driver
+# driver = webdriver.Edge(path)  # Uncomment for Microsoft Edge driver
+# driver = webdriver.Safari(path)  # Uncomment for Apple Safari driver
 
 # Maximizes the browser window since Udemy has a responsive design and the code only works
-driver.maximize_window()
 # in the maximized layout
+driver.maximize_window()
 
-try:
-    redeem_courses(driver, settings)
-except KeyboardInterrupt:
-    print("Exiting the script")
-except Exception as e:
-    print("Error: {}".format(e))
-finally:
-    print("Closing browser")
-    driver.quit()
+redeem_courses(driver, settings)

@@ -14,14 +14,4 @@ driver = webdriver.Firefox()
 # Maximizes the browser window since Udemy has a responsive design and the code only works
 driver.maximize_window()
 
-# in the maximized layout
-
-try:
-    redeem_courses(driver, settings)
-except KeyboardInterrupt:
-    print("Exiting the script")
-except Exception as e:
-    print("Error: {}".format(e))
-finally:
-    print("Closing browser")
-    driver.quit()
+redeem_courses(driver, settings)

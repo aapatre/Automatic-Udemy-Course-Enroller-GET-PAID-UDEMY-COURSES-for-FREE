@@ -28,18 +28,7 @@ driver = webdriver.Chrome(ChromeDriverManager().install(),
                           options=chrome_options)
 
 # Maximizes the browser window since Udemy has a responsive design and the code only works
-driver.maximize_window()
 # in the maximized layout
+driver.maximize_window()
 
-try:
-    redeem_courses(driver, settings)
-    if settings.is_ci_build:
-        print("We have attempted to subscribe to 1 udemy course")
-        print("Ending test")
-except KeyboardInterrupt:
-    print("Exiting the script")
-except Exception as e:
-    print("Error: {}".format(e))
-finally:
-    print("Closing browser")
-    driver.quit()
+redeem_courses(driver, settings)
