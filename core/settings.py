@@ -13,13 +13,13 @@ class Settings:
     Contains all logic related to the scripts settings
     """
 
-    def __init__(self):
+    def __init__(self, settings_path="settings.yaml"):
         self.email = None
         self.password = None
         self.zip_code = None
         self.languages = []
 
-        self._settings_path = "settings.yaml"
+        self._settings_path = settings_path
         self.is_ci_build = strtobool(os.environ.get("CI", "False"))
         self._init_settings()
 
