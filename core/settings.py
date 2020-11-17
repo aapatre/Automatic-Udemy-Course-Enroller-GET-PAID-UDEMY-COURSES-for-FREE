@@ -20,7 +20,7 @@ class Settings:
         self.languages = []
 
         self._settings_path = settings_path
-        self.is_ci_build = strtobool(os.environ.get("CI", "False"))
+        self.is_ci_build = strtobool(os.environ.get("CI_TEST", "False"))
         self._init_settings()
 
     def _init_settings(self) -> None:

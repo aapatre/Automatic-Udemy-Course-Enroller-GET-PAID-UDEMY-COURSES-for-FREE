@@ -34,13 +34,10 @@ jobs:
     - name: Run unittests
       run: |
         poetry run pytest
-    - name: Install Chrome and Firefox
-      run: |
-        sudo apt install google-chrome-stable
-        sudo apt-get install firefox
     - name: Make sure chrome crawler is working (Attempt to subscribe to 1 course)
       env:
         UDEMY_EMAIL: ${{ secrets.UDEMY_EMAIL }}
         UDEMY_PASSWORD: ${{ secrets.UDEMY_PASSWORD }}
+        CI_TEST: "True"
       run: |
-        python udemy_enroller_chrome.py
+        poetry run python udemy_enroller_chrome.py
