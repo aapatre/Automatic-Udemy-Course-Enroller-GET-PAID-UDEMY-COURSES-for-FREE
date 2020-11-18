@@ -128,10 +128,13 @@ class Settings:
 
     @staticmethod
     def _get_categories() -> List[str]:
+        """Gets the categories the user wants.
+
+        :return: list of categories the user wants."""
         categories = input(
             "Please enter in a list of comma separated values of"
             " the course categories you like, for example:\n"
-            "Development, Design\n>"
+            "Development, Design\n> "
         )
         return (
             [category.strip() for category in categories.split(",")]
