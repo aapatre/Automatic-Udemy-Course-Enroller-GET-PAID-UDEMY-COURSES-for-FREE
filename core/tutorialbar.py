@@ -4,8 +4,6 @@ from typing import List
 import requests
 from bs4 import BeautifulSoup
 
-from core import Settings
-
 
 class TutorialBarScraper:
     """
@@ -14,11 +12,10 @@ class TutorialBarScraper:
 
     DOMAIN = "https://www.tutorialbar.com"
 
-    def __init__(self, settings: Settings):
+    def __init__(self):
         self.current_page = 0
         self.last_page = None
         self.links_per_page = 12
-        self.settings = settings
 
     def run(self) -> List:
         """
@@ -64,7 +61,7 @@ class TutorialBarScraper:
         courses = []
 
         x = 0
-        for _ in range(12):
+        for _ in range(self.links_per_page):
             courses.append(links[x].get("href"))
             x += 3
 
