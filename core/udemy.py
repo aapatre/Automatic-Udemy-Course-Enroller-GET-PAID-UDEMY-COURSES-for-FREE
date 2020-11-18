@@ -93,7 +93,8 @@ class UdemyActions:
                 if category in breadcrumbs:
                     break
             else:
-                return print("Skipping course as it does not have a wanted category")
+                print("Skipping course as it does not have a wanted category")
+                return
 
         # Enroll Now 1
         buy_course_button_xpath = "//button[@data-purpose='buy-this-course-button']"
