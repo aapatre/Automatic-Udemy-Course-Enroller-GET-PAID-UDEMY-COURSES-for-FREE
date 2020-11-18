@@ -84,7 +84,7 @@ class UdemyActions:
             # scraping the breadcrumbs on the top
 
             breadcrumbs_path = "udlite-breadcrumb"
-            breadcrumbs_text_path = "udlite-breadcrumb"
+            breadcrumbs_text_path = "udlite-heading-sm"
             breadcrumbs: WebElement = self.driver.find_element_by_class_name(
                 breadcrumbs_path
             )
