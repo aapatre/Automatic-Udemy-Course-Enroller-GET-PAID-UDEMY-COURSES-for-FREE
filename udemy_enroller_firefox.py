@@ -12,6 +12,7 @@ settings = Settings()
 driver = webdriver.Firefox()
 
 # Maximizes the browser window since Udemy has a responsive design and the code only works
+# in the maximized layout
 driver.maximize_window()
 
 redeem_courses(driver, settings)

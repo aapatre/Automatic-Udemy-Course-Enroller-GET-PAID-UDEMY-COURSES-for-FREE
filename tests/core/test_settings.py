@@ -9,14 +9,30 @@ from ruamel.yaml import YAML
 
 @pytest.mark.parametrize(
     "email,password,zip_code,languages,save,file_name",
-    [("test4@mail.com", "dskalksdl678", "12345", None, "Y", "test_settings1.yaml"),
-     ("test6@mail.com", "$6237556^^$", "12345", "English,French", "Y", "test_settings2.yaml"),
-     ("cultest8lzie@mail.com", "43223*&6", "12345", None, "N", "no_save_test_settings.yaml")],
+    [
+        ("test4@mail.com", "dskalksdl678", "12345", None, "Y", "test_settings1.yaml"),
+        (
+            "test6@mail.com",
+            "$6237556^^$",
+            "12345",
+            "English,French",
+            "Y",
+            "test_settings2.yaml",
+        ),
+        (
+            "cultest8lzie@mail.com",
+            "43223*&6",
+            "12345",
+            None,
+            "N",
+            "no_save_test_settings.yaml",
+        ),
+    ],
     ids=(
         "create settings all languages and save",
         "create settings select languages and save",
-        "create settings all languages and don't save"
-    )
+        "create settings all languages and don't save",
+    ),
 )
 def test_settings(email, password, zip_code, languages, save, file_name):
     with mock.patch("builtins.input", side_effect=[email, zip_code, languages, save]):
@@ -35,7 +51,11 @@ def test_settings(email, password, zip_code, languages, save, file_name):
                     assert settings["udemy"]["email"] == email
                     assert settings["udemy"]["password"] == password
                     assert settings["udemy"]["zipcode"] == zip_code
-                    assert settings["udemy"]["languages"] == [] if languages is None else ",".join(languages)
+                    assert (
+                        settings["udemy"]["languages"] == []
+                        if languages is None
+                        else ",".join(languages)
+                    )
                 # Load settings just created
                 Settings(settings_path)
             else:
@@ -44,14 +64,37 @@ def test_settings(email, password, zip_code, languages, save, file_name):
 
 @pytest.mark.parametrize(
     "email,password,zip_code,languages,save,file_name",
-    [("test9@mail.com", "uherwh834", "12345", None, "Y", "test_load_existing_settings1.yaml"),
-     ("test10@mail.com", "234sdfs", "None", "English", "Y", "test_load_existing_settings2.yaml"),
-     ("test11@mail.com", "frtuhrfty234", "788192", "French,German", "Y", "test_load_existing_settings3.yaml")],
+    [
+        (
+            "test9@mail.com",
+            "uherwh834",
+            "12345",
+            None,
+            "Y",
+            "test_load_existing_settings1.yaml",
+        ),
+        (
+            "test10@mail.com",
+            "234sdfs",
+            "None",
+            "English",
+            "Y",
+            "test_load_existing_settings2.yaml",
+        ),
+        (
+            "test11@mail.com",
+            "frtuhrfty234",
+            "788192",
+            "French,German",
+            "Y",
+            "test_load_existing_settings3.yaml",
+        ),
+    ],
     ids=(
         "load existing settings no languages",
         "load existing settings no zipcode",
         "load existing settings full",
-    )
+    ),
 )
 def test_load_existing_settings(email, password, zip_code, languages, save, file_name):
     with mock.patch("builtins.input", side_effect=[email, zip_code, languages, save]):
@@ -65,3 +108,33 @@ def test_load_existing_settings(email, password, zip_code, languages, save, file
     assert settings.password == password
     assert settings.zip_code == zip_code
     assert settings.languages == [] if languages is None else languages
+
+
+@pytest.mark.parametrize(
+    "is_ci_run,email,password",
+    [
+        (
+            True,
+            "username1@mail.com",
+            "password1",
+        ),
+        (
+            False,
+            "username2@mail.com",
+            "password2",
+        ),
+    ],
+    ids=(
+        "is ci run",
+        "is not a ci run",
+    ),
+)
+@mock.patch.object(Settings, "_load_user_settings")
+def test_load_ci_settings(_, monkeypatch, is_ci_run, email, password):
+    monkeypatch.setenv("CI_TEST", str(is_ci_run))
+    monkeypatch.setenv("UDEMY_EMAIL", email)
+    monkeypatch.setenv("UDEMY_PASSWORD", password)
+    settings = Settings("")
+    if is_ci_run:
+        assert settings.email == email
+        assert settings.password == password
