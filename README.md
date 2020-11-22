@@ -1,3 +1,7 @@
+[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/it-works-why.svg)](https://forthebadge.com)
+
+
 # Automatic Udemy Course Enroller: GET PAID COURSES for FREE! (Legally!)
 
 Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of

@@ -224,4 +224,7 @@ Pipfile.lock
 
 settings.yaml
 
-pyproject.toml
+poetry.lock
+
+# Editor specific
+.vscode

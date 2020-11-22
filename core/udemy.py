@@ -3,10 +3,12 @@ from enum import Enum
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from core.exceptions import RobotException
+from core.settings import Settings
 
 
 class UdemyStatus(Enum):
@@ -17,6 +19,7 @@ class UdemyStatus(Enum):
     ENROLLED = "ENROLLED"
     EXPIRED = "EXPIRED"
     UNWANTED_LANGUAGE = "UNWANTED_LANGUAGE"
+    UNWANTED_CATEGORY = "UNWANTED_CATEGORY"
 
 
 class UdemyActions:
@@ -26,7 +29,7 @@ class UdemyActions:
 
     DOMAIN = "https://www.udemy.com"
 
-    def __init__(self, driver, settings):
+    def __init__(self, driver: WebDriver, settings: Settings):
         self.driver = driver
         self.settings = settings
         self.logged_in = False
@@ -88,6 +91,25 @@ class UdemyActions:
             if element_text not in self.settings.languages:
                 print(f"Course language not wanted: {element_text}")
                 return UdemyStatus.UNWANTED_LANGUAGE.value
+
+        if self.settings.categories:
+            # If the wanted categories are specified, get all the categories of the course by
+            # scraping the breadcrumbs on the top
+
+            breadcrumbs_path = "udlite-breadcrumb"
+            breadcrumbs_text_path = "udlite-heading-sm"
+            breadcrumbs: WebElement = self.driver.find_element_by_class_name(
+                breadcrumbs_path
+            )
+            breadcrumbs = breadcrumbs.find_elements_by_class_name(breadcrumbs_text_path)
+            breadcrumbs = [bc.text for bc in breadcrumbs]  # Get only the text
+
+            for category in self.settings.categories:
+                if category in breadcrumbs:
+                    break
+            else:
+                print("Skipping course as it does not have a wanted category")
+                return UdemyStatus.UNWANTED_CATEGORY.value
 
         # Enroll Now 1
         buy_course_button_xpath = "//button[@data-purpose='buy-this-course-button']"

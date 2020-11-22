@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "automatic-udemy-course-enroller-get-paid-udemy-courses-for-free"
+version = "0.1.0"
+description = ""
+authors = ["fakeid30 <junayeed@protonmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8.6"
+selenium = "^3.141.0"
+requests = "^2.24.0"
+beautifulsoup4 = "^4.9.3"
+"ruamel.yaml" = "^0.16.12"
+webdriver-manager = "^3.2.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0a5"]
+build-backend = "poetry.core.masonry.api"
