@@ -9,7 +9,7 @@ class CourseCache(object):
     """
 
     def __init__(self):
-        self._file_name = ".cache"
+        self._file_name = ".course_cache"
         self._cache = []
         self._load_cache()
 
