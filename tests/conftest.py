@@ -1,6 +1,7 @@
 import os
-import pytest
 import shutil
+
+import pytest
 
 
 @pytest.fixture(scope="session", autouse=True)

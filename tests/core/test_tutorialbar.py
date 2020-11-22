@@ -1,8 +1,8 @@
+from unittest import mock
+
 import pytest
 
 from core import TutorialBarScraper
-
-from unittest import mock
 
 
 @pytest.mark.parametrize(

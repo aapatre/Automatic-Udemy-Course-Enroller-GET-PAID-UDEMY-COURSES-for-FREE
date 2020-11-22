@@ -1,10 +1,10 @@
 import os
+from unittest import mock
+
 import pytest
+from ruamel.yaml import YAML
 
 from core import Settings
-
-from unittest import mock
-from ruamel.yaml import YAML
 
 
 @pytest.mark.parametrize(
