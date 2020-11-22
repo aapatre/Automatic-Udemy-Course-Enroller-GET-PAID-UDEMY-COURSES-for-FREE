@@ -8,21 +8,40 @@ from ruamel.yaml import YAML
 
 
 @pytest.mark.parametrize(
-    "email,password,zip_code,languages,save,file_name",
+    "email,password,zip_code,languages,categories,save,file_name",
     [
-        ("test4@mail.com", "dskalksdl678", "12345", None, "Y", "test_settings1.yaml"),
+        (
+            "test4@mail.com",
+            "dskalksdl678",
+            "12345",
+            None,
+            None,
+            "Y",
+            "test_settings1.yaml",
+        ),
         (
             "test6@mail.com",
             "$6237556^^$",
             "12345",
             "English,French",
+            None,
             "Y",
             "test_settings2.yaml",
+        ),
+        (
+            "test9@mail.com",
+            "$62371231236^^$",
+            "12345",
+            "English,French",
+            "Development,Art",
+            "Y",
+            "test_settings5.yaml",
         ),
         (
             "cultest8lzie@mail.com",
             "43223*&6",
             "12345",
+            None,
             None,
             "N",
             "no_save_test_settings.yaml",
@@ -31,11 +50,14 @@ from ruamel.yaml import YAML
     ids=(
         "create settings all languages and save",
         "create settings select languages and save",
+        "create settings select categories and save",
         "create settings all languages and don't save",
     ),
 )
-def test_settings(email, password, zip_code, languages, save, file_name):
-    with mock.patch("builtins.input", side_effect=[email, zip_code, languages, save]):
+def test_settings(email, password, zip_code, languages, categories, save, file_name):
+    with mock.patch(
+        "builtins.input", side_effect=[email, zip_code, languages, categories, save]
+    ):
         with mock.patch("getpass.getpass", return_value=password):
             settings_path = f"test_tmp/{file_name}"
             settings = Settings(settings_path)
@@ -43,6 +65,7 @@ def test_settings(email, password, zip_code, languages, save, file_name):
             assert settings.password == password
             assert settings.zip_code == zip_code
             assert settings.languages == [] if languages is None else languages
+            assert settings.categories == [] if categories is None else categories
 
             if save.upper() == "Y":
                 yaml = YAML()
@@ -56,6 +79,11 @@ def test_settings(email, password, zip_code, languages, save, file_name):
                         if languages is None
                         else ",".join(languages)
                     )
+                    assert (
+                        settings["udemy"]["categories"] == []
+                        if categories is None
+                        else categories
+                    )
                 # Load settings just created
                 Settings(settings_path)
             else:
@@ -63,21 +91,32 @@ def test_settings(email, password, zip_code, languages, save, file_name):
 
 
 @pytest.mark.parametrize(
-    "email,password,zip_code,languages,save,file_name",
+    "email,password,zip_code,languages,categories,save,file_name",
     [
         (
             "test9@mail.com",
             "uherwh834",
             "12345",
             None,
+            None,
             "Y",
             "test_load_existing_settings1.yaml",
+        ),
+        (
+            "test80@mail.com",
+            "jkajsdsad",
+            "None",
+            "Italian",
+            None,
+            "Y",
+            "test_load_existing_settings9.yaml",
         ),
         (
             "test10@mail.com",
             "234sdfs",
             "None",
             "English",
+            "Development,Art",
             "Y",
             "test_load_existing_settings2.yaml",
         ),
@@ -86,18 +125,24 @@ def test_settings(email, password, zip_code, languages, save, file_name):
             "frtuhrfty234",
             "788192",
             "French,German",
+            None,
             "Y",
             "test_load_existing_settings3.yaml",
         ),
     ],
     ids=(
         "load existing settings no languages",
+        "load existing settings no categories",
         "load existing settings no zipcode",
         "load existing settings full",
     ),
 )
-def test_load_existing_settings(email, password, zip_code, languages, save, file_name):
-    with mock.patch("builtins.input", side_effect=[email, zip_code, languages, save]):
+def test_load_existing_settings(
+    email, password, zip_code, languages, categories, save, file_name
+):
+    with mock.patch(
+        "builtins.input", side_effect=[email, zip_code, languages, categories, save]
+    ):
         with mock.patch("getpass.getpass", return_value=password):
             settings_path = f"test_tmp/{file_name}"
             Settings(settings_path)
@@ -108,6 +153,7 @@ def test_load_existing_settings(email, password, zip_code, languages, save, file
     assert settings.password == password
     assert settings.zip_code == zip_code
     assert settings.languages == [] if languages is None else languages
+    assert settings.categories == [] if categories is None else categories
 
 
 @pytest.mark.parametrize(
