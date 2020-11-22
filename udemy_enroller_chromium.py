@@ -11,7 +11,8 @@ from core.utils import redeem_courses
 settings = Settings()
 
 driver = webdriver.Chrome(
-    ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
+    ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+)
 
 # Maximizes the browser window since Udemy has a responsive design and the code only works
 # in the maximized layout

@@ -53,9 +53,12 @@ class TutorialBarScraper:
         :return: list of pages on tutorialbar.com that contain Udemy coupons
         """
         response = requests.get(url=url)
+
         soup = BeautifulSoup(response.content, "html.parser")
+
         links = soup.find("div", class_="rh-post-wrapper").find_all("a")
         self.last_page = links[-2].text
+
         courses = []
 
         x = 0

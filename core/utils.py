@@ -6,6 +6,7 @@ from selenium.common.exceptions import (
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from core import Settings, TutorialBarScraper, UdemyActions, exceptions
+from core.cache import CourseCache
 
 
 def _redeem_courses(driver: WebDriver, settings: Settings):
@@ -14,6 +15,7 @@ def _redeem_courses(driver: WebDriver, settings: Settings):
 
     :return:
     """
+    cache = CourseCache()
     tb_scraper = TutorialBarScraper()
     udemy_actions = UdemyActions(driver, settings)
     udemy_actions.login()  # login once outside while loop
@@ -22,7 +24,11 @@ def _redeem_courses(driver: WebDriver, settings: Settings):
 
         for course_link in udemy_course_links:
             try:
-                udemy_actions.redeem(course_link)
+                if course_link not in cache:
+                    status = udemy_actions.redeem(course_link)
+                    cache.add(course_link, status)
+                else:
+                    print(f"In cache: {course_link}")
             except NoSuchElementException as e:
                 print(e)
             except TimeoutException:
