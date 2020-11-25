@@ -56,17 +56,12 @@ class TutorialBarScraper:
 
         soup = BeautifulSoup(response.content, "html.parser")
 
-        links = soup.find("div", class_="rh-post-wrapper").find_all("a")
-        self.last_page = links[-2].text
+        links = soup.find_all("h3")
+        course_links = [link.find("a").get("href") for link in links]
 
-        courses = []
+        self.last_page = soup.find("li", class_="next_paginate_link").find_previous_sibling().text
 
-        x = 0
-        for _ in range(self.links_per_page):
-            courses.append(links[x].get("href"))
-            x += 3
-
-        return courses
+        return course_links
 
     @staticmethod
     def get_udemy_course_link(url: str) -> str:
