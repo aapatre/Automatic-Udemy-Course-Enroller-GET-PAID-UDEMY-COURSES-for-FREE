@@ -11,6 +11,7 @@ class TutorialBarScraper:
     """
 
     DOMAIN = "https://www.tutorialbar.com"
+    AD_DOMAINS = ("https://amzn",)
 
     def __init__(self):
         self.current_page = 0
@@ -31,11 +32,12 @@ class TutorialBarScraper:
 
         print(f"Page: {self.current_page} of {self.last_page} scraped")
         udemy_links = self.gather_udemy_course_links(course_links)
+        filtered_udemy_links = self._filter_ad_domains(udemy_links)
 
-        for counter, course in enumerate(udemy_links):
+        for counter, course in enumerate(filtered_udemy_links):
             print(f"Received Link {counter + 1} : {course}")
 
-        return udemy_links
+        return filtered_udemy_links
 
     def is_first_loop(self) -> bool:
         """
@@ -45,6 +47,22 @@ class TutorialBarScraper:
         """
         return self.current_page == 1
 
+    def _filter_ad_domains(self, udemy_links) -> List:
+        """
+        Filter out any known ad domains from the links scraped
+
+        :param list udemy_links: List of urls to filter ad domains from
+        :return: A list of filtered urls
+        """
+        ad_links = set()
+        for link in udemy_links:
+            for ad_domain in self.AD_DOMAINS:
+                if link.startswith(ad_domain):
+                    ad_links.add(link)
+        if ad_links:
+            print(f"Removing ad links from courses: {ad_links}")
+        return list(set(udemy_links) - ad_links)
+
     def get_course_links(self, url: str) -> List:
         """
         Gets the url of pages which contain the udemy link we want to get
@@ -53,17 +71,17 @@ class TutorialBarScraper:
         :return: list of pages on tutorialbar.com that contain Udemy coupons
         """
         response = requests.get(url=url)
+
         soup = BeautifulSoup(response.content, "html.parser")
-        links = soup.find("div", class_="rh-post-wrapper").find_all("a")
-        self.last_page = links[-2].text
-        courses = []
 
-        x = 0
-        for _ in range(self.links_per_page):
-            courses.append(links[x].get("href"))
-            x += 3
+        links = soup.find_all("h3")
+        course_links = [link.find("a").get("href") for link in links]
 
-        return courses
+        self.last_page = (
+            soup.find("li", class_="next_paginate_link").find_previous_sibling().text
+        )
+
+        return course_links
 
     @staticmethod
     def get_udemy_course_link(url: str) -> str:
