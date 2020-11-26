@@ -159,7 +159,9 @@ class UdemyActions:
 
         # Make sure the price has loaded
         price_class_loading = "udi-circle-loader"
-        WebDriverWait(self.driver, 10).until_not(EC.presence_of_element_located((By.CLASS_NAME, price_class_loading)))
+        WebDriverWait(self.driver, 10).until_not(
+            EC.presence_of_element_located((By.CLASS_NAME, price_class_loading))
+        )
 
         # Make sure the course is Free
         price_xpath = "//span[@data-purpose='total-price']//span"
@@ -183,8 +185,13 @@ class UdemyActions:
 
         # Wait for success page to load
         success_element_class = "alert-success"
-        (WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, success_element_class))).text)
+        (
+            WebDriverWait(self.driver, 10)
+            .until(
+                EC.presence_of_element_located((By.CLASS_NAME, success_element_class))
+            )
+            .text
+        )
 
         print(f"Successfully enrolled in: {course_name}")
         return UdemyStatus.ENROLLED.value
