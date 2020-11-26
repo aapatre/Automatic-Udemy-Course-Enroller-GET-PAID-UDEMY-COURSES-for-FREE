@@ -89,7 +89,7 @@ get all the requirements installed in one go.
   - Edge:
     [udemy_enroller_edge.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_edge.py)
 
-- **Has issues when run on custom kernal but works fine on vanilla OS:**
+- **Has issues when run on custom kernel but works fine on vanilla OS:**
 
   - Firefox:
     [udemy_enroller_firefox.py(requires manual driver installation)](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py)
