@@ -11,6 +11,7 @@ class TutorialBarScraper:
     """
 
     DOMAIN = "https://www.tutorialbar.com"
+    AD_DOMAINS = ("https://amzn",)
 
     def __init__(self):
         self.current_page = 0
@@ -31,11 +32,12 @@ class TutorialBarScraper:
 
         print(f"Page: {self.current_page} of {self.last_page} scraped")
         udemy_links = self.gather_udemy_course_links(course_links)
+        filtered_udemy_links = self._filter_ad_domains(udemy_links)
 
-        for counter, course in enumerate(udemy_links):
+        for counter, course in enumerate(filtered_udemy_links):
             print(f"Received Link {counter + 1} : {course}")
 
-        return udemy_links
+        return filtered_udemy_links
 
     def is_first_loop(self) -> bool:
         """
@@ -44,6 +46,22 @@ class TutorialBarScraper:
         :return: boolean showing if this is the first loop of the script
         """
         return self.current_page == 1
+
+    def _filter_ad_domains(self, udemy_links) -> List:
+        """
+        Filter out any known ad domains from the links scraped
+
+        :param list udemy_links: List of urls to filter ad domains from
+        :return: A list of filtered urls
+        """
+        ad_links = set()
+        for link in udemy_links:
+            for ad_domain in self.AD_DOMAINS:
+                if link.startswith(ad_domain):
+                    ad_links.add(link)
+        if ad_links:
+            print(f"Removing ad links from courses: {ad_links}")
+        return list(set(udemy_links) - ad_links)
 
     def get_course_links(self, url: str) -> List:
         """
@@ -59,7 +77,9 @@ class TutorialBarScraper:
         links = soup.find_all("h3")
         course_links = [link.find("a").get("href") for link in links]
 
-        self.last_page = soup.find("li", class_="next_paginate_link").find_previous_sibling().text
+        self.last_page = (
+            soup.find("li", class_="next_paginate_link").find_previous_sibling().text
+        )
 
         return course_links
 

@@ -157,6 +157,12 @@ class UdemyActions:
             except NoSuchElementException:
                 pass
 
+        # Make sure the price has loaded
+        price_class_loading = "udi-circle-loader"
+        WebDriverWait(self.driver, 10).until_not(
+            EC.presence_of_element_located((By.CLASS_NAME, price_class_loading))
+        )
+
         # Make sure the course is Free
         price_xpath = "//span[@data-purpose='total-price']//span"
         price_elements = self.driver.find_elements_by_xpath(price_xpath)
@@ -176,6 +182,16 @@ class UdemyActions:
         # Hit the final Enroll now button
         udemy_enroll_element_2 = self.driver.find_element_by_xpath(enroll_button_xpath)
         udemy_enroll_element_2.click()
+
+        # Wait for success page to load
+        success_element_class = "alert-success"
+        (
+            WebDriverWait(self.driver, 10)
+            .until(
+                EC.presence_of_element_located((By.CLASS_NAME, success_element_class))
+            )
+            .text
+        )
 
         print(f"Successfully enrolled in: {course_name}")
         return UdemyStatus.ENROLLED.value
