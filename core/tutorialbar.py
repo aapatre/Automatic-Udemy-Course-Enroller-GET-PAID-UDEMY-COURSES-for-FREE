@@ -77,7 +77,9 @@ class TutorialBarScraper:
         links = soup.find_all("h3")
         course_links = [link.find("a").get("href") for link in links]
 
-        self.last_page = soup.find("li", class_="next_paginate_link").find_previous_sibling().text
+        self.last_page = (
+            soup.find("li", class_="next_paginate_link").find_previous_sibling().text
+        )
 
         return course_links
 
