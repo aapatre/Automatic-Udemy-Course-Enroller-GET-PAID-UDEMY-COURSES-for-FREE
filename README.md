@@ -191,3 +191,7 @@ Take a look at our
 and help us on what you want or talk to us about your proposed changes.
 
 ---
+
+## Supporters
+
+Thanks to [Jetbrains](jetbrains.com/?from=udemy-free-course-enroller) for supporting us. They are the maker of world class IDE and developer tooling. If you think their product might help you, please support them. 
