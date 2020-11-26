@@ -1,3 +1,7 @@
+[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/it-works-why.svg)](https://forthebadge.com)
+
+
 # Automatic Udemy Course Enroller: GET PAID COURSES for FREE! (Legally!)
 
 Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of
@@ -71,7 +75,8 @@ get all the requirements installed in one go.
   using a text editor and insert your **Udemy registered email in the email
   section**, your **Udemy password in the password section**, and the **ZIP Code
   in the zipcode section (if you reside in the United States or any other region
-  where Udemy asks for ZIP Code as Billing Info, else enter a random number)**.
+  where Udemy asks for ZIP Code as Billing Info, else enter a random number)**
+  Additionally you can add your preferred languages and course categories.
 
 2 . Choose the appropriate file for your browser (from the list below):
 
@@ -157,8 +162,9 @@ it will save your precious time too! :)
 ### 5. Udemy has detected that I'm using automation tools to browse the website! What should I do?
 
 ![](https://i.imgur.com/pwseilE.jpg) Relax! This happens when you run the script
-several times in a short interval of time. Solve the captcha, close the browser,
-and simply re-run the script. Easy peasy lemon squeezy! 🍋🙃 <br /><br />
+several times in a short interval of time. Solve the captcha, hit enter in the terminal window you are running 
+the script from and allow the script to continue as normal.
+Easy peasy lemon squeezy! 🍋🙃 <br /><br />
 
 ### 6. The code compiles successfully but it's taking too long to work! IS there any way to fix that?
 

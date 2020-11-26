@@ -1,11 +1,25 @@
 import time
+from enum import Enum
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from core.exceptions import RobotException
+from core.settings import Settings
+
+
+class UdemyStatus(Enum):
+    """
+    Possible statuses of udemy course
+    """
+
+    ENROLLED = "ENROLLED"
+    EXPIRED = "EXPIRED"
+    UNWANTED_LANGUAGE = "UNWANTED_LANGUAGE"
+    UNWANTED_CATEGORY = "UNWANTED_CATEGORY"
 
 
 class UdemyActions:
@@ -15,7 +29,7 @@ class UdemyActions:
 
     DOMAIN = "https://www.udemy.com"
 
-    def __init__(self, driver, settings):
+    def __init__(self, driver: WebDriver, settings: Settings):
         self.driver = driver
         self.settings = settings
         self.logged_in = False
@@ -54,12 +68,12 @@ class UdemyActions:
                 # TODO: Verify successful login
                 self.logged_in = True
 
-    def redeem(self, url: str) -> None:
+    def redeem(self, url: str) -> str:
         """
         Redeems the course url passed in
 
         :param str url: URL of the course to redeem
-        :return: None
+        :return: A string detailing course status
         """
         self.driver.get(url)
 
@@ -76,7 +90,26 @@ class UdemyActions:
 
             if element_text not in self.settings.languages:
                 print(f"Course language not wanted: {element_text}")
-                return
+                return UdemyStatus.UNWANTED_LANGUAGE.value
+
+        if self.settings.categories:
+            # If the wanted categories are specified, get all the categories of the course by
+            # scraping the breadcrumbs on the top
+
+            breadcrumbs_path = "udlite-breadcrumb"
+            breadcrumbs_text_path = "udlite-heading-sm"
+            breadcrumbs: WebElement = self.driver.find_element_by_class_name(
+                breadcrumbs_path
+            )
+            breadcrumbs = breadcrumbs.find_elements_by_class_name(breadcrumbs_text_path)
+            breadcrumbs = [bc.text for bc in breadcrumbs]  # Get only the text
+
+            for category in self.settings.categories:
+                if category in breadcrumbs:
+                    break
+            else:
+                print("Skipping course as it does not have a wanted category")
+                return UdemyStatus.UNWANTED_CATEGORY.value
 
         # Enroll Now 1
         buy_course_button_xpath = "//button[@data-purpose='buy-this-course-button']"
@@ -91,7 +124,7 @@ class UdemyActions:
         )
         if self.driver.find_elements_by_xpath(already_purchased_xpath):
             print(f"Already enrolled in {course_name}")
-            return
+            return UdemyStatus.ENROLLED.value
 
         # Click to enroll in the course
         element_present = EC.presence_of_element_located(
@@ -124,6 +157,12 @@ class UdemyActions:
             except NoSuchElementException:
                 pass
 
+        # Make sure the price has loaded
+        price_class_loading = "udi-circle-loader"
+        WebDriverWait(self.driver, 10).until_not(
+            EC.presence_of_element_located((By.CLASS_NAME, price_class_loading))
+        )
+
         # Make sure the course is Free
         price_xpath = "//span[@data-purpose='total-price']//span"
         price_elements = self.driver.find_elements_by_xpath(price_xpath)
@@ -138,13 +177,24 @@ class UdemyActions:
                 _numbers = "".join(filter(lambda x: x if x.isdigit() else None, _price))
                 if _numbers.isdigit() and int(_numbers) > 0:
                     print(f"Skipping course as it now costs {_price}: {course_name}")
-                    return
+                    return UdemyStatus.EXPIRED.value
 
         # Hit the final Enroll now button
         udemy_enroll_element_2 = self.driver.find_element_by_xpath(enroll_button_xpath)
         udemy_enroll_element_2.click()
 
+        # Wait for success page to load
+        success_element_class = "alert-success"
+        (
+            WebDriverWait(self.driver, 10)
+            .until(
+                EC.presence_of_element_located((By.CLASS_NAME, success_element_class))
+            )
+            .text
+        )
+
         print(f"Successfully enrolled in: {course_name}")
+        return UdemyStatus.ENROLLED.value
 
     def _check_if_robot(self) -> bool:
         """
