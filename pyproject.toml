@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "automatic-udemy-course-enroller-get-paid-udemy-courses-for-free"
-version = "0.2.2"
+version = "0.3"
 description = ""
 authors = [""]
 
