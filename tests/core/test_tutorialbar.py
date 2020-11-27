@@ -39,7 +39,8 @@ def test_run(
 
     mock_get_course_links.assert_called_with(tutorialbar_course_page_link)
     mock_gather_udemy_course_links.assert_called_with(tutorialbar_links)
-    assert links == udemy_links
+    for link in links:
+        assert link in udemy_links
 
 
 @pytest.mark.parametrize(
