@@ -3,13 +3,14 @@
 # cleared all saved payment details on your Udemy account & the browser! For firefox you need to manually install the
 # driver on Arch Linux (sudo pacman -S geckodriver). Untested on other platforms.
 from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
 
 from core import Settings
 from core.utils import redeem_courses
 
 settings = Settings()
 
-driver = webdriver.Firefox()
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
 
 # Maximizes the browser window since Udemy has a responsive design and the
 # code only works in the maximized layout

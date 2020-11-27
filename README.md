@@ -75,7 +75,8 @@ get all the requirements installed in one go.
   using a text editor and insert your **Udemy registered email in the email
   section**, your **Udemy password in the password section**, and the **ZIP Code
   in the zipcode section (if you reside in the United States or any other region
-  where Udemy asks for ZIP Code as Billing Info, else enter a random number)**.
+  where Udemy asks for ZIP Code as Billing Info, else enter a random number)**
+  Additionally you can add your preferred languages and course categories.
 
 2 . Choose the appropriate file for your browser (from the list below):
 
@@ -88,7 +89,7 @@ get all the requirements installed in one go.
   - Edge:
     [udemy_enroller_edge.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_edge.py)
 
-- **Has issues:**
+- **Has issues when run on custom kernel but works fine on vanilla OS:**
 
   - Firefox:
     [udemy_enroller_firefox.py(requires manual driver installation)](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py)
@@ -161,8 +162,9 @@ it will save your precious time too! :)
 ### 5. Udemy has detected that I'm using automation tools to browse the website! What should I do?
 
 ![](https://i.imgur.com/pwseilE.jpg) Relax! This happens when you run the script
-several times in a short interval of time. Solve the captcha, close the browser,
-and simply re-run the script. Easy peasy lemon squeezy! 🍋🙃 <br /><br />
+several times in a short interval of time. Solve the captcha, hit enter in the terminal window you are running 
+the script from and allow the script to continue as normal.
+Easy peasy lemon squeezy! 🍋🙃 <br /><br />
 
 ### 6. The code compiles successfully but it's taking too long to work! IS there any way to fix that?
 
@@ -189,3 +191,9 @@ Take a look at our
 and help us on what you want or talk to us about your proposed changes.
 
 ---
+
+## Supporter
+
+[![JetBrains](https://i.imgur.com/h2R018M.jpg)](https://jetbrains.com/?from=udemy-free-course-enroller)
+
+Thanks to [JetBrains](https://jetbrains.com/?from=udemy-free-course-enroller) for supporting us. They are the maker of world class IDE and developer tooling. If you think their product might help you, please support them. 
