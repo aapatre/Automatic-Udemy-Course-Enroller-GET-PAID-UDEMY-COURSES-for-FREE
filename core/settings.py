@@ -11,15 +11,15 @@ class Settings:
     Contains all logic related to the scripts settings
     """
 
-    def __init__(self):
+    def __init__(self, settings_path="settings.yaml"):
         self.email = None
         self.password = None
         self.zip_code = None
         self.languages = []
         self.categories = []
 
-        self._settings_path = "settings.yaml"
-        self.is_ci_build = strtobool(os.environ.get("CI", "False"))
+        self._settings_path = settings_path
+        self.is_ci_build = strtobool(os.environ.get("CI_TEST", "False"))
         self._init_settings()
 
     def _init_settings(self) -> None:

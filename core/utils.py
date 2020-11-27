@@ -5,11 +5,10 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from core import Settings, TutorialBarScraper, UdemyActions, exceptions
-from core.cache import CourseCache
+from core import Settings, TutorialBarScraper, UdemyActions, CourseCache, exceptions
 
 
-def redeem_courses(driver: WebDriver, settings: Settings):
+def _redeem_courses(driver: WebDriver, settings: Settings):
     """
     Method to scrape courses from tutorialbar.com and enroll in them on udemy
 
@@ -37,6 +36,7 @@ def redeem_courses(driver: WebDriver, settings: Settings):
                 print(f"Webdriver exception on link: {course_link}")
                 print(e)
             except KeyboardInterrupt:
+                print("Exiting the script")
                 raise
             except exceptions.RobotException as e:
                 print(e)
@@ -45,6 +45,23 @@ def redeem_courses(driver: WebDriver, settings: Settings):
                 print(f"Unexpected exception: {e}")
             finally:
                 if settings.is_ci_build:
+                    print("We have attempted to subscribe to 1 udemy course")
+                    print("Ending test")
                     return
 
         print("Moving on to the next page of the course list on tutorialbar.com")
+
+
+def redeem_courses(driver, settings) -> None:
+    """
+    Wrapper of _redeem_courses so we always close browser on completion
+
+    :param driver:
+    :param settings:
+    :return:
+    """
+    try:
+        _redeem_courses(driver, settings)
+    finally:
+        print("Closing browser")
+        driver.quit()

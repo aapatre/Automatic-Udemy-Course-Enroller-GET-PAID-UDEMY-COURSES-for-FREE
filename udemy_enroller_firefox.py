@@ -16,12 +16,4 @@ driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
 # code only works in the maximized layout
 driver.maximize_window()
 
-try:
-    redeem_courses(driver, settings)
-except KeyboardInterrupt:
-    print("Exiting the script")
-except Exception as e:
-    print("Error: {}".format(e))
-finally:
-    print("Closing browser")
-    driver.quit()
+redeem_courses(driver, settings)
