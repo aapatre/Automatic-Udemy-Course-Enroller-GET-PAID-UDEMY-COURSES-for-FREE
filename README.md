@@ -6,14 +6,12 @@
 
 Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of
 web-scraping and automation, this script will find the necessary Udemy Coupons
-&amp; enroll you for PAID UDEMY COURSES, ABSOLUTELY FREE!
+&amp; enroll you to PAID UDEMY COURSES, ABSOLUTELY FREE!
 
 The code scrapes course links and coupons from
 [tutorialbar.com](https://tutorialbar.com)
 
-In case of any bugs or issues, **feel free to ping me on
-[LinkedIn](https://www.linkedin.com/in/aapatre/) or
-[Twitter](https://twitter.com/Antariksh_Patre)**
+In case of any bugs or issues, please open an issue in github.
 
 Also, don't forget to **Fork & Star the repository if you like it!**
 
@@ -25,13 +23,11 @@ Also, don't forget to **Fork & Star the repository if you like it!**
 
 ## **_Disclaimer & WARNINGS:_**
 
-1. **IMPORTANT:** Make sure you **clear all saved Debit/Credit Card or any other
-   saved payment info from your Browser & your Udemy account** before using the
-   script!
-2. **Use** this ONLY for **Educational Purposes!** By using this code you agree
+
+1. **Use** this ONLY for **Educational Purposes!** By using this code you agree
    that **I'm not responsible for any kind of trouble** caused by the code.
-3. **Make sure web-scraping is legal in your region.**
-4. This is **NOT a hacking script**, i.e., it can't enroll you for a specific
+2. **Make sure web-scraping is legal in your region.**
+3. This is **NOT a hacking script**, i.e., it can't enroll you for a specific
    course! Instead it finds courses that provide coupon links to make the
    transaction free and then LEGALLY enroll you to the course!
 
@@ -43,11 +39,11 @@ Also, don't forget to **Fork & Star the repository if you like it!**
 
 **Required Python version:** [Python 3.8+](https://www.python.org/downloads/)
 
-**You must have pip installed. Please look up how to install pip in your OS.**
+**You must have pip or poetry installed. Please look up how to install them in your OS.**
 
 Download a release of this project or clone the repository then navigate to the
 folder where you placed the files on. Type `pip install -r requirements.txt` to
-get all the requirements installed in one go.
+get all the requirements installed in one go. Similar instructions applies for poetry.
 
 - **Webdrivers are now automatically installed! But here are some links in case
   you are using the vanilla script or the Safari Browser:**
@@ -92,7 +88,7 @@ get all the requirements installed in one go.
 - **Has issues when run on custom kernel but works fine on vanilla OS:**
 
   - Firefox:
-    [udemy_enroller_firefox.py(requires manual driver installation)](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py)
+    [udemy_enroller_firefox.py(might require manual driver installation)](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py)
 
 - **Untested:**
 
@@ -142,9 +138,7 @@ to make those courses free.
 
 ### 3. How frequently should you run the script?
 
-Daily, at least once! If you are using it for the first time, I recommend that
-you allow it to scrape through all pages on Tutorial Bar (might take a few hours
-since there are >500 pages on the site). I've painstakingly amassed over 4000
+Daily, at least once! I've painstakingly amassed over 4000
 courses in the last four years! And out of those 4000, I've only paid for 4 of
 these courses.
 
@@ -164,7 +158,7 @@ it will save your precious time too! :)
 ![](https://i.imgur.com/pwseilE.jpg) Relax! This happens when you run the script
 several times in a short interval of time. Solve the captcha, hit enter in the terminal window you are running 
 the script from and allow the script to continue as normal.
-Easy peasy lemon squeezy! 🍋🙃 <br /><br />
+Easy peasy lemon squeezy! 🍋🙃 
 
 ### 6. The code compiles successfully but it's taking too long to work! IS there any way to fix that?
 
@@ -175,10 +169,8 @@ retrieved in the Python console/shell, which may take a while.
 
 ### 7. Which is the best way to run the script?
 
-It is recommended to run the script using Python's IDLE IDE.
+It is recommended to run the script using your terminal and system python.
 
-**Pro-tip:** Create a batch file, to launch the script instantly, using these
-instructions: https://datatofish.com/batch-python-script/
 
 ### 8. Which branch to commit against?
 
