@@ -61,9 +61,12 @@ def test_settings(email, password, zip_code, languages, categories, save, file_n
         with mock.patch("getpass.getpass", return_value=password):
             settings_path = f"test_tmp/{file_name}"
             settings = Settings(settings_path)
-            assert settings.email == email
-            assert settings.password == password
-            assert settings.zip_code == zip_code
+            if settings.email != email:
+                raise AssertionError
+            if settings.password != password:
+                raise AssertionError
+            if settings.zip_code != zip_code:
+                raise AssertionError
             assert settings.languages == [] if languages is None else languages
             assert settings.categories == [] if categories is None else categories
 
@@ -71,9 +74,12 @@ def test_settings(email, password, zip_code, languages, categories, save, file_n
                 yaml = YAML()
                 with open(settings_path) as f:
                     settings = yaml.load(f)
-                    assert settings["udemy"]["email"] == email
-                    assert settings["udemy"]["password"] == password
-                    assert settings["udemy"]["zipcode"] == zip_code
+                    if settings["udemy"]["email"] != email:
+                        raise AssertionError
+                    if settings["udemy"]["password"] != password:
+                        raise AssertionError
+                    if settings["udemy"]["zipcode"] != zip_code:
+                        raise AssertionError
                     assert (
                         settings["udemy"]["languages"] == []
                         if languages is None
@@ -87,7 +93,8 @@ def test_settings(email, password, zip_code, languages, categories, save, file_n
                 # Load settings just created
                 Settings(settings_path)
             else:
-                assert os.path.isdir(settings_path) is False
+                if os.path.isdir(settings_path) is not False:
+                    raise AssertionError
 
 
 @pytest.mark.parametrize(
@@ -149,9 +156,12 @@ def test_load_existing_settings(
 
     # Load existing settings
     settings = Settings(settings_path)
-    assert settings.email == email
-    assert settings.password == password
-    assert settings.zip_code == zip_code
+    if settings.email != email:
+        raise AssertionError
+    if settings.password != password:
+        raise AssertionError
+    if settings.zip_code != zip_code:
+        raise AssertionError
     assert settings.languages == [] if languages is None else languages
     assert settings.categories == [] if categories is None else categories
 
@@ -182,5 +192,7 @@ def test_load_ci_settings(_, monkeypatch, is_ci_run, email, password):
     monkeypatch.setenv("UDEMY_PASSWORD", password)
     settings = Settings("")
     if is_ci_run:
-        assert settings.email == email
-        assert settings.password == password
+        if settings.email != email:
+            raise AssertionError
+        if settings.password != password:
+            raise AssertionError
