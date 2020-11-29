@@ -239,4 +239,4 @@ test_tmp/
 
 #ignore deepsource.toml
 
-deepsource.toml
+.deepsource.toml
