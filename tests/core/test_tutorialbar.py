@@ -40,7 +40,8 @@ def test_run(
     mock_get_course_links.assert_called_with(tutorialbar_course_page_link)
     mock_gather_udemy_course_links.assert_called_with(tutorialbar_links)
     for link in links:
-        assert link in udemy_links
+        if link not in udemy_links:
+            raise AssertionError
 
 
 @pytest.mark.parametrize(
@@ -54,7 +55,8 @@ def test_run(
 def test_check_page_number(page_number, is_first_page):
     tbs = TutorialBarScraper()
     tbs.current_page = page_number
-    assert tbs.is_first_loop() == is_first_page
+    if tbs.is_first_loop() != is_first_page:
+        raise AssertionError
 
 
 @mock.patch("core.tutorialbar.requests")
@@ -67,8 +69,9 @@ def test_get_course_links(mock_requests, tutorialbar_main_page):
     tbs.current_page = 1
     links = tbs.get_course_links(url)
 
-    assert tbs.last_page == "601"
-    assert links == [
+    if tbs.last_page != "601":
+        raise AssertionError
+    if links != [
         "https://www.tutorialbar.com/mindfulness-meditation-for-pain-relief-stress-management/",
         "https://www.tutorialbar.com/become-a-crm-manager-overview-for-email-marketing-starters/",
         "https://www.tutorialbar.com/superminds-the-future-of-artificial-intelligence-ai/",
@@ -81,4 +84,5 @@ def test_get_course_links(mock_requests, tutorialbar_main_page):
         "https://www.tutorialbar.com/eiq2-coaching-for-improved-performance-and-superior-results/",
         "https://www.tutorialbar.com/quickbooks-pro-desktop-bookkeeping-business-easy-way/",
         "https://www.tutorialbar.com/quickbooks-online-bank-feeds-credit-card-feeds-2020/",
-    ]
+    ]:
+        raise AssertionError

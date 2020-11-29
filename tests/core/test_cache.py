@@ -92,12 +92,15 @@ def test_cache(
     for url, status in data_to_cache:
         cc.add(url, status)
 
-    assert cc._cache == expected_cached_data
+    if cc._cache != expected_cached_data:
+        raise AssertionError
     for url in urls_should_exist:
-        assert url in cc
+        if url not in cc:
+            raise AssertionError
 
     for url in urls_shouldnt_exist:
-        assert url not in cc
+        if url in cc:
+            raise AssertionError
 
 
 @pytest.mark.parametrize(
@@ -186,8 +189,10 @@ def test_cache_load(
     for url, status in data_to_cache:
         cc.add(url, status)
 
-    assert cc._cache == expected_cached_data
+    if cc._cache != expected_cached_data:
+        raise AssertionError
 
     # Load from file when new instance created
     next_run = CourseCache(f"test_tmp/{cache_file_name}")
-    assert next_run._cache == expected_cached_data
+    if next_run._cache != expected_cached_data:
+        raise AssertionError
