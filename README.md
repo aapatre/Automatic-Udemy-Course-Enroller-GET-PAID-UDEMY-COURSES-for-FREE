@@ -67,7 +67,7 @@ get all the requirements installed in one go. Similar instructions applies for p
 
 - Run the script and the cli will guide you through the settings required
 - Otherwise you can rename the following file
-  [sample_settings.yaml](sample_settings.yaml) to **settings.py** and edit it
+  [sample_settings.yaml](sample_settings.yaml) to **settings.yaml** and edit it
   using a text editor and insert your **Udemy registered email in the email
   section**, your **Udemy password in the password section**, and the **ZIP Code
   in the zipcode section (if you reside in the United States or any other region
