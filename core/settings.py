@@ -148,7 +148,7 @@ class Settings:
 
         :return:
         """
-        yaml_structure = dict()
+        yaml_structure = {}
         save_settings = input("Do you want to save settings for future use (Y/N): ")
         if save_settings.lower() == "y":
             yaml_structure["udemy"] = {
