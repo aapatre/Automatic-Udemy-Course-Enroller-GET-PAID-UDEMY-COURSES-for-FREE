@@ -1,3 +1,5 @@
+import logging
+
 from selenium.common.exceptions import (
     NoSuchElementException,
     TimeoutException,
@@ -5,7 +7,9 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from core import Settings, TutorialBarScraper, UdemyActions, CourseCache, exceptions
+from core import CourseCache, Settings, TutorialBarScraper, UdemyActions, exceptions
+
+logger = logging.getLogger("udemy_enroller")
 
 
 def _redeem_courses(driver: WebDriver, settings: Settings):
@@ -27,29 +31,28 @@ def _redeem_courses(driver: WebDriver, settings: Settings):
                     status = udemy_actions.redeem(course_link)
                     cache.add(course_link, status)
                 else:
-                    print(f"In cache: {course_link}")
+                    logger.info(f"In cache: {course_link}")
             except NoSuchElementException as e:
-                print(e)
+                logger.error(e)
             except TimeoutException:
-                print(f"Timeout on link: {course_link}")
-            except WebDriverException as e:
-                print(f"Webdriver exception on link: {course_link}")
-                print(e)
+                logger.error(f"Timeout on link: {course_link}")
+            except WebDriverException:
+                logger.error(f"Webdriver exception on link: {course_link}")
             except KeyboardInterrupt:
-                print("Exiting the script")
+                logger.error("Exiting the script")
                 raise
             except exceptions.RobotException as e:
-                print(e)
-                raise e
+                logger.error(e)
+                raise
             except Exception as e:
-                print(f"Unexpected exception: {e}")
+                logger.error(f"Unexpected exception: {e}")
             finally:
                 if settings.is_ci_build:
-                    print("We have attempted to subscribe to 1 udemy course")
-                    print("Ending test")
+                    logger.info("We have attempted to subscribe to 1 udemy course")
+                    logger.info("Ending test")
                     return
 
-        print("Moving on to the next page of the course list on tutorialbar.com")
+        logger.info("Moving on to the next page of the course list on tutorialbar.com")
 
 
 def redeem_courses(driver, settings) -> None:
@@ -63,5 +66,5 @@ def redeem_courses(driver, settings) -> None:
     try:
         _redeem_courses(driver, settings)
     finally:
-        print("Closing browser")
+        logger.info("Closing browser")
         driver.quit()

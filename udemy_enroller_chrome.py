@@ -1,11 +1,15 @@
 # Install all the requirements by running requirements.py in IDLE or follow the alternate instructions at
 # https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/ Make sure you have
 # cleared all saved payment details on your Udemy account & the browser!
+import logging
+
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
 from core import Settings
 from core.utils import redeem_courses
+
+logger = logging.getLogger("udemy_enroller")
 
 settings = Settings()
 
@@ -23,7 +27,7 @@ if settings.is_ci_build:
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("user-agent={0}".format(user_agent))
     chrome_options.add_argument("--window-size=1325x744")
-    print("This is a CI run")
+    logger.info("This is a CI run")
 
 driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 
