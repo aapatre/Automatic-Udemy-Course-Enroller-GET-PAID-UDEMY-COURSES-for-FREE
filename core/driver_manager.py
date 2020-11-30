@@ -6,6 +6,22 @@ from webdriver_manager.opera import OperaDriverManager
 from webdriver_manager.microsoft import IEDriverManager
 from webdriver_manager.utils import ChromeType
 
+VALID_FIREFOX_STRINGS = {"ff", "firefox"}
+VALID_CHROME_STRINGS = {"chrome", "google-chrome"}
+VALID_CHROMIUM_STRINGS = {"chromium"}
+VALID_INTERNET_EXPLORER_STRINGS = {"internet_explorer", "ie"}
+VALID_OPERA_STRINGS = {"opera"}
+VALID_EDGE_STRINGS = {"edge"}
+
+ALL_VALID_BROWSER_STRINGS = (
+    VALID_FIREFOX_STRINGS.union(VALID_CHROME_STRINGS)
+    .union(VALID_CHROMIUM_STRINGS)
+    .union(VALID_CHROMIUM_STRINGS)
+    .union(VALID_INTERNET_EXPLORER_STRINGS)
+    .union(VALID_OPERA_STRINGS)
+    .union(VALID_EDGE_STRINGS)
+)
+
 
 class DriverManager:
     def __init__(self, browser: str, is_ci_build: bool = False):
@@ -22,27 +38,27 @@ class DriverManager:
         :return: None
         """
 
-        if self.browser.lower() in ("chrome", "google-chrome"):
+        if self.browser.lower() in VALID_CHROME_STRINGS:
             if self.is_ci_build:
                 self.options = self._build_ci_options_chrome()
             self.driver = webdriver.Chrome(
                 ChromeDriverManager().install(), options=self.options
             )
-        elif self.browser.lower() in ("chromium",):
+        elif self.browser.lower() in VALID_CHROMIUM_STRINGS:
             self.driver = webdriver.Chrome(
                 ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
             )
-        elif self.browser.lower() in ("edge",):
+        elif self.browser.lower() in VALID_EDGE_STRINGS:
             self.driver = webdriver.Edge(EdgeChromiumDriverManager().install())
-        elif self.browser.lower() in ("firefox", "ff"):
+        elif self.browser.lower() in VALID_FIREFOX_STRINGS:
             self.driver = webdriver.Firefox(
                 executable_path=GeckoDriverManager().install()
             )
-        elif self.browser.lower() in ("opera",):
+        elif self.browser.lower() in VALID_OPERA_STRINGS:
             self.driver = webdriver.Opera(
                 executable_path=OperaDriverManager().install()
             )
-        elif self.browser.lower() in ("internet_explorer", "ie"):
+        elif self.browser.lower() in VALID_INTERNET_EXPLORER_STRINGS:
             self.driver = webdriver.Ie(IEDriverManager().install())
         else:
             raise ValueError("No matching browser found")

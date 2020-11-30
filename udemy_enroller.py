@@ -2,7 +2,7 @@
 # https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/ Make sure you have
 # cleared all saved payment details on your Udemy account & the browser!
 import argparse
-from core.driver_manager import DriverManager
+from core.driver_manager import DriverManager, ALL_VALID_BROWSER_STRINGS
 
 from core import Settings
 from core.utils import redeem_courses
@@ -23,6 +23,7 @@ def parse_args(browser=None, use_manual_driver=False):
         "--browser",
         type=str,
         default=browser,
+        choices=ALL_VALID_BROWSER_STRINGS,
         help="Browser to use for Udemy Enroller",
     )
     parser.add_argument(
