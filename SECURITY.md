@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-All 0.x versions are supported. Master branch is also supported. Develop branch
+All released versions are supported. Master branch is also supported. Develop branch
 is unsupported.
 
 | Version | Supported          |
@@ -14,8 +14,7 @@ is unsupported.
 ## Reporting a Vulnerability
 
 If you do find a security vulnerability please contact
-[Aapatre](https://twitter.com/Antariksh_Patre) or
-[Nirjhor](https://twitter.com/Nirjhor) on twitter. Send a DM.
+[Nirjhor](https://twitter.com/Nirjhor) on twitter. Send a DM. Or you can send an email to junayeed@protonmail.com
 
 If your reported vulnerability needs further action from your end we will
 contact you within 24 hours. If any further action is not needed, we will try to
