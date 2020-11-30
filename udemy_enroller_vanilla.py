@@ -28,4 +28,4 @@ driver = webdriver.Edge(
 # in the maximized layout
 driver.maximize_window()
 
-redeem_courses(driver, settings)
+redeem_courses(driver, settings, max_pages=None)

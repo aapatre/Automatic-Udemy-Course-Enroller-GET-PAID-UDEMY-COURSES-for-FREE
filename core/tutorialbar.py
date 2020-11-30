@@ -13,10 +13,11 @@ class TutorialBarScraper:
     DOMAIN = "https://www.tutorialbar.com"
     AD_DOMAINS = ("https://amzn",)
 
-    def __init__(self):
+    def __init__(self, max_pages=None):
         self.current_page = 0
         self.last_page = None
         self.links_per_page = 12
+        self.max_pages = max_pages
 
     def run(self) -> List:
         """
@@ -38,6 +39,21 @@ class TutorialBarScraper:
             print(f"Received Link {counter + 1} : {course}")
 
         return filtered_udemy_links
+
+    def script_should_run(self) -> bool:
+        """
+        Returns boolean of whether or not we should continue checking tutorialbar.com
+
+        :return:
+        """
+
+        should_run = True
+        if self.max_pages is not None:
+            should_run = self.max_pages > self.current_page
+            if not should_run:
+                print(f"Stopping loop. We have reached max number of pages to scrape: {self.max_pages}")
+        return should_run
+
 
     def is_first_loop(self) -> bool:
         """
