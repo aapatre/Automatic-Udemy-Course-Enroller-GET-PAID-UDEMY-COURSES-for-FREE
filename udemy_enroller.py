@@ -2,13 +2,25 @@
 # https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/ Make sure you have
 # cleared all saved payment details on your Udemy account & the browser!
 import argparse
+from argparse import Namespace
+from typing import Union
+
+from selenium.webdriver.remote.webdriver import WebDriver
 
 from core import Settings
 from core.driver_manager import ALL_VALID_BROWSER_STRINGS, DriverManager
 from core.utils import redeem_courses
 
 
-def run(browser, max_pages, driver=None):
+def run(browser: str, max_pages: Union[int, None], driver: WebDriver = None):
+    """
+    Run the udemy enroller script
+
+    :param str browser: Name of the browser we want to create a driver for
+    :param int or None max_pages: Max number of pages to scrape from tutorialbar.com
+    :param WebDriver driver:
+    :return:
+    """
     settings = Settings()
     if driver is None:
         dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
@@ -16,7 +28,14 @@ def run(browser, max_pages, driver=None):
     redeem_courses(driver, settings, max_pages)
 
 
-def parse_args(browser=None, use_manual_driver=False):
+def parse_args(browser=None, use_manual_driver=False) -> Namespace:
+    """
+    Parse args from the CLI or use the args passed in
+
+    :param str browser: Name of the browser we want to create a driver for
+    :param bool use_manual_driver: If True don't create a web driver using web driver manager
+    :return: Args to be used in the script
+    """
     parser = argparse.ArgumentParser(description="Udemy Enroller")
 
     parser.add_argument(

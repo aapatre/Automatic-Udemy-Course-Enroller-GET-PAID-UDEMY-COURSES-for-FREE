@@ -1,3 +1,5 @@
+from typing import Union
+
 from selenium.common.exceptions import (
     NoSuchElementException,
     TimeoutException,
@@ -8,10 +10,15 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from core import CourseCache, Settings, TutorialBarScraper, UdemyActions, exceptions
 
 
-def _redeem_courses(driver: WebDriver, settings: Settings, max_pages):
+def _redeem_courses(
+    driver: WebDriver, settings: Settings, max_pages: Union[int, None]
+) -> None:
     """
     Method to scrape courses from tutorialbar.com and enroll in them on udemy
 
+    :param WebDriver driver: Webdriver used to enroll in Udemy courses
+    :param Settings settings: Core settings used for Udemy
+    :param int max_pages: Max pages to scrape from tutorialbar.com
     :return:
     """
     cache = CourseCache()
@@ -55,13 +62,15 @@ def _redeem_courses(driver: WebDriver, settings: Settings, max_pages):
         print("Moving on to the next page of the course list on tutorialbar.com")
 
 
-def redeem_courses(driver, settings, max_pages) -> None:
+def redeem_courses(
+    driver: WebDriver, settings: Settings, max_pages: Union[int, None]
+) -> None:
     """
     Wrapper of _redeem_courses so we always close browser on completion
 
-    :param driver:
-    :param settings:
-    :param max_pages:
+    :param WebDriver driver: Webdriver used to enroll in Udemy courses
+    :param Settings settings: Core settings used for Udemy
+    :param int max_pages: Max pages to scrape from tutorialbar.com
     :return:
     """
     try:
