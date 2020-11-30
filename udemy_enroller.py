@@ -2,9 +2,9 @@
 # https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/ Make sure you have
 # cleared all saved payment details on your Udemy account & the browser!
 import argparse
-from core.driver_manager import DriverManager, ALL_VALID_BROWSER_STRINGS
 
 from core import Settings
+from core.driver_manager import ALL_VALID_BROWSER_STRINGS, DriverManager
 from core.utils import redeem_courses
 
 

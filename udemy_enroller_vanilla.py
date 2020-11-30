@@ -4,7 +4,7 @@
 from selenium import webdriver
 
 from core import Settings
-from udemy_enroller import run, parse_args
+from udemy_enroller import parse_args, run
 
 """### **Enter the path/location of your webdriver**
 By default, the webdriver for Microsoft Edge browser has been chosen in the code below.

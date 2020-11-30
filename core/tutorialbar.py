@@ -51,9 +51,10 @@ class TutorialBarScraper:
         if self.max_pages is not None:
             should_run = self.max_pages > self.current_page
             if not should_run:
-                print(f"Stopping loop. We have reached max number of pages to scrape: {self.max_pages}")
+                print(
+                    f"Stopping loop. We have reached max number of pages to scrape: {self.max_pages}"
+                )
         return should_run
-
 
     def is_first_loop(self) -> bool:
         """

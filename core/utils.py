@@ -5,7 +5,7 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from core import Settings, TutorialBarScraper, UdemyActions, CourseCache, exceptions
+from core import CourseCache, Settings, TutorialBarScraper, UdemyActions, exceptions
 
 
 def _redeem_courses(driver: WebDriver, settings: Settings, max_pages):
