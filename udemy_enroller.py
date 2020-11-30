@@ -8,13 +8,15 @@ from core import Settings
 from core.utils import redeem_courses
 
 
-def run(browser, max_pages):
+def run(browser, max_pages, driver=None):
     settings = Settings()
-    dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
-    redeem_courses(dm.driver, settings, max_pages)
+    if driver is None:
+        dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
+        driver = dm.driver
+    redeem_courses(driver, settings, max_pages)
 
 
-def parse_args(browser=None):
+def parse_args(browser=None, use_manual_driver=False):
     parser = argparse.ArgumentParser(description="Udemy Enroller")
 
     parser.add_argument(
@@ -32,7 +34,7 @@ def parse_args(browser=None):
 
     args = parser.parse_args()
 
-    if args.browser is None:
+    if args.browser is None and not use_manual_driver:
         parser.print_help()
     else:
         return args
