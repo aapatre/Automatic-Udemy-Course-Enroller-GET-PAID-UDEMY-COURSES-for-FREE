@@ -9,9 +9,10 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macOS-latest]
         python-version: [3.8]
 
     steps:
@@ -20,6 +21,18 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Install Linux dependencies
+      if: runner.os == 'Linux'
+      run: |
+        wget -qO- https://deb.opera.com/archive.key | sudo apt-key add -
+        sudo add-apt-repository "deb [arch=i386,amd64] https://deb.opera.com/opera-stable/ stable non-free"
+        sudo apt-get update
+        sudo apt-get -y --no-install-recommends install opera-stable chromium-browser
+        opera --version
+    - name: Install Macos dependencies
+      if: startsWith(runner.os, 'macOS')
+      run: |
+        brew cask install chromium opera
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
