@@ -27,7 +27,7 @@ def parse_args(browser=None, use_manual_driver=False):
         help="Browser to use for Udemy Enroller",
     )
     parser.add_argument(
-        "--max_pages",
+        "--max-pages",
         type=int,
         default=None,
         help="Max pages to scrape from tutorialbar.com",
