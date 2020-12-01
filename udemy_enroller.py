@@ -7,8 +7,7 @@ from typing import Union
 
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from core import Settings
-from core.driver_manager import ALL_VALID_BROWSER_STRINGS, DriverManager
+from core import ALL_VALID_BROWSER_STRINGS, DriverManager, Settings
 from core.utils import redeem_courses
 
 

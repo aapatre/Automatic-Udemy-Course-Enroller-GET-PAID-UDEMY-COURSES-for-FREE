@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager, IEDriverManager
@@ -72,14 +73,12 @@ class DriverManager:
 
         :return:
         """
-        from selenium.webdriver.chrome.options import Options
-
         # Having the user-agent with Headless param was always leading to robot check
         user_agent = (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 "
             "Safari/537.36"
         )
-        options = Options()
+        options = ChromeOptions()
         # We need to run headless when using github CI
         options.add_argument("--headless")
         options.add_argument("user-agent={0}".format(user_agent))
