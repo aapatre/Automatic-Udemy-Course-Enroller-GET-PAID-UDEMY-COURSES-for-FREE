@@ -50,8 +50,13 @@ def _redeem_courses(
                     current_cache_hits = 0
                 else:
                     logger.info(f"In cache: {course_link}")
+
                     # Increment the cache hit count since this link is in the cache
                     current_cache_hits += 1
+
+                # Exit the loop if we have reached the cache hit limit
+                if _reached_cache_hit_limit(cache_hit_limit, current_cache_hits):
+                    return
             except NoSuchElementException as e:
                 logger.error(e)
             except TimeoutException:
@@ -71,10 +76,6 @@ def _redeem_courses(
                     logger.info("We have attempted to subscribe to 1 udemy course")
                     logger.info("Ending test")
                     return
-
-        # Exit the loop if we have reached the cache hit limit
-        if _reached_cache_hit_limit(cache_hit_limit, current_cache_hits):
-            return
 
         logger.info("Moving on to the next page of the course list on tutorialbar.com")
 

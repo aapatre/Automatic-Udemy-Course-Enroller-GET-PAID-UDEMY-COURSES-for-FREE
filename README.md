@@ -108,6 +108,7 @@ get all the requirements installed in one go. Similar instructions applies for p
 - `--help`: View full list of arguments available
 - `--max-pages=<NUMBER>`: Max number of pages to scrape from tutorialbar.com before exiting the script
 - `--browser=<BROWSER_NAME>`: Run with a specific browser 
+- `--cache-hits=<NUMBER>`: If we hit the cache this number of times in a row we will exit the script
 
 4 . Run the chosen script in terminal like so:
 - `python udemy_enroller_firefox.py`
