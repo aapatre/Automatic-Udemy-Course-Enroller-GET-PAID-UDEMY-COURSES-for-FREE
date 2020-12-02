@@ -5,4 +5,4 @@ from udemy_enroller import parse_args, run
 
 if __name__ == "__main__":
     args = parse_args("chromium")
-    run(args.browser, args.max_pages)
+    run(args.browser, args.max_pages, args.cache_hits)

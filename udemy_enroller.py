@@ -11,12 +11,18 @@ from core import ALL_VALID_BROWSER_STRINGS, DriverManager, Settings
 from core.utils import redeem_courses
 
 
-def run(browser: str, max_pages: Union[int, None], driver: WebDriver = None):
+def run(
+    browser: str,
+    max_pages: Union[int, None],
+    cache_hit_limit: int,
+    driver: WebDriver = None,
+):
     """
     Run the udemy enroller script
 
     :param str browser: Name of the browser we want to create a driver for
     :param int or None max_pages: Max number of pages to scrape from tutorialbar.com
+    :param int cache_hit_limit: If we hit the cache this many times in a row we exit the script
     :param WebDriver driver:
     :return:
     """
@@ -24,7 +30,7 @@ def run(browser: str, max_pages: Union[int, None], driver: WebDriver = None):
     if driver is None:
         dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
         driver = dm.driver
-    redeem_courses(driver, settings, max_pages)
+    redeem_courses(driver, settings, max_pages, cache_hit_limit)
 
 
 def parse_args(browser=None, use_manual_driver=False) -> Namespace:
@@ -50,6 +56,12 @@ def parse_args(browser=None, use_manual_driver=False) -> Namespace:
         default=None,
         help="Max pages to scrape from tutorialbar.com",
     )
+    parser.add_argument(
+        "--cache-hits",
+        type=int,
+        default=12,
+        help="If we hit the cache this number of times in a row we will exit the script",
+    )
 
     args = parser.parse_args()
 
@@ -62,4 +74,4 @@ def parse_args(browser=None, use_manual_driver=False) -> Namespace:
 if __name__ == "__main__":
     args = parse_args()
     if args:
-        run(args.browser, args.max_pages)
+        run(args.browser, args.max_pages, args.cache_hits)
