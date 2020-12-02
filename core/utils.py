@@ -10,7 +10,6 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 from core import CourseCache, Settings, TutorialBarScraper, UdemyActions, exceptions
 
-
 logger = logging.getLogger("udemy_enroller")
 
 
