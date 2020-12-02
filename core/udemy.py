@@ -63,10 +63,9 @@ class UdemyActions:
                     )
                     self.login(is_retry=True)
                     return
-                elif is_robot and is_retry:
+                if is_robot and is_retry:
                     raise RobotException("I am a bot!")
-                else:
-                    raise e
+                raise e
             else:
                 # TODO: Verify successful login
                 self.logged_in = True

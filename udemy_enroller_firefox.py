@@ -2,18 +2,8 @@
 # https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/ Make sure you have
 # cleared all saved payment details on your Udemy account & the browser! For firefox you need to manually install the
 # driver on Arch Linux (sudo pacman -S geckodriver). Untested on other platforms.
-from selenium import webdriver
-from webdriver_manager.firefox import GeckoDriverManager
+from udemy_enroller import parse_args, run
 
-from core import Settings
-from core.utils import redeem_courses
-
-settings = Settings()
-
-driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
-
-# Maximizes the browser window since Udemy has a responsive design and the
-# code only works in the maximized layout
-driver.maximize_window()
-
-redeem_courses(driver, settings)
+if __name__ == "__main__":
+    args = parse_args("firefox")
+    run(args.browser, args.max_pages)

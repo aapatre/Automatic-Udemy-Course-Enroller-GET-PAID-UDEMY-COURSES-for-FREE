@@ -3,7 +3,7 @@ import json
 import os
 
 
-class CourseCache(object):
+class CourseCache:
     """
     Basic cache to keep details on courses already scraped
     """

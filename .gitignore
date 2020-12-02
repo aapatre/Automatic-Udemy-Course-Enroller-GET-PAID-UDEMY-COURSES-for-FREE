@@ -234,3 +234,9 @@ poetry.lock
 
 # Ignore temporary test folder
 test_tmp/
+
+.idea/poetry.xml
+
+#ignore deepsource.toml
+
+.deepsource.toml
