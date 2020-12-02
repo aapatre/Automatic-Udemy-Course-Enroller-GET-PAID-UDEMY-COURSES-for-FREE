@@ -104,10 +104,18 @@ get all the requirements installed in one go. Similar instructions applies for p
   - Internet Explorer:
     [udemy_enroller_internet_explorer.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_internet_explorer.py)
 
-3 . Run the chosen script in terminal like so:
-`python udemy_enroller_firefox.py`
+3 . The script can be passed arguments:
+- `--help`: View full list of arguments available
+- `--max-pages=<NUMBER>`: Max number of pages to scrape from tutorialbar.com before exiting the script
+- `--browser=<BROWSER_NAME>`: Run with a specific browser 
 
-4 . The bot starts scraping the course links from the first **All Courses** page
+4 . Run the chosen script in terminal like so:
+- `python udemy_enroller_firefox.py`
+
+   Or by using the generic script:
+- `python udemy_enroller.py --browser=firefox`
+
+5 . The bot starts scraping the course links from the first **All Courses** page
 on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1) and starts
 enrolling you to Udemy courses. After it has enrolled you to courses from the
 first page, it then moves to the next Tutorial Bar page and the cycle continues.

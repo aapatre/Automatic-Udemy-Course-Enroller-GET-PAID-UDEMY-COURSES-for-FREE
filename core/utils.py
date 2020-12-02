@@ -1,3 +1,5 @@
+from typing import Union
+
 from selenium.common.exceptions import (
     NoSuchElementException,
     TimeoutException,
@@ -5,20 +7,28 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from core import Settings, TutorialBarScraper, UdemyActions, CourseCache, exceptions
+from core import CourseCache, Settings, TutorialBarScraper, UdemyActions, exceptions
 
 
-def _redeem_courses(driver: WebDriver, settings: Settings):
+def _redeem_courses(
+    driver: WebDriver, settings: Settings, max_pages: Union[int, None]
+) -> None:
     """
     Method to scrape courses from tutorialbar.com and enroll in them on udemy
 
+    :param WebDriver driver: Webdriver used to enroll in Udemy courses
+    :param Settings settings: Core settings used for Udemy
+    :param int max_pages: Max pages to scrape from tutorialbar.com
     :return:
     """
     cache = CourseCache()
-    tb_scraper = TutorialBarScraper()
+    tb_scraper = TutorialBarScraper(max_pages)
     udemy_actions = UdemyActions(driver, settings)
     udemy_actions.login()  # login once outside while loop
     while True:
+        # Check if we should exit the loop
+        if not tb_scraper.script_should_run():
+            break
         udemy_course_links = tb_scraper.run()
 
         for course_link in udemy_course_links:
@@ -52,16 +62,19 @@ def _redeem_courses(driver: WebDriver, settings: Settings):
         print("Moving on to the next page of the course list on tutorialbar.com")
 
 
-def redeem_courses(driver, settings) -> None:
+def redeem_courses(
+    driver: WebDriver, settings: Settings, max_pages: Union[int, None]
+) -> None:
     """
     Wrapper of _redeem_courses so we always close browser on completion
 
-    :param driver:
-    :param settings:
+    :param WebDriver driver: Webdriver used to enroll in Udemy courses
+    :param Settings settings: Core settings used for Udemy
+    :param int max_pages: Max pages to scrape from tutorialbar.com
     :return:
     """
     try:
-        _redeem_courses(driver, settings)
+        _redeem_courses(driver, settings, max_pages)
     finally:
         print("Closing browser")
         driver.quit()
