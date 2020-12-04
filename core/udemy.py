@@ -183,6 +183,25 @@ class UdemyActions:
                     )
                     return UdemyStatus.EXPIRED.value
 
+        # Check if state/province element exists
+        billing_state_element_id = "billingAddressSecondarySelect"
+        billing_state_elements = self.driver.find_elements_by_id(
+            billing_state_element_id
+        )
+        if billing_state_elements:
+            # If we are here it means a state/province element exists and needs to be filled
+            # Open the dropdown menu
+            billing_state_elements[0].click()
+
+            # Pick the first element in the state/province dropdown
+            first_state_xpath = (
+                "//select[@id='billingAddressSecondarySelect']//option[2]"
+            )
+            element_present = EC.presence_of_element_located(
+                (By.XPATH, first_state_xpath)
+            )
+            WebDriverWait(self.driver, 10).until(element_present).click()
+
         # Hit the final Enroll now button
         udemy_enroll_element_2 = self.driver.find_element_by_xpath(enroll_button_xpath)
         udemy_enroll_element_2.click()
