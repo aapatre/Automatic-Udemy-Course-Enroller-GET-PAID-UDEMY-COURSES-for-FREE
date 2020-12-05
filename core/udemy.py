@@ -183,18 +183,35 @@ class UdemyActions:
                     )
                     return UdemyStatus.EXPIRED.value
 
+        # Check if state/province element exists
+        billing_state_element_id = "billingAddressSecondarySelect"
+        billing_state_elements = self.driver.find_elements_by_id(
+            billing_state_element_id
+        )
+        if billing_state_elements:
+            # If we are here it means a state/province element exists and needs to be filled
+            # Open the dropdown menu
+            billing_state_elements[0].click()
+
+            # Pick the first element in the state/province dropdown
+            first_state_xpath = (
+                "//select[@id='billingAddressSecondarySelect']//option[2]"
+            )
+            element_present = EC.presence_of_element_located(
+                (By.XPATH, first_state_xpath)
+            )
+            WebDriverWait(self.driver, 10).until(element_present).click()
+
         # Hit the final Enroll now button
-        udemy_enroll_element_2 = self.driver.find_element_by_xpath(enroll_button_xpath)
-        udemy_enroll_element_2.click()
+        enroll_button_is_clickable = EC.element_to_be_clickable(
+            (By.XPATH, enroll_button_xpath)
+        )
+        WebDriverWait(self.driver, 10).until(enroll_button_is_clickable).click()
 
         # Wait for success page to load
         success_element_class = "alert-success"
-        (
-            WebDriverWait(self.driver, 10)
-            .until(
-                EC.presence_of_element_located((By.CLASS_NAME, success_element_class))
-            )
-            .text
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, success_element_class))
         )
 
         logger.info(f"Successfully enrolled in: {course_name}")
