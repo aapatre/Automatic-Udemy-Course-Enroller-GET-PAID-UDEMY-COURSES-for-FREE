@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [1.0.0] - 2020-12-09
+
+### Added
+
+- Fix for state selection for India
+- Added deprecation warning to individual browser endpoint to move to uniform endpoint in preparation for a release in PyPi
+- Moved from print to logging for better debug
+- Added arguments to script runtime to select max pages and max retry before timeout (default 12)
+- Fixed Firefox webdriver autoinstall
+- Stop trying to enroll in courses that has any price tag attached to them
+- Added unittests
+- General performance improvement
 
 ## [0.3] - 2020-11-26
 
