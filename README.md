@@ -108,6 +108,7 @@ get all the requirements installed in one go. Similar instructions applies for p
 - `--help`: View full list of arguments available
 - `--max-pages=<NUMBER>`: Max number of pages to scrape from tutorialbar.com before exiting the script
 - `--browser=<BROWSER_NAME>`: Run with a specific browser 
+- `--cache-hits=<NUMBER>`: If we hit the cache this number of times in a row we will exit the script
 
 4 . Run the chosen script in terminal like so:
 - `python udemy_enroller_firefox.py`
@@ -194,6 +195,14 @@ and help us on what you want or talk to us about your proposed changes.
 
 ## Supporter
 
+### Jetbrains
+
 [![JetBrains](https://i.imgur.com/h2R018M.jpg)](https://jetbrains.com/?from=udemy-free-course-enroller)
 
 Thanks to [JetBrains](https://jetbrains.com/?from=udemy-free-course-enroller) for supporting us. They are the maker of world class IDE and developer tooling. If you think their product might help you, please support them. 
+
+### GitBook
+
+[![Gitbook](https://i.imgur.com/OkuB14I.jpg)](https://gitbook.com)
+
+Thanks to [Gitbook](https://gitbook.com) for supporting us. Gitbook is the best place to track personal notes and ideas for teams. If you think their product might help you, please support them.

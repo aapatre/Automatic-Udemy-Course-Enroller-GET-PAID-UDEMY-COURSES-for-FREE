@@ -31,4 +31,4 @@ if __name__ == "__main__":
     # in the maximized layout
     driver.maximize_window()
 
-    run(args.browser, args.max_pages, driver=driver)
+    run(args.browser, args.max_pages, args.cache_hits, driver=driver)
