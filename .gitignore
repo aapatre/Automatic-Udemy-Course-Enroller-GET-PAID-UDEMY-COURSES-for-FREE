@@ -231,3 +231,12 @@ poetry.lock
 
 # Cache files
 .course_cache
+
+# Ignore temporary test folder
+test_tmp/
+
+.idea/poetry.xml
+
+#ignore deepsource.toml
+
+.deepsource.toml

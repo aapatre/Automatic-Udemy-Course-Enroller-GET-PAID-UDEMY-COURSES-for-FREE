@@ -1,8 +1,11 @@
+import logging
 from multiprocessing.dummy import Pool
 from typing import List
 
 import requests
 from bs4 import BeautifulSoup
+
+logger = logging.getLogger("udemy_enroller")
 
 
 class TutorialBarScraper:
@@ -13,10 +16,11 @@ class TutorialBarScraper:
     DOMAIN = "https://www.tutorialbar.com"
     AD_DOMAINS = ("https://amzn",)
 
-    def __init__(self):
+    def __init__(self, max_pages=None):
         self.current_page = 0
         self.last_page = None
         self.links_per_page = 12
+        self.max_pages = max_pages
 
     def run(self) -> List:
         """
@@ -25,19 +29,35 @@ class TutorialBarScraper:
         :return: list of udemy coupon links
         """
         self.current_page += 1
-        print("Please Wait: Getting the course list from tutorialbar.com...")
+        logger.info("Please Wait: Getting the course list from tutorialbar.com...")
         course_links = self.get_course_links(
             f"{self.DOMAIN}/all-courses/page/{self.current_page}/"
         )
 
-        print(f"Page: {self.current_page} of {self.last_page} scraped")
+        logger.info(f"Page: {self.current_page} of {self.last_page} scraped")
         udemy_links = self.gather_udemy_course_links(course_links)
         filtered_udemy_links = self._filter_ad_domains(udemy_links)
 
         for counter, course in enumerate(filtered_udemy_links):
-            print(f"Received Link {counter + 1} : {course}")
+            logger.info(f"Received Link {counter + 1} : {course}")
 
         return filtered_udemy_links
+
+    def script_should_run(self) -> bool:
+        """
+        Returns boolean of whether or not we should continue checking tutorialbar.com
+
+        :return:
+        """
+
+        should_run = True
+        if self.max_pages is not None:
+            should_run = self.max_pages > self.current_page
+            if not should_run:
+                logger.info(
+                    f"Stopping loop. We have reached max number of pages to scrape: {self.max_pages}"
+                )
+        return should_run
 
     def is_first_loop(self) -> bool:
         """
@@ -60,7 +80,7 @@ class TutorialBarScraper:
                 if link.startswith(ad_domain):
                     ad_links.add(link)
         if ad_links:
-            print(f"Removing ad links from courses: {ad_links}")
+            logger.info(f"Removing ad links from courses: {ad_links}")
         return list(set(udemy_links) - ad_links)
 
     def get_course_links(self, url: str) -> List:

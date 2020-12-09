@@ -1,3 +1,4 @@
+import logging
 import time
 from enum import Enum
 
@@ -9,6 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from core.exceptions import RobotException
 from core.settings import Settings
+
+logger = logging.getLogger("udemy_enroller")
 
 
 class UdemyStatus(Enum):
@@ -60,10 +63,9 @@ class UdemyActions:
                     )
                     self.login(is_retry=True)
                     return
-                elif is_robot and is_retry:
+                if is_robot and is_retry:
                     raise RobotException("I am a bot!")
-                else:
-                    raise e
+                raise e
             else:
                 # TODO: Verify successful login
                 self.logged_in = True
@@ -89,7 +91,7 @@ class UdemyActions:
             )
 
             if element_text not in self.settings.languages:
-                print(f"Course language not wanted: {element_text}")
+                logger.info(f"Course language not wanted: {element_text}")
                 return UdemyStatus.UNWANTED_LANGUAGE.value
 
         if self.settings.categories:
@@ -108,7 +110,7 @@ class UdemyActions:
                 if category in breadcrumbs:
                     break
             else:
-                print("Skipping course as it does not have a wanted category")
+                logger.info("Skipping course as it does not have a wanted category")
                 return UdemyStatus.UNWANTED_CATEGORY.value
 
         # Enroll Now 1
@@ -123,7 +125,7 @@ class UdemyActions:
             "//div[starts-with(@class, 'buy-box--purchased-text-banner')]"
         )
         if self.driver.find_elements_by_xpath(already_purchased_xpath):
-            print(f"Already enrolled in {course_name}")
+            logger.info(f"Already enrolled in {course_name}")
             return UdemyStatus.ENROLLED.value
 
         # Click to enroll in the course
@@ -176,24 +178,43 @@ class UdemyActions:
                 # This logic should work for different locales and currencies
                 _numbers = "".join(filter(lambda x: x if x.isdigit() else None, _price))
                 if _numbers.isdigit() and int(_numbers) > 0:
-                    print(f"Skipping course as it now costs {_price}: {course_name}")
+                    logger.info(
+                        f"Skipping course as it now costs {_price}: {course_name}"
+                    )
                     return UdemyStatus.EXPIRED.value
 
+        # Check if state/province element exists
+        billing_state_element_id = "billingAddressSecondarySelect"
+        billing_state_elements = self.driver.find_elements_by_id(
+            billing_state_element_id
+        )
+        if billing_state_elements:
+            # If we are here it means a state/province element exists and needs to be filled
+            # Open the dropdown menu
+            billing_state_elements[0].click()
+
+            # Pick the first element in the state/province dropdown
+            first_state_xpath = (
+                "//select[@id='billingAddressSecondarySelect']//option[2]"
+            )
+            element_present = EC.presence_of_element_located(
+                (By.XPATH, first_state_xpath)
+            )
+            WebDriverWait(self.driver, 10).until(element_present).click()
+
         # Hit the final Enroll now button
-        udemy_enroll_element_2 = self.driver.find_element_by_xpath(enroll_button_xpath)
-        udemy_enroll_element_2.click()
+        enroll_button_is_clickable = EC.element_to_be_clickable(
+            (By.XPATH, enroll_button_xpath)
+        )
+        WebDriverWait(self.driver, 10).until(enroll_button_is_clickable).click()
 
         # Wait for success page to load
         success_element_class = "alert-success"
-        (
-            WebDriverWait(self.driver, 10)
-            .until(
-                EC.presence_of_element_located((By.CLASS_NAME, success_element_class))
-            )
-            .text
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, success_element_class))
         )
 
-        print(f"Successfully enrolled in: {course_name}")
+        logger.info(f"Successfully enrolled in: {course_name}")
         return UdemyStatus.ENROLLED.value
 
     def _check_if_robot(self) -> bool:

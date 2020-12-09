@@ -1,9 +1,12 @@
 import getpass
+import logging
 import os.path
 from distutils.util import strtobool
 from typing import Dict, List
 
 from ruamel.yaml import YAML, dump
+
+logger = logging.getLogger("udemy_enroller")
 
 
 class Settings:
@@ -11,15 +14,15 @@ class Settings:
     Contains all logic related to the scripts settings
     """
 
-    def __init__(self):
+    def __init__(self, settings_path="settings.yaml"):
         self.email = None
         self.password = None
         self.zip_code = None
         self.languages = []
         self.categories = []
 
-        self._settings_path = "settings.yaml"
-        self.is_ci_build = strtobool(os.environ.get("CI", "False"))
+        self._settings_path = settings_path
+        self.is_ci_build = strtobool(os.environ.get("CI_TEST", "False"))
         self._init_settings()
 
     def _init_settings(self) -> None:
@@ -42,7 +45,7 @@ class Settings:
 
         :return:
         """
-        print("Loading CI settings")
+        logger.info("Loading CI settings")
         self.email = os.environ["UDEMY_EMAIL"]
         self.password = os.environ["UDEMY_PASSWORD"]
 
@@ -56,7 +59,7 @@ class Settings:
 
         settings = None
         if os.path.isfile(self._settings_path):
-            print("Loading existing settings")
+            logger.info("Loading existing settings")
             with open(self._settings_path) as f:
                 settings = yaml.load(f)
             udemy_settings = settings["udemy"]
@@ -88,7 +91,7 @@ class Settings:
         """
         email = input("Please enter your udemy email address: ")
         if len(email) == 0:
-            print("You must provide your email")
+            logger.warning("You must provide your email")
             return self._get_email()
         return email
 
@@ -100,7 +103,7 @@ class Settings:
         """
         password = getpass.getpass(prompt="Please enter your udemy password: ")
         if len(password) == 0:
-            print("You must provide your password")
+            logger.warning("You must provide your password")
             return self._get_password()
         return password
 
@@ -148,7 +151,7 @@ class Settings:
 
         :return:
         """
-        yaml_structure = dict()
+        yaml_structure = {}
         save_settings = input("Do you want to save settings for future use (Y/N): ")
         if save_settings.lower() == "y":
             yaml_structure["udemy"] = {
@@ -161,6 +164,6 @@ class Settings:
 
             with open(self._settings_path, "w+") as f:
                 dump(yaml_structure, stream=f)
-            print(f"Saved your settings in {self._settings_path}")
+            logger.info(f"Saved your settings in {self._settings_path}")
         else:
-            print("Not saving your settings as requested")
+            logger.info("Not saving your settings as requested")

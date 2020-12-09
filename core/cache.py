@@ -3,13 +3,13 @@ import json
 import os
 
 
-class CourseCache(object):
+class CourseCache:
     """
     Basic cache to keep details on courses already scraped
     """
 
-    def __init__(self):
-        self._file_name = ".course_cache"
+    def __init__(self, file_name=".course_cache"):
+        self._file_name = file_name
         self._cache = []
         self._load_cache()
 
