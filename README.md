@@ -193,7 +193,7 @@ and help us on what you want or talk to us about your proposed changes.
 
 ---
 
-## Supporter
+## Supporters
 
 ### Jetbrains
 
