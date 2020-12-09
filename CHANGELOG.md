@@ -53,7 +53,7 @@ can continue as normal
   contribute.
 
 [1.0.0]:
-  https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v1.0
+  https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v1.0.0
 [0.3]:
   https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v0.3
 [0.2]:
