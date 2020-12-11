@@ -1,6 +1,3 @@
-# Install all the requirements by running requirements.py in IDLE or follow the alternate instructions at
-# https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/ Make sure you have
-# cleared all saved payment details on your Udemy account & the browser!
 import argparse
 from argparse import Namespace
 from typing import Union
@@ -27,18 +24,15 @@ def run(
     :return:
     """
     settings = Settings()
-    if driver is None:
-        dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
-        driver = dm.driver
-    redeem_courses(driver, settings, max_pages, cache_hit_limit)
+    dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
+    redeem_courses(dm.driver, settings, max_pages, cache_hit_limit)
 
 
-def parse_args(browser=None, use_manual_driver=False) -> Namespace:
+def parse_args(browser=None) -> Namespace:
     """
     Parse args from the CLI or use the args passed in
 
     :param str browser: Name of the browser we want to create a driver for
-    :param bool use_manual_driver: If True don't create a web driver using web driver manager
     :return: Args to be used in the script
     """
     parser = argparse.ArgumentParser(description="Udemy Enroller")
@@ -65,13 +59,17 @@ def parse_args(browser=None, use_manual_driver=False) -> Namespace:
 
     args = parser.parse_args()
 
-    if args.browser is None and not use_manual_driver:
+    if args.browser is None:
         parser.print_help()
     else:
         return args
 
 
-if __name__ == "__main__":
+def main():
     args = parse_args()
     if args:
         run(args.browser, args.max_pages, args.cache_hits)
+
+
+if __name__ == "__main__":
+    main()

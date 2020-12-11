@@ -79,41 +79,34 @@ get all the requirements installed in one go. Similar instructions applies for p
 - **Tested and works perfectly:**
 
   - Chrome:
-    [udemy_enroller_chrome.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_chrome.py)
+    [udemy_enroller.py --browser=chrome](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
   - Chromium:
-    [udemy_enroller_chromium.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_chromium.py)
+    [udemy_enroller.py --browser=chromium](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
   - Edge:
-    [udemy_enroller_edge.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_edge.py)
+    [udemy_enroller.py --browser=edge](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
 
 - **Has issues when run on custom kernel but works fine on vanilla OS:**
 
   - Firefox:
-    [udemy_enroller_firefox.py(might require manual driver installation)](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py)
+    [udemy_enroller.py --browser=firefox (might require manual driver installation)](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
 
 - **Untested:**
 
   - Opera:
-    [udemy_enroller_opera.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_opera.py)
-
-- **Experimentation or other Browsers (especially Safari):**
-
-  - [aka the old bot- requires manual driver setup](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_vanilla.py)
-
+    [udemy_enroller.py --browser=opera](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
+    
 - **Use at your own risk:**
   - Vanilla
   - Internet Explorer:
-    [udemy_enroller_internet_explorer.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_internet_explorer.py)
+    [udemy_enroller.py --browser=internet_explorer](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
 
 3 . The script can be passed arguments:
 - `--help`: View full list of arguments available
 - `--max-pages=<NUMBER>`: Max number of pages to scrape from tutorialbar.com before exiting the script
 - `--browser=<BROWSER_NAME>`: Run with a specific browser 
-- `--cache-hits=<NUMBER>`: If we hit the cache this number of times in a row we will exit the script
+- `--cache-hits=<NUMBER>`: If we hit the cache this number of times in a row we will exit the script (default is 12)
 
 4 . Run the chosen script in terminal like so:
-- `python udemy_enroller_firefox.py`
-
-   Or by using the generic script:
 - `python udemy_enroller.py --browser=firefox`
 
 5 . The bot starts scraping the course links from the first **All Courses** page
