@@ -1,8 +1,7 @@
 import logging
-import time
 from enum import Enum
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.support import expected_conditions as EC
@@ -146,17 +145,25 @@ class UdemyActions:
 
         # Check if zipcode exists before doing this
         if self.settings.zip_code:
-            # Assume sometimes zip is not required because script was originally pushed without this
+            # zipcode is only required in certain regions (e.g USA)
             try:
-                zipcode_element = self.driver.find_element_by_id(
-                    "billingAddressSecondaryInput"
+                element_present = EC.presence_of_element_located(
+                    (
+                        By.ID,
+                        "billingAddressSecondaryInput",
+                    )
                 )
-                zipcode_element.send_keys(self.settings.zip_code)
+                WebDriverWait(self.driver, 5).until(element_present).send_keys(
+                    self.settings.zip_code
+                )
 
                 # After you put the zip code in, the page refreshes itself and disables the enroll button for a split
                 # second.
-                time.sleep(1)
-            except NoSuchElementException:
+                enroll_button_is_clickable = EC.element_to_be_clickable(
+                    (By.XPATH, enroll_button_xpath)
+                )
+                WebDriverWait(self.driver, 5).until(enroll_button_is_clickable)
+            except (TimeoutException, NoSuchElementException):
                 pass
 
         # Make sure the price has loaded
