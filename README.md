@@ -196,6 +196,12 @@ Thanks to [JetBrains](https://jetbrains.com/?from=udemy-free-course-enroller) fo
 
 ### GitBook
 
-[![Gitbook](https://i.imgur.com/OkuB14I.jpg)](https://gitbook.com)
+[![GitBook](https://i.imgur.com/OkuB14I.jpg)](https://gitbook.com)
 
-Thanks to [Gitbook](https://gitbook.com) for supporting us. Gitbook is the best place to track personal notes and ideas for teams. If you think their product might help you, please support them.
+Thanks to [GitBook](https://gitbook.com) for supporting us. GitBook is the best place to track personal notes and ideas for teams. If you think their product might help you, please support them.
+
+### GitLab
+
+[![GitLab](https://i.imgur.com/aUWtSn4.png)](https://gitlab.com)
+
+Thanks to [GitLab](https://gitlab.com) for supporting us. GitLab is one of the main code hosting providers out there. They also have comprehensive offering for [open source](https://about.gitlab.com/solutions/open-source/). Please check them out.
