@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import Union
 
@@ -8,7 +9,7 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from core import CourseCache, Settings, TutorialBarScraper, UdemyActions, exceptions
+from core import CourseCache, ScraperManager, Settings, UdemyActions, exceptions
 
 logger = logging.getLogger("udemy_enroller")
 
@@ -29,17 +30,15 @@ def _redeem_courses(
     :return:
     """
     cache = CourseCache()
-    tb_scraper = TutorialBarScraper(max_pages)
+    scrapers = ScraperManager(max_pages)
     udemy_actions = UdemyActions(driver, settings)
     udemy_actions.login()  # login once outside while loop
+    loop = asyncio.get_event_loop()
 
     current_cache_hits = 0
 
     while True:
-        # Check if we should exit the loop
-        if not tb_scraper.script_should_run():
-            break
-        udemy_course_links = tb_scraper.run()
+        udemy_course_links = loop.run_until_complete(scrapers.run())
 
         for course_link in udemy_course_links:
             try:
@@ -49,7 +48,7 @@ def _redeem_courses(
                     # Reset cache hit count as we haven't scraped this page before
                     current_cache_hits = 0
                 else:
-                    logger.info(f"In cache: {course_link}")
+                    logger.debug(f"In cache: {course_link}")
 
                     # Increment the cache hit count since this link is in the cache
                     current_cache_hits += 1
@@ -76,8 +75,9 @@ def _redeem_courses(
                     logger.info("We have attempted to subscribe to 1 udemy course")
                     logger.info("Ending test")
                     return
-
-        logger.info("Moving on to the next page of the course list on tutorialbar.com")
+        else:
+            logger.info("All scrapers complete")
+            return
 
 
 def _reached_cache_hit_limit(cache_hit_limit, cache_hits) -> bool:

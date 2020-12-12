@@ -1,14 +1,16 @@
+import asyncio
 import logging
-from multiprocessing.dummy import Pool
 from typing import List
 
-import requests
+import aiohttp
 from bs4 import BeautifulSoup
+
+from core.scrapers.base_scraper import BaseScraper
 
 logger = logging.getLogger("udemy_enroller")
 
 
-class TutorialBarScraper:
+class TutorialBarScraper(BaseScraper):
     """
     Contains any logic related to scraping of data from tutorialbar.com
     """
@@ -16,34 +18,45 @@ class TutorialBarScraper:
     DOMAIN = "https://www.tutorialbar.com"
     AD_DOMAINS = ("https://amzn",)
 
-    def __init__(self, max_pages=None):
+    def __init__(self, max_pages=None, enabled=True):
+        super().__init__()
+        self.scraper_name = "tutorialbar"
+        if not enabled:
+            self.set_state_disabled()
         self.current_page = 0
         self.last_page = None
         self.links_per_page = 12
         self.max_pages = max_pages
 
-    def run(self) -> List:
+    @BaseScraper.time_run
+    async def run(self) -> List:
         """
         Runs the steps to scrape links from tutorialbar.com
 
         :return: list of udemy coupon links
         """
+        links = await self.get_links()
+        self.max_pages_reached()
+        return links
+
+    async def get_links(self):
         self.current_page += 1
-        logger.info("Please Wait: Getting the course list from tutorialbar.com...")
-        course_links = self.get_course_links(
+        course_links = await self.get_course_links(
             f"{self.DOMAIN}/all-courses/page/{self.current_page}/"
         )
 
-        logger.info(f"Page: {self.current_page} of {self.last_page} scraped")
-        udemy_links = self.gather_udemy_course_links(course_links)
-        filtered_udemy_links = self._filter_ad_domains(udemy_links)
+        logger.info(
+            f"Page: {self.current_page} of {self.last_page} scraped from tutorialbar.com"
+        )
+        udemy_links = await self.gather_udemy_course_links(course_links)
+        links = self._filter_ad_domains(udemy_links)
 
-        for counter, course in enumerate(filtered_udemy_links):
-            logger.info(f"Received Link {counter + 1} : {course}")
+        for counter, course in enumerate(links):
+            logger.debug(f"Received Link {counter + 1} : {course}")
 
-        return filtered_udemy_links
+        return links
 
-    def script_should_run(self) -> bool:
+    def max_pages_reached(self) -> bool:
         """
         Returns boolean of whether or not we should continue checking tutorialbar.com
 
@@ -51,21 +64,17 @@ class TutorialBarScraper:
         """
 
         should_run = True
+
         if self.max_pages is not None:
             should_run = self.max_pages > self.current_page
+
             if not should_run:
                 logger.info(
                     f"Stopping loop. We have reached max number of pages to scrape: {self.max_pages}"
                 )
+                self.set_state_disabled()
+
         return should_run
-
-    def is_first_loop(self) -> bool:
-        """
-        Simple check to see if this is the first time we have executed
-
-        :return: boolean showing if this is the first loop of the script
-        """
-        return self.current_page == 1
 
     def _filter_ad_domains(self, udemy_links) -> List:
         """
@@ -83,16 +92,19 @@ class TutorialBarScraper:
             logger.info(f"Removing ad links from courses: {ad_links}")
         return list(set(udemy_links) - ad_links)
 
-    def get_course_links(self, url: str) -> List:
+    async def get_course_links(self, url: str) -> List:
         """
         Gets the url of pages which contain the udemy link we want to get
 
         :param str url: The url to scrape data from
         :return: list of pages on tutorialbar.com that contain Udemy coupons
         """
-        response = requests.get(url=url)
 
-        soup = BeautifulSoup(response.content, "html.parser")
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                text = await response.read()
+
+        soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
 
         links = soup.find_all("h3")
         course_links = [link.find("a").get("href") for link in links]
@@ -104,27 +116,26 @@ class TutorialBarScraper:
         return course_links
 
     @staticmethod
-    def get_udemy_course_link(url: str) -> str:
+    async def get_udemy_course_link(url: str) -> str:
         """
         Gets the udemy course link
 
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
         """
-        response = requests.get(url=url)
-        soup = BeautifulSoup(response.content, "html.parser")
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                text = await response.read()
+        soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
         udemy_link = soup.find("span", class_="rh_button_wrapper").find("a").get("href")
         return udemy_link
 
-    def gather_udemy_course_links(self, courses: List[str]) -> List:
+    async def gather_udemy_course_links(self, courses: List[str]):
         """
         Threaded fetching of the udemy course links from tutorialbar.com
 
         :param list courses: A list of tutorialbar.com course links we want to fetch the udemy links for
         :return: list of udemy links
         """
-        thread_pool = Pool()
-        results = thread_pool.map(self.get_udemy_course_link, courses)
-        thread_pool.close()
-        thread_pool.join()
-        return results
+        return await asyncio.gather(*map(self.get_udemy_course_link, courses))
