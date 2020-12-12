@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+from typing import Dict, List
 
 import aiohttp
 
@@ -27,7 +28,7 @@ class ComidocScraper(BaseScraper):
         "referer": f"{DOMAIN}/daily",
     }
 
-    def __init__(self, days_offset=10, enabled=True):
+    def __init__(self, days_offset=5, enabled=True):
         super().__init__()
         self.scraper_name = "comidoc"
         if not enabled:
@@ -35,10 +36,15 @@ class ComidocScraper(BaseScraper):
         self.days_offset = days_offset  # Query the past months coupons
 
     @BaseScraper.time_run
-    async def run(self):
+    async def run(self) -> List:
+        """
+        Called to gather the udemy links
+
+        :return: List of udemy course links
+        """
         return await self.get_links()
 
-    async def get_links(self):
+    async def get_links(self) -> List:
         links = []
         # TODO: Add try/except block to handle connection issues
         data = await self.get_data()
@@ -51,11 +57,13 @@ class ComidocScraper(BaseScraper):
 
         return links
 
-    async def get_data(self):
+    async def get_data(self) -> Dict:
+        """
+        Fetch data from comidoc endpoint
+
+        :return: dictionary containing data needed to build udemy free urls
         """
 
-        :return:
-        """
         url = f"{self.DOMAIN}/beta"
         payload = {
             "query": "query DAILY_COURSES_QUERY($myDate: DateTime) { coupons: "
@@ -77,4 +85,4 @@ class ComidocScraper(BaseScraper):
             ) as response:
                 data = await response.json()
 
-        return data["data"]["coupons"]
+        return data["data"]["coupons"] if data else {}

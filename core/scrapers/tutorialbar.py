@@ -72,7 +72,7 @@ class TutorialBarScraper(BaseScraper):
                 logger.info(
                     f"Stopping loop. We have reached max number of pages to scrape: {self.max_pages}"
                 )
-                self.set_state_disabled()
+                self.set_state_complete()
 
         return should_run
 
