@@ -15,10 +15,16 @@ class ComidocScraper(BaseScraper):
     Contains any logic related to scraping of data from comidoc.net
     """
 
+    # TODO: Not sure how often x-api-key changes in HEADERS.
+    #  Might need to fetch it dynamically
     DOMAIN = "https://comidoc.net"
     HEADERS = {
         "authority": "comidoc.net",
+        "sec-ch-ua": '"Google Chrome";v="87", " Not;A Brand";v="99", "Chromium";v="87"',
         "accept-language": "en-US",
+        "sec-ch-ua-mobile": "?0",
+        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "x-api-key": "W8GX8OIG4MWCM9Vy16lGH1KDpGvinq66",
         "content-type": "application/json",
         "accept": "*/*",
         "origin": DOMAIN,
@@ -26,9 +32,10 @@ class ComidocScraper(BaseScraper):
         "sec-fetch-mode": "cors",
         "sec-fetch-dest": "empty",
         "referer": f"{DOMAIN}/daily",
+        "cookie": "consent=true",
     }
 
-    def __init__(self, days_offset=5, enabled=True):
+    def __init__(self, enabled, days_offset=5):
         super().__init__()
         self.scraper_name = "comidoc"
         if not enabled:

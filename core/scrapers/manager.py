@@ -7,10 +7,12 @@ from core.scrapers.tutorialbar import TutorialBarScraper
 
 
 class ScraperManager:
-    def __init__(self, max_pages):
-        self.tbs = TutorialBarScraper(max_pages=max_pages)
-        self.cds = ComidocScraper()
-        self._scrapers = (self.tbs, self.cds)
+    def __init__(self, tutorialbar_enabled, comidoc_enabled, max_pages):
+        self.tutorialbar_scraper = TutorialBarScraper(
+            tutorialbar_enabled, max_pages=max_pages
+        )
+        self.comidoc_scraper = ComidocScraper(comidoc_enabled)
+        self._scrapers = (self.tutorialbar_scraper, self.comidoc_scraper)
 
     async def run(self) -> List:
         """

@@ -21,22 +21,39 @@ def enable_debug_logging() -> None:
     logger.info(f"Enabled debug logging")
 
 
+def determine_if_scraper_enabled(
+    tutorialbar_enabled: bool,
+    comidoc_enabled: bool,
+):
+    """
+
+
+    :return: None
+    """
+    if not tutorialbar_enabled and not comidoc_enabled:
+        # Set both to True since user has not enabled a specific scraper i.e Run all scrapers
+        tutorialbar_enabled, comidoc_enabled = True, True
+    return tutorialbar_enabled, comidoc_enabled
+
+
 def run(
     browser: str,
+    tutorialbar_enabled: bool,
+    comidoc_enabled: bool,
     max_pages: Union[int, None],
-    cache_hit_limit: int,
 ):
     """
     Run the udemy enroller script
 
     :param str browser: Name of the browser we want to create a driver for
+    :param bool tutorialbar_enabled:
+    :param bool comidoc_enabled:
     :param int or None max_pages: Max number of pages to scrape from tutorialbar.com
-    :param int cache_hit_limit: If we hit the cache this many times in a row we exit the script
     :return:
     """
     settings = Settings()
     dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
-    redeem_courses(dm.driver, settings, max_pages, cache_hit_limit)
+    redeem_courses(dm.driver, settings, tutorialbar_enabled, comidoc_enabled, max_pages)
 
 
 def parse_args(browser=None) -> Namespace:
@@ -56,16 +73,22 @@ def parse_args(browser=None) -> Namespace:
         help="Browser to use for Udemy Enroller",
     )
     parser.add_argument(
-        "--max-pages",
-        type=int,
-        default=None,
-        help="Max pages to scrape from tutorialbar.com",
+        "--tutorialbar",
+        action="store_true",
+        default=False,
+        help="Run tutorialbar scraper",
     )
     parser.add_argument(
-        "--cache-hits",
+        "--comidoc",
+        action="store_true",
+        default=False,
+        help="Run comidoc scraper",
+    )
+    parser.add_argument(
+        "--max-pages",
         type=int,
-        default=12,
-        help="If we hit the cache this number of times in a row we will exit the script",
+        default=5,
+        help=f"Max pages to scrape from tutorialbar (Default is 5)",
     )
     parser.add_argument(
         "--debug",
@@ -86,7 +109,10 @@ def main():
     if args:
         if args.debug:
             enable_debug_logging()
-        run(args.browser, args.max_pages, args.cache_hits)
+        tutorialbar_enabled, comidoc_enabled = determine_if_scraper_enabled(
+            args.tutorialbar, args.comidoc
+        )
+        run(args.browser, tutorialbar_enabled, comidoc_enabled, args.max_pages)
 
 
 if __name__ == "__main__":

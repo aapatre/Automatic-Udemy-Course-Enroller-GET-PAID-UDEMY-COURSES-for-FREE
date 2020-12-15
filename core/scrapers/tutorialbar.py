@@ -18,7 +18,7 @@ class TutorialBarScraper(BaseScraper):
     DOMAIN = "https://www.tutorialbar.com"
     AD_DOMAINS = ("https://amzn",)
 
-    def __init__(self, max_pages=None, enabled=True):
+    def __init__(self, enabled, max_pages=None):
         super().__init__()
         self.scraper_name = "tutorialbar"
         if not enabled:
