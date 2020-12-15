@@ -53,7 +53,7 @@ async def test_run(
 ):
     mock_get_course_links.return_value = tutorialbar_links
     mock_gather_udemy_course_links.return_value = udemy_links
-    tbs = TutorialBarScraper()
+    tbs = TutorialBarScraper(enabled=True)
     links = await tbs.run()
 
     mock_get_course_links.assert_called_with(tutorialbar_course_page_link)
@@ -68,7 +68,7 @@ async def test_get_course_links(mock_get, tutorialbar_main_page):
     url = "https://www.tutorialbar.com/main"
 
     mock_get.return_value = MockResponse(tutorialbar_main_page, 200)
-    tbs = TutorialBarScraper()
+    tbs = TutorialBarScraper(enabled=True)
     tbs.current_page = 1
     links = await tbs.get_course_links(url)
 
@@ -87,3 +87,19 @@ async def test_get_course_links(mock_get, tutorialbar_main_page):
         "https://www.tutorialbar.com/quickbooks-pro-desktop-bookkeeping-business-easy-way/",
         "https://www.tutorialbar.com/quickbooks-online-bank-feeds-credit-card-feeds-2020/",
     ]
+
+
+@pytest.mark.parametrize(
+    "enabled",
+    [
+        (True,),
+        (False,),
+    ],
+    ids=("Test enabled", "Test disabled"),
+)
+def test_enable_status(
+    enabled,
+):
+
+    tbs = TutorialBarScraper(enabled=enabled)
+    assert tbs.is_disabled() is not enabled
