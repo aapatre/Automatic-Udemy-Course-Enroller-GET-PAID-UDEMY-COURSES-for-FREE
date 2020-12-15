@@ -206,4 +206,4 @@ Thanks to [GitBook](https://gitbook.com) for supporting us. GitBook is the best 
 
 [![GitLab](https://i.imgur.com/aUWtSn4.png)](https://gitlab.com)
 
-Thanks to [GitLab](https://gitlab.com) for supporting us. GitLab is one of the main code hosting providers out there. They also have comprehensive offering for [open source](https://about.gitlab.com/solutions/open-source/). Please check them out.
+Thanks to [GitLab](https://gitlab.com) for supporting us. GitLab is one of the main code hosting and CI/CD providers out there. They support the open source community through their GitLab for [Open Source program](https://about.gitlab.com/solutions/open-source/). Please check them out.
