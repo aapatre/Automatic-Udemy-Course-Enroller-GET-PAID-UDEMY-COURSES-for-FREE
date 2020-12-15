@@ -2,7 +2,7 @@
 [![forthebadge](https://forthebadge.com/images/badges/it-works-why.svg)](https://forthebadge.com)
 
 
-# Automatic Udemy Course Enroller: Find FREE Coupons!
+# Udemy Coupon Grabber & Course Enroller: Grab FREE Coupons!
 
 Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of
 web-scraping and automation, this script will find the necessary Udemy Coupons
