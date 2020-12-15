@@ -66,7 +66,10 @@ class UdemyActions:
                     raise RobotException("I am a bot!")
                 raise e
             else:
-                # TODO: Verify successful login
+                user_dropdown_xpath = "//a[@data-purpose='user-dropdown']"
+                WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, user_dropdown_xpath))
+                )
                 self.logged_in = True
 
     def redeem(self, url: str) -> str:
