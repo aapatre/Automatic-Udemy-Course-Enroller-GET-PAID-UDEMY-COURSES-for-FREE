@@ -1,7 +1,7 @@
 import argparse
 import logging
 from argparse import Namespace
-from typing import Union
+from typing import Tuple, Union
 
 from core import ALL_VALID_BROWSER_STRINGS, DriverManager, Settings
 from core.utils import redeem_courses
@@ -24,11 +24,11 @@ def enable_debug_logging() -> None:
 def determine_if_scraper_enabled(
     tutorialbar_enabled: bool,
     comidoc_enabled: bool,
-):
+) -> Tuple[bool, bool]:
     """
+    Determine what scrapers should be enabled and disabled
 
-
-    :return: None
+    :return: tuple containing boolean of what scrapers should run
     """
     if not tutorialbar_enabled and not comidoc_enabled:
         # Set both to True since user has not enabled a specific scraper i.e Run all scrapers
