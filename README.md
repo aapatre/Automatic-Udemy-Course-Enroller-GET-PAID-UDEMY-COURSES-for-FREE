@@ -104,9 +104,11 @@ get all the requirements installed in one go. Similar instructions applies for p
 
 3 . The script can be passed arguments:
 - `--help`: View full list of arguments available
-- `--max-pages=<NUMBER>`: Max number of pages to scrape from tutorialbar.com before exiting the script
 - `--browser=<BROWSER_NAME>`: Run with a specific browser 
-- `--cache-hits=<NUMBER>`: If we hit the cache this number of times in a row we will exit the script (default is 12)
+- `--comidoc`: Run the comidoc scraper only
+- `--tutorialbar`: Run the tutorialbar scraper only
+- `--max-pages=<NUMBER>`: Max number of pages to scrape from tutorialbar.com before exiting the script (default is 5)
+- `--debug`: Enable debug logging
 
 4 . Run the chosen script in terminal like so:
 - `python udemy_enroller.py --browser=firefox`

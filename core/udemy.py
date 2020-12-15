@@ -90,7 +90,7 @@ class UdemyActions:
             )
 
             if element_text not in self.settings.languages:
-                logger.info(f"Course language not wanted: {element_text}")
+                logger.debug(f"Course language not wanted: {element_text}")
                 return UdemyStatus.UNWANTED_LANGUAGE.value
 
         if self.settings.categories:
@@ -109,7 +109,7 @@ class UdemyActions:
                 if category in breadcrumbs:
                     break
             else:
-                logger.info("Skipping course as it does not have a wanted category")
+                logger.debug("Skipping course as it does not have a wanted category")
                 return UdemyStatus.UNWANTED_CATEGORY.value
 
         # Enroll Now 1
@@ -124,7 +124,7 @@ class UdemyActions:
             "//div[starts-with(@class, 'buy-box--purchased-text-banner')]"
         )
         if self.driver.find_elements_by_xpath(already_purchased_xpath):
-            logger.info(f"Already enrolled in {course_name}")
+            logger.debug(f"Already enrolled in {course_name}")
             return UdemyStatus.ENROLLED.value
 
         # Click to enroll in the course
@@ -185,7 +185,7 @@ class UdemyActions:
                 # This logic should work for different locales and currencies
                 _numbers = "".join(filter(lambda x: x if x.isdigit() else None, _price))
                 if _numbers.isdigit() and int(_numbers) > 0:
-                    logger.info(
+                    logger.debug(
                         f"Skipping course as it now costs {_price}: {course_name}"
                     )
                     return UdemyStatus.EXPIRED.value
