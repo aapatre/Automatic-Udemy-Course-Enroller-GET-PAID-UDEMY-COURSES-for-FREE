@@ -1,9 +1,11 @@
 import datetime
 import json
 import logging
+import re
 from typing import Dict, List
 
 import aiohttp
+from bs4 import BeautifulSoup
 
 from core.scrapers.base_scraper import BaseScraper
 
@@ -15,8 +17,6 @@ class ComidocScraper(BaseScraper):
     Contains any logic related to scraping of data from comidoc.net
     """
 
-    # TODO: Not sure how often x-api-key changes in HEADERS.
-    #  Might need to fetch it dynamically
     DOMAIN = "https://comidoc.net"
     HEADERS = {
         "authority": "comidoc.net",
@@ -24,7 +24,6 @@ class ComidocScraper(BaseScraper):
         "accept-language": "en-US",
         "sec-ch-ua-mobile": "?0",
         "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
-        "x-api-key": "W8GX8OIG4MWCM9Vy16lGH1KDpGvinq66",
         "content-type": "application/json",
         "accept": "*/*",
         "origin": DOMAIN,
@@ -49,6 +48,7 @@ class ComidocScraper(BaseScraper):
 
         :return: List of udemy course links
         """
+        await self.set_api_key()
         return await self.get_links()
 
     async def get_links(self) -> List:
@@ -93,3 +93,39 @@ class ComidocScraper(BaseScraper):
                 data = await response.json()
 
         return data["data"]["coupons"] if data else {}
+
+    async def set_api_key(self) -> None:
+        """
+        Retrieves the api key from comidoc and updates our Headers with that value
+
+        :return: None
+        """
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                self.DOMAIN,
+                headers=self.HEADERS,
+            ) as response:
+                text = await response.read()
+        js_links = []
+        soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
+
+        # There is no way to identify which js file has the api key
+        # so we gather all js files imported at top of the page
+        for i in soup.find_all("script"):
+            src = i.get("src", "")
+            if (
+                src.startswith("https://cdn.comidoc.net/_next/static/chunks/")
+                and src.endswith(".js")
+                and "-" not in src
+            ):
+                js_links.append(src)
+
+        # Loop through js files until we get the X-API-KEY
+        for js_url in reversed(js_links):
+            async with aiohttp.ClientSession() as session:
+                async with session.get(js_url) as response:
+                    text = await response.read()
+                    if "X-API-KEY" in str(text):
+                        match = re.search('(?<=X-API-KEY":")(.*?)(?=")', str(text))
+                        self.HEADERS["x-api-key"] = match.group()
+                        break
