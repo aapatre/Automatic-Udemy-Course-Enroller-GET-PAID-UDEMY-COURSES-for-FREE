@@ -1,5 +1,3 @@
-import logging
-
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from webdriver_manager.chrome import ChromeDriverManager
@@ -7,6 +5,10 @@ from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager, IEDriverManager
 from webdriver_manager.opera import OperaDriverManager
 from webdriver_manager.utils import ChromeType
+
+from core.logging import get_logger
+
+logger = get_logger()
 
 VALID_FIREFOX_STRINGS = {"ff", "firefox"}
 VALID_CHROME_STRINGS = {"chrome", "google-chrome"}
@@ -23,9 +25,6 @@ ALL_VALID_BROWSER_STRINGS = (
     .union(VALID_OPERA_STRINGS)
     .union(VALID_EDGE_STRINGS)
 )
-
-
-logger = logging.getLogger("udemy_enroller")
 
 
 class DriverManager:
