@@ -48,15 +48,14 @@ class ComidocScraper(BaseScraper):
         return await self.get_links()
 
     async def get_links(self) -> List:
-        links = []
         # TODO: Add try/except block to handle connection issues
         data = await self.get_data()
-        if data:
-            self.set_state_complete()
-            links = [
-                f"https://www.udemy.com/course{d['course']['cleanUrl']}?couponCode={d['code']}"
-                for d in data
-            ]
+
+        self.set_state_complete()
+        links = [
+            f"https://www.udemy.com/course{d['course']['cleanUrl']}?couponCode={d['code']}"
+            for d in data
+        ]
 
         return links
 
@@ -66,6 +65,7 @@ class ComidocScraper(BaseScraper):
 
         :return: dictionary containing data needed to build udemy free urls
         """
+
 
         async with aiohttp.ClientSession() as session:
             async with session.get(
