@@ -52,15 +52,14 @@ class ComidocScraper(BaseScraper):
         return await self.get_links()
 
     async def get_links(self) -> List:
-        links = []
         # TODO: Add try/except block to handle connection issues
         data = await self.get_data()
-        if data:
-            self.set_state_complete()
-            links = [
-                f"https://www.udemy.com/course{d['course']['cleanUrl']}?couponCode={d['code']}"
-                for d in data
-            ]
+
+        self.set_state_complete()
+        links = [
+            f"https://www.udemy.com/course{d['course']['cleanUrl']}?couponCode={d['code']}"
+            for d in data
+        ]
 
         return links
 
@@ -90,9 +89,17 @@ class ComidocScraper(BaseScraper):
             async with session.post(
                 url, headers=self.HEADERS, data=json.dumps(payload)
             ) as response:
-                data = await response.json()
+                if response.ok:
+                    data = await response.read()
+                else:
+                    logger.error(f"Response not ok comidoc: {response}")
 
-        return data["data"]["coupons"] if data else {}
+        if data:
+            data = json.loads(data)["data"]["coupons"]
+        else:
+            data = {}
+            logger.warning(f"Empty response from comidoc. API may have changed")
+        return data
 
     async def set_api_key(self) -> None:
         """
@@ -113,11 +120,9 @@ class ComidocScraper(BaseScraper):
         # so we gather all js files imported at top of the page
         for i in soup.find_all("script"):
             src = i.get("src", "")
-            if (
-                src.startswith("https://cdn.comidoc.net/_next/static/chunks/")
-                and src.endswith(".js")
-                and "-" not in src
-            ):
+            if src.startswith(
+                "https://cdn.comidoc.net/_next/static/chunks/pages/_app"
+            ) and src.endswith(".js"):
                 js_links.append(src)
 
         # Loop through js files until we get the X-API-KEY
