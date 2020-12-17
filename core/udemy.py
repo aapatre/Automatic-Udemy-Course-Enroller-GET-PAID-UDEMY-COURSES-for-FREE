@@ -1,4 +1,3 @@
-import logging
 from enum import Enum
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -8,9 +7,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from core.exceptions import RobotException
+from core.logging import get_logger
 from core.settings import Settings
 
-logger = logging.getLogger("udemy_enroller")
+logger = get_logger()
 
 
 class UdemyStatus(Enum):

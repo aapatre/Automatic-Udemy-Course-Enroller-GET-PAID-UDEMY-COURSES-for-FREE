@@ -39,7 +39,7 @@ class ComidocScraper(BaseScraper):
         self.scraper_name = "comidoc"
         if not enabled:
             self.set_state_disabled()
-        self.days_offset = days_offset  # Query the past months coupons
+        self.days_offset = days_offset  # Query the past x days coupons
 
     @BaseScraper.time_run
     async def run(self) -> List:

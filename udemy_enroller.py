@@ -4,9 +4,10 @@ from argparse import Namespace
 from typing import Tuple, Union
 
 from core import ALL_VALID_BROWSER_STRINGS, DriverManager, Settings
-from core.utils import redeem_courses
+from core.logging import get_logger
+from core.runner import redeem_courses
 
-logger = logging.getLogger("udemy_enroller")
+logger = get_logger()
 
 
 def enable_debug_logging() -> None:
@@ -16,8 +17,8 @@ def enable_debug_logging() -> None:
     :return: None
     """
     logger.setLevel(logging.DEBUG)
-    for handlers in logger.handlers:
-        handlers.setLevel(logging.DEBUG)
+    for handler in logger.handlers:
+        handler.setLevel(logging.DEBUG)
     logger.info(f"Enabled debug logging")
 
 
