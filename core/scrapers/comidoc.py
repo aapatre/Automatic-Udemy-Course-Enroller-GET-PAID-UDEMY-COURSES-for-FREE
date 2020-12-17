@@ -1,7 +1,5 @@
-import datetime
 import json
 import logging
-import re
 from typing import Dict, List
 
 import aiohttp
@@ -34,12 +32,11 @@ class ComidocScraper(BaseScraper):
         "cookie": "consent=true",
     }
 
-    def __init__(self, enabled, days_offset=5):
+    def __init__(self, enabled):
         super().__init__()
         self.scraper_name = "comidoc"
         if not enabled:
             self.set_state_disabled()
-        self.days_offset = days_offset  # Query the past x days coupons
 
     @BaseScraper.time_run
     async def run(self) -> List:
@@ -48,7 +45,6 @@ class ComidocScraper(BaseScraper):
 
         :return: List of udemy course links
         """
-        await self.set_api_key()
         return await self.get_links()
 
     async def get_links(self) -> List:
@@ -71,61 +67,38 @@ class ComidocScraper(BaseScraper):
         :return: dictionary containing data needed to build udemy free urls
         """
 
-        url = f"{self.DOMAIN}/beta"
-        payload = {
-            "query": "query DAILY_COURSES_QUERY($myDate: DateTime) { coupons: "
-            'coupons( where: { isValid: true createdAt_gte: $myDate discountValue_starts_with: "100%" } '
-            "orderBy: createdAt_DESC) { code isValid createdAt discountValue discountPrice maxUses "
-            "remainingUses endTime course { udemyId cleanUrl createdAt updatedAt detail(last: 1) { title "
-            "isPaid lenghtTxt rating updated subscribers locale { locale } } } } }",
-            "variables": {
-                "myDate": (
-                    datetime.datetime.utcnow()
-                    - datetime.timedelta(days=self.days_offset)
-                ).strftime("%Y-%m-%dT%H")
-            },
-        }
-
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                url, headers=self.HEADERS, data=json.dumps(payload)
-            ) as response:
-                data = await response.json()
-
-        return data["data"]["coupons"] if data else {}
-
-    async def set_api_key(self) -> None:
-        """
-        Retrieves the api key from comidoc and updates our Headers with that value
-
-        :return: None
-        """
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 self.DOMAIN,
                 headers=self.HEADERS,
             ) as response:
                 text = await response.read()
-        js_links = []
         soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
 
-        # There is no way to identify which js file has the api key
-        # so we gather all js files imported at top of the page
+        # We get the url hash needed from the path of the _buildManifest.js file
+        path_js = None
         for i in soup.find_all("script"):
             src = i.get("src", "")
-            if (
-                src.startswith("https://cdn.comidoc.net/_next/static/chunks/")
-                and src.endswith(".js")
-                and "-" not in src
+            if src.startswith("https://cdn.comidoc.net/_next/static/") and src.endswith(
+                "_buildManifest.js"
             ):
-                js_links.append(src)
+                path_js = src.split("/")[-2]
+                break
 
-        # Loop through js files until we get the X-API-KEY
-        for js_url in reversed(js_links):
+        data = {}
+        # Fetch the daily courses if the path has been correctly resolved
+        if path_js is not None:
+            daily_json_link = f"{self.DOMAIN}/_next/data/{path_js}/daily.json"
+
             async with aiohttp.ClientSession() as session:
-                async with session.get(js_url) as response:
-                    text = await response.read()
-                    if "X-API-KEY" in str(text):
-                        match = re.search('(?<=X-API-KEY":")(.*?)(?=")', str(text))
-                        self.HEADERS["x-api-key"] = match.group()
-                        break
+                async with session.get(
+                    daily_json_link,
+                    headers=self.HEADERS,
+                ) as response:
+                    data = await response.read()
+            if data:
+                data = json.loads(data)["pageProps"]["coupons"]
+            else:
+                data = {}
+                logger.warning(f"Empty response from comidoc. API may have changed!")
+        return data

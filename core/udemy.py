@@ -6,7 +6,7 @@ from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from core.exceptions import RobotException
+from core.exceptions import LoginException, RobotException
 from core.logging import get_logger
 from core.settings import Settings
 
@@ -58,7 +58,7 @@ class UdemyActions:
                 is_robot = self._check_if_robot()
                 if is_robot and not is_retry:
                     input(
-                        "Please solve the captcha before proceeding. Hit enter once solved "
+                        "Before login. Please solve the captcha before proceeding. Hit enter once solved "
                     )
                     self.login(is_retry=True)
                     return
@@ -67,9 +67,21 @@ class UdemyActions:
                 raise e
             else:
                 user_dropdown_xpath = "//a[@data-purpose='user-dropdown']"
-                WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.XPATH, user_dropdown_xpath))
-                )
+                try:
+                    WebDriverWait(self.driver, 10).until(
+                        EC.presence_of_element_located((By.XPATH, user_dropdown_xpath))
+                    )
+                except TimeoutException:
+                    is_robot = self._check_if_robot()
+                    if is_robot and not is_retry:
+                        input(
+                            "After login. Please solve the captcha before proceeding. Hit enter once solved "
+                        )
+                        if self._check_if_robot():
+                            raise RobotException("I am a bot!")
+                        self.logged_in = True
+                        return
+                    raise LoginException("Udemy user failed to login")
                 self.logged_in = True
 
     def redeem(self, url: str) -> str:
@@ -122,11 +134,9 @@ class UdemyActions:
             EC.element_to_be_clickable((By.XPATH, buy_course_button_xpath))
         )
 
-        # Check if already enrolled
-        already_purchased_xpath = (
-            "//div[starts-with(@class, 'buy-box--purchased-text-banner')]"
-        )
-        if self.driver.find_elements_by_xpath(already_purchased_xpath):
+        # Check if already enrolled. If add to cart is available we have not yet enrolled
+        add_to_cart_xpath = "//div[@data-purpose='add-to-cart']"
+        if not self.driver.find_elements_by_xpath(add_to_cart_xpath):
             logger.debug(f"Already enrolled in {course_name}")
             return UdemyStatus.ENROLLED.value
 

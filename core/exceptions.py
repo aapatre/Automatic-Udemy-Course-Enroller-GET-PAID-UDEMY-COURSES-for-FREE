@@ -4,3 +4,11 @@ class RobotException(Exception):
     """
 
     pass
+
+
+class LoginException(Exception):
+    """
+    You have failed to login to the Udemy site
+    """
+
+    pass
