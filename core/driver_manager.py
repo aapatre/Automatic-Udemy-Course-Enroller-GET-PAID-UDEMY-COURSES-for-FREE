@@ -86,6 +86,7 @@ class DriverManager:
         # We need to run headless when using github CI
         options.add_argument("--headless")
         options.add_argument("user-agent={0}".format(user_agent))
+        options.add_argument("accept-language=en-GB,en-US;q=0.9,en;q=0.8")
         options.add_argument("--window-size=1325x744")
         logger.info("This is a CI run")
         return options
