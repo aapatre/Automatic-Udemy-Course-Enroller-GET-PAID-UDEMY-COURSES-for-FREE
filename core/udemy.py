@@ -136,7 +136,10 @@ class UdemyActions:
 
         # Check if already enrolled. If add to cart is available we have not yet enrolled
         add_to_cart_xpath = "//div[@data-purpose='add-to-cart']"
-        if not self.driver.find_elements_by_xpath(add_to_cart_xpath):
+        add_to_cart_elements = self.driver.find_elements_by_xpath(add_to_cart_xpath)
+        if not add_to_cart_elements or (
+            add_to_cart_elements and not add_to_cart_elements[0].is_displayed()
+        ):
             logger.debug(f"Already enrolled in {course_name}")
             return UdemyStatus.ENROLLED.value
 
