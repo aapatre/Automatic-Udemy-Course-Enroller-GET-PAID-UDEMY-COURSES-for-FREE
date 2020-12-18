@@ -62,7 +62,11 @@ class BaseScraper(ABC):
     def time_run(func):
         async def wrapper(self):
             start_time = datetime.datetime.utcnow()
-            response = await func(self)
+            try:
+                response = await func(self)
+            except Exception as e:
+                logger.error(f"Error while running {self.scraper_name} scrapper: {e}")
+                self.is_complete()
             end_time = datetime.datetime.utcnow()
             logger.info(
                 f"Got {len(response)} links from {self.DOMAIN} in {(end_time - start_time).total_seconds():.2f} seconds"
