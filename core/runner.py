@@ -87,6 +87,8 @@ def redeem_courses(
     try:
         scrapers = ScraperManager(tutorialbar_enabled, comidoc_enabled, max_pages)
         _redeem_courses(driver, settings, scrapers)
+    except exceptions.LoginException as e:
+        logger.error(str(e))
     finally:
         logger.info("Closing browser")
         driver.quit()
