@@ -107,7 +107,9 @@ class TutorialBarScraper(BaseScraper):
             course_links = [link.find("a").get("href") for link in links]
 
             self.last_page = (
-                soup.find("li", class_="next_paginate_link").find_previous_sibling().text
+                soup.find("li", class_="next_paginate_link")
+                .find_previous_sibling()
+                .text
             )
 
             return course_links
@@ -124,7 +126,9 @@ class TutorialBarScraper(BaseScraper):
         text = await get(url)
         if text is not None:
             soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
-            udemy_link = soup.find("span", class_="rh_button_wrapper").find("a").get("href")
+            udemy_link = (
+                soup.find("span", class_="rh_button_wrapper").find("a").get("href")
+            )
             return udemy_link
 
     async def gather_udemy_course_links(self, courses: List[str]):
@@ -134,4 +138,8 @@ class TutorialBarScraper(BaseScraper):
         :param list courses: A list of tutorialbar.com course links we want to fetch the udemy links for
         :return: list of udemy links
         """
-        return [link for link in await asyncio.gather(*map(self.get_udemy_course_link, courses)) if link is not None]
+        return [
+            link
+            for link in await asyncio.gather(*map(self.get_udemy_course_link, courses))
+            if link is not None
+        ]
