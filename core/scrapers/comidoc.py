@@ -6,6 +6,7 @@ import aiohttp
 from bs4 import BeautifulSoup
 
 from core.scrapers.base_scraper import BaseScraper
+from core.http import get
 
 logger = logging.getLogger("udemy_enroller")
 
@@ -66,12 +67,7 @@ class ComidocScraper(BaseScraper):
         :return: dictionary containing data needed to build udemy free urls
         """
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                self.DOMAIN,
-                headers=self.HEADERS,
-            ) as response:
-                text = await response.read()
+        text = await get(self.DOMAIN, headers=self.HEADERS)
         soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
 
         # We get the url hash needed from the path of the _buildManifest.js file
@@ -88,14 +84,9 @@ class ComidocScraper(BaseScraper):
         # Fetch the daily courses if the path has been correctly resolved
         if path_js is not None:
             daily_json_link = f"{self.DOMAIN}/_next/data/{path_js}/daily.json"
+            data = await get(daily_json_link, headers=self.HEADERS)
 
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    daily_json_link,
-                    headers=self.HEADERS,
-                ) as response:
-                    data = await response.read()
-            if data:
+            if data is not None:
                 data = json.loads(data)["pageProps"]["coupons"]
             else:
                 data = {}

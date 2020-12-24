@@ -2,10 +2,10 @@ import asyncio
 import logging
 from typing import List
 
-import aiohttp
 from bs4 import BeautifulSoup
 
 from core.scrapers.base_scraper import BaseScraper
+from core.http import get
 
 logger = logging.getLogger("udemy_enroller")
 
@@ -99,21 +99,18 @@ class TutorialBarScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: list of pages on tutorialbar.com that contain Udemy coupons
         """
+        text = await get(url)
+        if text is not None:
+            soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                text = await response.read()
+            links = soup.find_all("h3")
+            course_links = [link.find("a").get("href") for link in links]
 
-        soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
+            self.last_page = (
+                soup.find("li", class_="next_paginate_link").find_previous_sibling().text
+            )
 
-        links = soup.find_all("h3")
-        course_links = [link.find("a").get("href") for link in links]
-
-        self.last_page = (
-            soup.find("li", class_="next_paginate_link").find_previous_sibling().text
-        )
-
-        return course_links
+            return course_links
 
     @staticmethod
     async def get_udemy_course_link(url: str) -> str:
@@ -124,12 +121,11 @@ class TutorialBarScraper(BaseScraper):
         :return: Coupon link of the udemy course
         """
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                text = await response.read()
-        soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
-        udemy_link = soup.find("span", class_="rh_button_wrapper").find("a").get("href")
-        return udemy_link
+        text = await get(url)
+        if text is not None:
+            soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
+            udemy_link = soup.find("span", class_="rh_button_wrapper").find("a").get("href")
+            return udemy_link
 
     async def gather_udemy_course_links(self, courses: List[str]):
         """
@@ -138,4 +134,4 @@ class TutorialBarScraper(BaseScraper):
         :param list courses: A list of tutorialbar.com course links we want to fetch the udemy links for
         :return: list of udemy links
         """
-        return await asyncio.gather(*map(self.get_udemy_course_link, courses))
+        return [link for link in await asyncio.gather(*map(self.get_udemy_course_link, courses)) if link is not None]
