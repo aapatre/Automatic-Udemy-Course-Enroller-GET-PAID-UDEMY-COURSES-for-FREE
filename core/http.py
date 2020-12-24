@@ -1,5 +1,6 @@
-import aiohttp
 import logging
+
+import aiohttp
 
 logger = logging.getLogger("udemy_enroller")
 
