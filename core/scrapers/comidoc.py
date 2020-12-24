@@ -5,8 +5,8 @@ from typing import Dict, List
 import aiohttp
 from bs4 import BeautifulSoup
 
-from core.scrapers.base_scraper import BaseScraper
 from core.http import get
+from core.scrapers.base_scraper import BaseScraper
 
 logger = logging.getLogger("udemy_enroller")
 
