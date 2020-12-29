@@ -51,10 +51,10 @@ def _redeem_courses(
                     logger.error(f"Webdriver exception on link: {course_link}")
                 except KeyboardInterrupt:
                     logger.error("Exiting the script")
-                    raise
+                    return
                 except exceptions.RobotException as e:
                     logger.error(e)
-                    raise
+                    return
                 except Exception as e:
                     logger.error(f"Unexpected exception: {e}")
                 finally:
