@@ -3,7 +3,7 @@ from unittest import mock
 
 import pytest
 
-from udemy_enroller import parse_args
+from scripts.udemy_enroller import parse_args
 
 
 @pytest.mark.parametrize(
