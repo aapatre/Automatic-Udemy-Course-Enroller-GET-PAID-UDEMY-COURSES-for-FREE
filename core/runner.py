@@ -81,7 +81,7 @@ def redeem_courses(
     :param Settings settings: Core settings used for Udemy
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
     :param bool comidoc_enabled: Boolean signifying if comidoc scraper should run
-    :param int max_pages: Max pages to scrape from tutorialbar.com
+    :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :return:
     """
     try:

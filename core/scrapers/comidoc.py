@@ -1,6 +1,5 @@
-import json
 import logging
-from typing import Dict, List
+from typing import List
 
 from bs4 import BeautifulSoup
 
@@ -16,27 +15,13 @@ class ComidocScraper(BaseScraper):
     """
 
     DOMAIN = "https://comidoc.net"
-    HEADERS = {
-        "authority": "comidoc.net",
-        "sec-ch-ua": '"Google Chrome";v="87", " Not;A Brand";v="99", "Chromium";v="87"',
-        "accept-language": "en-US",
-        "sec-ch-ua-mobile": "?0",
-        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
-        "content-type": "application/json",
-        "accept": "*/*",
-        "origin": DOMAIN,
-        "sec-fetch-site": "same-origin",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-dest": "empty",
-        "referer": f"{DOMAIN}/daily",
-        "cookie": "consent=true",
-    }
 
-    def __init__(self, enabled):
+    def __init__(self, enabled, max_pages=None):
         super().__init__()
         self.scraper_name = "comidoc"
         if not enabled:
             self.set_state_disabled()
+        self.max_pages = max_pages
 
     @BaseScraper.time_run
     async def run(self) -> List:
@@ -45,55 +30,47 @@ class ComidocScraper(BaseScraper):
 
         :return: List of udemy course links
         """
-        return await self.get_links()
+        links = await self.get_links()
+        logger.info(
+            f"Page: {self.current_page} of {self.last_page} scraped from comidoc.net"
+        )
+        self.max_pages_reached()
+        return links
 
     async def get_links(self) -> List:
-        # TODO: Add try/except block to handle connection issues
-        data = await self.get_data()
+        """
+        Scrape udemy links from comidoc.net
 
-        self.set_state_complete()
-        links = [
-            f"https://www.udemy.com/course{d['course']['cleanUrl']}?couponCode={d['code']}"
-            for d in data
-        ]
+        :return: List of udemy course urls
+        """
+        links = []
+        self.current_page += 1
+        coupons_data = await get(f"{self.DOMAIN}/coupons?page={self.current_page}")
+        soup = BeautifulSoup(coupons_data.decode("utf-8"), "html.parser")
+        for course_card in soup.find_all("div", class_="MuiPaper-root"):
+            all_links = course_card.find_all("a")
+            if len(all_links) > 2:
+                links.append(all_links[2].get("href"))
+
+        self.last_page = self._get_last_page(soup)
 
         return links
 
-    async def get_data(self) -> Dict:
+    @staticmethod
+    def _get_last_page(soup: BeautifulSoup) -> int:
         """
-        Fetch data from comidoc endpoint
+        Extract the last page number to scrape
 
-        :return: dictionary containing data needed to build udemy free urls
+        :param soup:
+        :return: The last page number to scrape
         """
+        all_pages = []
+        for page_link in soup.find("ul", class_="MuiPagination-ul").find_all("li"):
+            pagination = page_link.find("a")
 
-        text = await get(self.DOMAIN, headers=self.HEADERS)
-        if text is not None:
-            soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
+            if pagination:
+                page_number = pagination["aria-label"].split()[-1]
+                if page_number.isdigit():
+                    all_pages.append(int(page_number))
 
-            # We get the url hash needed from the path of the _buildManifest.js file
-            path_js = None
-            for i in soup.find_all("script"):
-                src = i.get("src", "")
-                if src.startswith(
-                    "https://cdn.comidoc.net/_next/static/"
-                ) and src.endswith("_buildManifest.js"):
-                    path_js = src.split("/")[-2]
-                    break
-
-            data = {}
-            # Fetch the daily courses if the path has been correctly resolved
-            if path_js is not None:
-                daily_json_link = f"{self.DOMAIN}/_next/data/{path_js}/daily.json"
-                data = await get(daily_json_link, headers=self.HEADERS)
-
-                if data is not None:
-                    data = json.loads(data)["pageProps"]["coupons"]
-                else:
-                    data = {}
-                    logger.warning(
-                        f"Empty response from comidoc. API may have changed!"
-                    )
-        else:
-            data = {}
-            logger.warning("Error while fetching data from comidoc")
-        return data
+        return max(all_pages)

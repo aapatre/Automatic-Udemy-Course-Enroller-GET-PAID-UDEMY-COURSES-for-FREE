@@ -11,7 +11,7 @@ class ScraperManager:
         self.tutorialbar_scraper = TutorialBarScraper(
             tutorialbar_enabled, max_pages=max_pages
         )
-        self.comidoc_scraper = ComidocScraper(comidoc_enabled)
+        self.comidoc_scraper = ComidocScraper(comidoc_enabled, max_pages=max_pages)
         self._scrapers = (self.tutorialbar_scraper, self.comidoc_scraper)
 
     async def run(self) -> List:

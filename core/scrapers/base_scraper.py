@@ -16,6 +16,9 @@ class BaseScraper(ABC):
     def __init__(self):
         self._state = None
         self.scraper_name = None
+        self.max_pages = None
+        self.last_page = None
+        self.current_page = 0
 
     @abstractmethod
     async def run(self):
@@ -75,3 +78,29 @@ class BaseScraper(ABC):
             return response
 
         return wrapper
+
+    def max_pages_reached(self) -> bool:
+        """
+        Returns boolean of whether or not we should continue checking tutorialbar.com
+
+        :return:
+        """
+
+        should_run = True
+
+        if self.max_pages is not None:
+            should_run = self.max_pages > self.current_page
+
+            if not should_run:
+                logger.info(
+                    f"Stopping loop. We have reached max number of pages to scrape: {self.max_pages}"
+                )
+                self.set_state_complete()
+
+        if self.last_page == self.current_page:
+            logger.info(
+                f"Stopping loop. We have reached the last page to scrape: {self.last_page}"
+            )
+            self.set_state_complete()
+
+        return should_run
