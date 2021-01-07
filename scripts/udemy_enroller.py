@@ -49,7 +49,7 @@ def run(
     :param str browser: Name of the browser we want to create a driver for
     :param bool tutorialbar_enabled:
     :param bool comidoc_enabled:
-    :param int or None max_pages: Max number of pages to scrape from tutorialbar.com
+    :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :return:
     """
     settings = Settings()
@@ -89,7 +89,7 @@ def parse_args(browser=None) -> Namespace:
         "--max-pages",
         type=int,
         default=5,
-        help=f"Max pages to scrape from tutorialbar (Default is 5)",
+        help=f"Max pages to scrape from sites (if pagination exists) (Default is 5)",
     )
     parser.add_argument(
         "--debug",

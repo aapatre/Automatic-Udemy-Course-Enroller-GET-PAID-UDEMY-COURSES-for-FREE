@@ -23,9 +23,7 @@ class TutorialBarScraper(BaseScraper):
         self.scraper_name = "tutorialbar"
         if not enabled:
             self.set_state_disabled()
-        self.current_page = 0
         self.last_page = None
-        self.links_per_page = 12
         self.max_pages = max_pages
 
     @BaseScraper.time_run
@@ -40,6 +38,11 @@ class TutorialBarScraper(BaseScraper):
         return links
 
     async def get_links(self):
+        """
+        Scrape udemy links from tutorialbar.com
+
+        :return: List of udemy course urls
+        """
         self.current_page += 1
         course_links = await self.get_course_links(
             f"{self.DOMAIN}/all-courses/page/{self.current_page}/"
@@ -55,26 +58,6 @@ class TutorialBarScraper(BaseScraper):
             logger.debug(f"Received Link {counter + 1} : {course}")
 
         return links
-
-    def max_pages_reached(self) -> bool:
-        """
-        Returns boolean of whether or not we should continue checking tutorialbar.com
-
-        :return:
-        """
-
-        should_run = True
-
-        if self.max_pages is not None:
-            should_run = self.max_pages > self.current_page
-
-            if not should_run:
-                logger.info(
-                    f"Stopping loop. We have reached max number of pages to scrape: {self.max_pages}"
-                )
-                self.set_state_complete()
-
-        return should_run
 
     def _filter_ad_domains(self, udemy_links) -> List:
         """
