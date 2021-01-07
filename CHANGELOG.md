@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [2.0.0] - 2021-01-09
+
+### Added
+
+- New coupon source from comidoc.net
+- Refactored to have generic scrapers and manager
+- Improved performance (asyncio)
+- Packaged and published to PyPI
+- Added cli args --debug, --tuorialbar, --comidoc
+- Removed unpopular cli arg -> --cache-hits
+- Write settings/cache to home folder so we can persist settings between versions (installed from PyPI)
+
 ## [1.0.0] - 2020-12-09
 
 ### Added

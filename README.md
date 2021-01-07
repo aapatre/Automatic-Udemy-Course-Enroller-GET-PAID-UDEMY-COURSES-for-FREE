@@ -64,57 +64,53 @@ get all the requirements installed in one go. Similar instructions applies for p
 ---
 
 ## Instructions
-
-1 . Make sure to install all the requirements above.
+1 . Install from PyPI `pip install udemy_enroller`
 
 - Run the script and the cli will guide you through the settings required
-- Otherwise you can rename the following file
-  [sample_settings.yaml](sample_settings.yaml) to **settings.yaml** and edit it
-  using a text editor and insert your **Udemy registered email in the email
-  section**, your **Udemy password in the password section**, and the **ZIP Code
-  in the zipcode section (if you reside in the United States or any other region
-  where Udemy asks for ZIP Code as Billing Info, else enter a random number)**
-  Additionally you can add your preferred languages and course categories.
+- If you decide to save the settings they will be stored in your home directory: <br>
+**Windows**:
+    C:/Users/CurrentUserName/.udemy_enroller<br>
+**Linux**:
+    /home/username/.udemy_enroller
 
-2 . Choose the appropriate file for your browser (from the list below):
+2 . Choose the appropriate command for your browser (from the list below):
 
 - **Tested and works perfectly:**
 
   - Chrome:
-    [udemy_enroller.py --browser=chrome](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
+    [udemy_enroller --browser=chrome](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
   - Chromium:
-    [udemy_enroller.py --browser=chromium](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
+    [udemy_enroller --browser=chromium](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
   - Edge:
-    [udemy_enroller.py --browser=edge](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
+    [udemy_enroller --browser=edge](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
 
 - **Has issues when run on custom kernel but works fine on vanilla OS:**
 
   - Firefox:
-    [udemy_enroller.py --browser=firefox (might require manual driver installation)](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
+    [udemy_enroller --browser=firefox (might require manual driver installation)](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
 
 - **Untested:**
 
   - Opera:
-    [udemy_enroller.py --browser=opera](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
+    [udemy_enroller --browser=opera](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
     
 - **Use at your own risk:**
-  - Vanilla
   - Internet Explorer:
-    [udemy_enroller.py --browser=internet_explorer](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
+    [udemy_enroller --browser=internet_explorer](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
 
 3 . The script can be passed arguments:
 - `--help`: View full list of arguments available
 - `--browser=<BROWSER_NAME>`: Run with a specific browser 
 - `--comidoc`: Run the comidoc scraper only
 - `--tutorialbar`: Run the tutorialbar scraper only
-- `--max-pages=<NUMBER>`: Max number of pages to scrape from tutorialbar.com before exiting the script (default is 5)
+- `--max-pages=<NUMBER>`: Max number of pages to scrape from sites before exiting the script (default is 5)
 - `--debug`: Enable debug logging
 
 4 . Run the chosen script in terminal like so:
-- `python udemy_enroller.py --browser=firefox`
+- `udemy_enroller --browser=firefox`
 
 5 . The bot starts scraping the course links from the first **All Courses** page
-on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1) and starts
+on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1) and [Comidoc](https://www.comidoc.net/coupons) and starts
 enrolling you to Udemy courses. After it has enrolled you to courses from the
 first page, it then moves to the next Tutorial Bar page and the cycle continues.
 
