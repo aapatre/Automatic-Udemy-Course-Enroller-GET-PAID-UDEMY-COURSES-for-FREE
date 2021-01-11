@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import List
 
@@ -43,18 +44,48 @@ class ComidocScraper(BaseScraper):
 
         :return: List of udemy course urls
         """
-        links = []
+        comidoc_links = []
         self.current_page += 1
         coupons_data = await get(f"{self.DOMAIN}/coupons?page={self.current_page}")
         soup = BeautifulSoup(coupons_data.decode("utf-8"), "html.parser")
         for course_card in soup.find_all("div", class_="MuiPaper-root"):
             all_links = course_card.find_all("a")
-            if len(all_links) > 2:
-                links.append(all_links[2].get("href"))
+            if len(all_links) == 2:
+                comidoc_links.append(f"{self.DOMAIN}{all_links[1].get('href')}")
 
+        links = await self.gather_udemy_course_links(comidoc_links)
         self.last_page = self._get_last_page(soup)
 
         return links
+
+    @classmethod
+    async def get_udemy_course_link(cls, url: str) -> str:
+        """
+        Gets the udemy course link
+
+        :param str url: The url to scrape data from
+        :return: Coupon link of the udemy course
+        """
+
+        data = await get(url)
+        soup = BeautifulSoup(data.decode("utf-8"), "html.parser")
+        for link in soup.find_all("a", href=True):
+            udemy_link = cls.validate_coupon_url(link["href"])
+            if udemy_link is not None:
+                return udemy_link
+
+    async def gather_udemy_course_links(self, courses: List[str]):
+        """
+        Threaded fetching of the udemy course links from tutorialbar.com
+
+        :param list courses: A list of comidoc.net course links we want to fetch the udemy links for
+        :return: list of udemy links
+        """
+        return [
+            link
+            for link in await asyncio.gather(*map(self.get_udemy_course_link, courses))
+            if link is not None
+        ]
 
     @staticmethod
     def _get_last_page(soup: BeautifulSoup) -> int:

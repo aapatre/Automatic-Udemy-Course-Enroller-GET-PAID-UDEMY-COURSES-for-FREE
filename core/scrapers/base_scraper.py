@@ -1,7 +1,9 @@
 import datetime
 import logging
+import re
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import Optional
 
 logger = logging.getLogger("udemy_enroller")
 
@@ -104,3 +106,18 @@ class BaseScraper(ABC):
             self.set_state_complete()
 
         return should_run
+
+    @staticmethod
+    def validate_coupon_url(url) -> Optional[str]:
+        """
+        Validate the udemy coupon url passed in
+        If it matches the pattern it is returned else it returns None
+
+        :param url: The url to check the udemy coupon pattern for
+        :return: The validated url or None
+        """
+        url_pattern = r"^https:\/\/www.udemy.com.*couponCode=.*$"
+        matching = re.match(url_pattern, url)
+        if matching is not None:
+            matching = matching.group()
+        return matching
