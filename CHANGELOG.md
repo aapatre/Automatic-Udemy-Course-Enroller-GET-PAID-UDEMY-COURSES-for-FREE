@@ -9,11 +9,11 @@ and this project adheres to
 
 ### Added
 
-- New coupon source from comidoc.net
+- New coupon source from discudemy.com
 - Refactored to have generic scrapers and manager
 - Improved performance (asyncio)
 - Packaged and published to PyPI
-- Added cli args --debug, --tuorialbar, --comidoc
+- Added cli args --debug, --tutorialbar, --discudemy
 - Removed unpopular cli arg -> --cache-hits
 - Write settings/cache to home folder so we can persist settings between versions (installed from PyPI)
 

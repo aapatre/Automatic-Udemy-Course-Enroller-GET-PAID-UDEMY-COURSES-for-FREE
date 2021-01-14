@@ -8,8 +8,9 @@ Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of
 web-scraping and automation, this script will find the necessary Udemy Coupons
 &amp; enroll you to PAID UDEMY COURSES, ABSOLUTELY FREE!
 
-The code scrapes course links and coupons from
-[tutorialbar.com](https://tutorialbar.com)
+The code scrapes course links and coupons from:
+ - [tutorialbar.com](https://tutorialbar.com)
+ - [discudemy.com](https://discudemy.com)
 
 In case of any bugs or issues, please open an issue in github.
 
@@ -101,7 +102,7 @@ get all the requirements installed in one go. Similar instructions applies for p
 3 . The script can be passed arguments:
 - `--help`: View full list of arguments available
 - `--browser=<BROWSER_NAME>`: Run with a specific browser 
-- `--comidoc`: Run the comidoc scraper only
+- `--discudemy`: Run the discudemy scraper only
 - `--tutorialbar`: Run the tutorialbar scraper only
 - `--max-pages=<NUMBER>`: Max number of pages to scrape from sites before exiting the script (default is 5)
 - `--debug`: Enable debug logging
@@ -110,9 +111,9 @@ get all the requirements installed in one go. Similar instructions applies for p
 - `udemy_enroller --browser=firefox`
 
 5 . The bot starts scraping the course links from the first **All Courses** page
-on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1) and [Comidoc](https://www.comidoc.net/coupons) and starts
+on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1) and [DiscUdemy](https://www.discudemy.com/all) and starts
 enrolling you to Udemy courses. After it has enrolled you to courses from the
-first page, it then moves to the next Tutorial Bar page and the cycle continues.
+first page, it then moves to the next site page and the cycle continues.
 
 - Stop the script by pressing ctrl+c in terminal to stop the enrollment process.
 
@@ -132,7 +133,7 @@ which of course I got for free! :)
 
 ### 2. How does the bot work?
 
-The bot retrieves coupon links from Tutorial Bar's list to cut the prices and
+The bot retrieves coupon links from Tutorial Bar's and DiscUdemy list to cut the prices and
 then uses Selenium's Browser automation features to login and enroll to the
 courses. Think of it this way: Epic Games & other clients like Steam provide you
 a handful of games each week, for free; Only in this case, we need a coupon code

@@ -24,23 +24,23 @@ def enable_debug_logging() -> None:
 
 def determine_if_scraper_enabled(
     tutorialbar_enabled: bool,
-    comidoc_enabled: bool,
+    discudemy_enabled: bool,
 ) -> Tuple[bool, bool]:
     """
     Determine what scrapers should be enabled and disabled
 
     :return: tuple containing boolean of what scrapers should run
     """
-    if not tutorialbar_enabled and not comidoc_enabled:
+    if not tutorialbar_enabled and not discudemy_enabled:
         # Set both to True since user has not enabled a specific scraper i.e Run all scrapers
-        tutorialbar_enabled, comidoc_enabled = True, True
-    return tutorialbar_enabled, comidoc_enabled
+        tutorialbar_enabled, discudemy_enabled = True, True
+    return tutorialbar_enabled, discudemy_enabled
 
 
 def run(
     browser: str,
     tutorialbar_enabled: bool,
-    comidoc_enabled: bool,
+    discudemy_enabled: bool,
     max_pages: Union[int, None],
 ):
     """
@@ -48,13 +48,15 @@ def run(
 
     :param str browser: Name of the browser we want to create a driver for
     :param bool tutorialbar_enabled:
-    :param bool comidoc_enabled:
+    :param bool discudemy_enabled:
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :return:
     """
     settings = Settings()
     dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
-    redeem_courses(dm.driver, settings, tutorialbar_enabled, comidoc_enabled, max_pages)
+    redeem_courses(
+        dm.driver, settings, tutorialbar_enabled, discudemy_enabled, max_pages
+    )
 
 
 def parse_args(browser=None) -> Namespace:
@@ -80,10 +82,10 @@ def parse_args(browser=None) -> Namespace:
         help="Run tutorialbar scraper",
     )
     parser.add_argument(
-        "--comidoc",
+        "--discudemy",
         action="store_true",
         default=False,
-        help="Run comidoc scraper",
+        help="Run discudemy scraper",
     )
     parser.add_argument(
         "--max-pages",
@@ -110,7 +112,7 @@ def main():
     if args:
         if args.debug:
             enable_debug_logging()
-        tutorialbar_enabled, comidoc_enabled = determine_if_scraper_enabled(
-            args.tutorialbar, args.comidoc
+        tutorialbar_enabled, discudemy_enabled = determine_if_scraper_enabled(
+            args.tutorialbar, args.discudemy
         )
-        run(args.browser, tutorialbar_enabled, comidoc_enabled, args.max_pages)
+        run(args.browser, tutorialbar_enabled, discudemy_enabled, args.max_pages)
