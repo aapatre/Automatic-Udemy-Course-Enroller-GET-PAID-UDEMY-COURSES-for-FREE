@@ -71,7 +71,7 @@ def redeem_courses(
     driver: WebDriver,
     settings: Settings,
     tutorialbar_enabled: bool,
-    comidoc_enabled: bool,
+    discudemy_enabled: bool,
     max_pages: Union[int, None],
 ) -> None:
     """
@@ -80,12 +80,12 @@ def redeem_courses(
     :param WebDriver driver: Webdriver used to enroll in Udemy courses
     :param Settings settings: Core settings used for Udemy
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
-    :param bool comidoc_enabled: Boolean signifying if comidoc scraper should run
+    :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :return:
     """
     try:
-        scrapers = ScraperManager(tutorialbar_enabled, comidoc_enabled, max_pages)
+        scrapers = ScraperManager(tutorialbar_enabled, discudemy_enabled, max_pages)
         _redeem_courses(driver, settings, scrapers)
     except exceptions.LoginException as e:
         logger.error(str(e))

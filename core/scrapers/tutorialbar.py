@@ -116,7 +116,7 @@ class TutorialBarScraper(BaseScraper):
 
     async def gather_udemy_course_links(self, courses: List[str]):
         """
-        Threaded fetching of the udemy course links from tutorialbar.com
+        Async fetching of the udemy course links from tutorialbar.com
 
         :param list courses: A list of tutorialbar.com course links we want to fetch the udemy links for
         :return: list of udemy links

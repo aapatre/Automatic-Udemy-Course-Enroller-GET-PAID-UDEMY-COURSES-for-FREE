@@ -10,16 +10,16 @@ from core.scrapers.base_scraper import BaseScraper
 logger = logging.getLogger("udemy_enroller")
 
 
-class ComidocScraper(BaseScraper):
+class DiscUdemyScraper(BaseScraper):
     """
-    Contains any logic related to scraping of data from comidoc.net
+    Contains any logic related to scraping of data from discudemy.com
     """
 
-    DOMAIN = "https://comidoc.net"
+    DOMAIN = "https://discudemy.com"
 
     def __init__(self, enabled, max_pages=None):
         super().__init__()
-        self.scraper_name = "comidoc"
+        self.scraper_name = "discudemy"
         if not enabled:
             self.set_state_disabled()
         self.max_pages = max_pages
@@ -33,27 +33,30 @@ class ComidocScraper(BaseScraper):
         """
         links = await self.get_links()
         logger.info(
-            f"Page: {self.current_page} of {self.last_page} scraped from comidoc.net"
+            f"Page: {self.current_page} of {self.last_page} scraped from discudemy.com"
         )
         self.max_pages_reached()
         return links
 
     async def get_links(self) -> List:
         """
-        Scrape udemy links from comidoc.net
+        Scrape udemy links from discudemy.com
 
         :return: List of udemy course urls
         """
-        comidoc_links = []
+        discudemy_links = []
         self.current_page += 1
-        coupons_data = await get(f"{self.DOMAIN}/coupons?page={self.current_page}")
+        coupons_data = await get(f"{self.DOMAIN}/all/{self.current_page}")
         soup = BeautifulSoup(coupons_data.decode("utf-8"), "html.parser")
-        for course_card in soup.find_all("div", class_="MuiPaper-root"):
-            all_links = course_card.find_all("a")
-            if len(all_links) == 2:
-                comidoc_links.append(f"{self.DOMAIN}{all_links[1].get('href')}")
+        for course_card in soup.find_all("a", class_="card-header"):
+            url_end = course_card["href"].split("/")[-1]
+            discudemy_links.append(f"{self.DOMAIN}/go/{url_end}")
 
-        links = await self.gather_udemy_course_links(comidoc_links)
+        links = await self.gather_udemy_course_links(discudemy_links)
+
+        for counter, course in enumerate(links):
+            logger.debug(f"Received Link {counter + 1} : {course}")
+
         self.last_page = self._get_last_page(soup)
 
         return links
@@ -76,9 +79,9 @@ class ComidocScraper(BaseScraper):
 
     async def gather_udemy_course_links(self, courses: List[str]):
         """
-        Async fetching of the udemy course links from comidoc.net
+        Async fetching of the udemy course links from discudemy.com
 
-        :param list courses: A list of comidoc.net course links we want to fetch the udemy links for
+        :param list courses: A list of discudemy.com course links we want to fetch the udemy links for
         :return: list of udemy links
         """
         return [
@@ -95,13 +98,11 @@ class ComidocScraper(BaseScraper):
         :param soup:
         :return: The last page number to scrape
         """
-        all_pages = []
-        for page_link in soup.find("ul", class_="MuiPagination-ul").find_all("li"):
-            pagination = page_link.find("a")
 
-            if pagination:
-                page_number = pagination["aria-label"].split()[-1]
-                if page_number.isdigit():
-                    all_pages.append(int(page_number))
-
-        return max(all_pages)
+        return max(
+            [
+                int(i.text)
+                for i in soup.find("ul", class_="pagination3").find_all("li")
+                if i.text.isdigit()
+            ]
+        )
