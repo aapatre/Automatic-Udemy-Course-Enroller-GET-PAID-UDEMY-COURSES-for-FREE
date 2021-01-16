@@ -6,7 +6,7 @@ from webdriver_manager.microsoft import EdgeChromiumDriverManager, IEDriverManag
 from webdriver_manager.opera import OperaDriverManager
 from webdriver_manager.utils import ChromeType
 
-from core.logging import get_logger
+from udemy_enroller.logging import get_logger
 
 logger = get_logger()
 

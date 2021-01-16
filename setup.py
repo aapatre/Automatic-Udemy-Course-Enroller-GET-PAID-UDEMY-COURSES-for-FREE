@@ -6,9 +6,6 @@ here = pathlib.Path(__file__).parent.resolve()
 
 long_description = (here / "README.md").read_text(encoding="utf-8")
 
-with open("requirements.txt") as f:
-    install_reqs = f.read().splitlines()
-
 setup(
     name="udemy-enroller",
     version="2.0.0",
@@ -25,9 +22,17 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     keywords="udemy, education, enroll",
-    packages=find_packages(exclude=["pyproject.toml"]),
+    packages=find_packages(
+        exclude=["*tests*"],
+    ),
     python_requires=">=3.8, <4",
-    install_requires=install_reqs,
+    install_requires=[
+        "aiohttp",
+        "beautifulsoup4",
+        "ruamel.yaml",
+        "selenium",
+        "webdriver-manager",
+    ],
     setup_requires=["pytest-runner"],
     extras_require={
         "dev": ["black", "isort"],
@@ -35,7 +40,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "udemy_enroller=scripts.udemy_enroller:main",
+            "udemy_enroller=udemy_enroller.cli:main",
         ],
     },
 )

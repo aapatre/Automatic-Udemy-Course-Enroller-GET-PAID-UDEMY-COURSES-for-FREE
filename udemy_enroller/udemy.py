@@ -6,9 +6,9 @@ from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from core.exceptions import LoginException, RobotException
-from core.logging import get_logger
-from core.settings import Settings
+from udemy_enroller.exceptions import LoginException, RobotException
+from udemy_enroller.logging import get_logger
+from udemy_enroller.settings import Settings
 
 logger = get_logger()
 

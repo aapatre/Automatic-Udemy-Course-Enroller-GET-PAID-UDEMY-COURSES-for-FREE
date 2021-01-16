@@ -2,8 +2,8 @@ from unittest import mock
 
 import pytest
 
-from core import DriverManager
-from core.driver_manager import (
+from udemy_enroller import DriverManager
+from udemy_enroller.driver_manager import (
     ALL_VALID_BROWSER_STRINGS,
     VALID_EDGE_STRINGS,
     VALID_FIREFOX_STRINGS,
@@ -33,13 +33,13 @@ from core.driver_manager import (
         "unsupported browser",
     ),
 )
-@mock.patch("core.driver_manager.webdriver")
-@mock.patch("core.driver_manager.ChromeDriverManager")
-@mock.patch("core.driver_manager.GeckoDriverManager")
-@mock.patch("core.driver_manager.EdgeChromiumDriverManager")
-@mock.patch("core.driver_manager.IEDriverManager")
-@mock.patch("core.driver_manager.OperaDriverManager")
-@mock.patch("core.driver_manager.ChromeType")
+@mock.patch("udemy_enroller.driver_manager.webdriver")
+@mock.patch("udemy_enroller.driver_manager.ChromeDriverManager")
+@mock.patch("udemy_enroller.driver_manager.GeckoDriverManager")
+@mock.patch("udemy_enroller.driver_manager.EdgeChromiumDriverManager")
+@mock.patch("udemy_enroller.driver_manager.IEDriverManager")
+@mock.patch("udemy_enroller.driver_manager.OperaDriverManager")
+@mock.patch("udemy_enroller.driver_manager.ChromeType")
 def test_driver_manager_init(
     _,
     mock_opera_driver_manager,
@@ -95,10 +95,10 @@ def test_driver_manager_init(
     ],
     ids=("chrome is ci build", "chrome is not ci build"),
 )
-@mock.patch("core.driver_manager.webdriver")
-@mock.patch("core.driver_manager.ChromeOptions")
-@mock.patch("core.driver_manager.ChromeDriverManager")
-@mock.patch("core.driver_manager.ChromeType")
+@mock.patch("udemy_enroller.driver_manager.webdriver")
+@mock.patch("udemy_enroller.driver_manager.ChromeOptions")
+@mock.patch("udemy_enroller.driver_manager.ChromeDriverManager")
+@mock.patch("udemy_enroller.driver_manager.ChromeType")
 def test_driver_manager_ci_build(
     _,
     mock_chrome_driver_manager,

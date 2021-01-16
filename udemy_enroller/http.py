@@ -1,8 +1,8 @@
-import logging
-
 import aiohttp
 
-logger = logging.getLogger("udemy_enroller")
+from udemy_enroller.logging import get_logger
+
+logger = get_logger()
 
 
 async def get(url, headers={}):

@@ -4,8 +4,8 @@ from unittest import mock
 import pytest
 from ruamel.yaml import YAML
 
-from core import Settings
-from core.utils import get_app_dir
+from udemy_enroller import Settings
+from udemy_enroller.utils import get_app_dir
 
 
 @pytest.mark.parametrize(
