@@ -4,8 +4,8 @@ from typing import List
 
 from bs4 import BeautifulSoup
 
-from core.http import get
-from core.scrapers.base_scraper import BaseScraper
+from udemy_enroller.http import get
+from udemy_enroller.scrapers.base_scraper import BaseScraper
 
 logger = logging.getLogger("udemy_enroller")
 

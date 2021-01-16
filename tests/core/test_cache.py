@@ -3,8 +3,8 @@ from unittest import mock
 
 import pytest
 
-from core import CourseCache
-from core.udemy import UdemyStatus
+from udemy_enroller import CourseCache
+from udemy_enroller.udemy import UdemyStatus
 
 
 @pytest.mark.parametrize(
@@ -78,7 +78,7 @@ from core.udemy import UdemyStatus
     ],
     ids=("Initialize cache and add data",),
 )
-@mock.patch("core.cache.datetime")
+@mock.patch("udemy_enroller.cache.datetime")
 def test_cache(
     mock_dt,
     cache_file_name,
@@ -171,7 +171,7 @@ def test_cache(
     ],
     ids=("Initialize cache and add data",),
 )
-@mock.patch("core.cache.datetime")
+@mock.patch("udemy_enroller.cache.datetime")
 def test_cache_load(
     mock_dt,
     cache_file_name,

@@ -2,7 +2,7 @@ from unittest import mock
 
 import pytest
 
-from core.scrapers.tutorialbar import TutorialBarScraper
+from udemy_enroller.scrapers.tutorialbar import TutorialBarScraper
 
 
 class MockResponse:

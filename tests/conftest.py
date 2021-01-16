@@ -3,7 +3,7 @@ import shutil
 
 import pytest
 
-from core.utils import get_app_dir
+from udemy_enroller.utils import get_app_dir
 
 
 @pytest.fixture(scope="session", autouse=True)

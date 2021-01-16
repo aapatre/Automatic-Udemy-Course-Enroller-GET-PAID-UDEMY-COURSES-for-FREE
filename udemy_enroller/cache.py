@@ -2,7 +2,7 @@ import datetime
 import json
 import os
 
-from core.utils import get_app_dir
+from udemy_enroller.utils import get_app_dir
 
 
 class CourseCache:

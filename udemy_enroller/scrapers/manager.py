@@ -2,8 +2,8 @@ import asyncio
 from functools import reduce
 from typing import List
 
-from core.scrapers.discudemy import DiscUdemyScraper
-from core.scrapers.tutorialbar import TutorialBarScraper
+from udemy_enroller.scrapers.discudemy import DiscUdemyScraper
+from udemy_enroller.scrapers.tutorialbar import TutorialBarScraper
 
 
 class ScraperManager:
