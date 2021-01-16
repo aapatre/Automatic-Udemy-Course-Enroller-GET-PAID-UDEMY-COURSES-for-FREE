@@ -3,11 +3,13 @@ from unittest import mock
 import pytest
 
 from udemy_enroller import DriverManager
-from udemy_enroller.driver_manager import (ALL_VALID_BROWSER_STRINGS,
-                                           VALID_EDGE_STRINGS,
-                                           VALID_FIREFOX_STRINGS,
-                                           VALID_INTERNET_EXPLORER_STRINGS,
-                                           VALID_OPERA_STRINGS)
+from udemy_enroller.driver_manager import (
+    ALL_VALID_BROWSER_STRINGS,
+    VALID_EDGE_STRINGS,
+    VALID_FIREFOX_STRINGS,
+    VALID_INTERNET_EXPLORER_STRINGS,
+    VALID_OPERA_STRINGS,
+)
 
 
 @pytest.mark.parametrize(

@@ -1,12 +1,20 @@
 import asyncio
 from typing import Union
 
-from selenium.common.exceptions import (NoSuchElementException,
-                                        TimeoutException, WebDriverException)
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+    WebDriverException,
+)
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from udemy_enroller import (CourseCache, ScraperManager, Settings,
-                            UdemyActions, exceptions)
+from udemy_enroller import (
+    CourseCache,
+    ScraperManager,
+    Settings,
+    UdemyActions,
+    exceptions,
+)
 from udemy_enroller.logging import get_logger
 
 logger = get_logger()
