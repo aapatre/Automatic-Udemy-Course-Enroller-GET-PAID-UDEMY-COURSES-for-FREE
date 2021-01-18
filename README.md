@@ -65,6 +65,10 @@ get all the requirements installed in one go. Similar instructions applies for p
 
 ## Instructions
 
+Props to Davidd Sargent for making a super simple video tutorial:
+
+[![GET Udemy Courses for FREE with Python | 2 Minute Tuesday](https://i.ytimg.com/vi/tdLsVoraMxw/hq720.jpg)](https://www.youtube.com/watch?v=tdLsVoraMxw "GET Udemy Courses for FREE with Python | 2 Minute Tuesday")
+
 1 . Make sure to install all the requirements above.
 
 - Run the script and the cli will guide you through the settings required
