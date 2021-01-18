@@ -65,7 +65,7 @@ get all the requirements installed in one go. Similar instructions applies for p
 
 ## Instructions
 
-Props to Davidd Sargent for making a super simple video tutorial:
+Props to Davidd Sargent for making a super simple video tutorial. If you prefer written instructions then continue reading further, else click on the image below for a quick video tutorial:
 
 [![GET Udemy Courses for FREE with Python | 2 Minute Tuesday](https://i.ytimg.com/vi/tdLsVoraMxw/hq720.jpg)](https://www.youtube.com/watch?v=tdLsVoraMxw "GET Udemy Courses for FREE with Python | 2 Minute Tuesday")
 
