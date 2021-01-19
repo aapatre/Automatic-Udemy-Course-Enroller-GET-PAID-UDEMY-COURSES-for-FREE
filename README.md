@@ -9,6 +9,7 @@ web-scraping and automation, this script will find the necessary Udemy Coupons
 &amp; enroll you to PAID UDEMY COURSES, ABSOLUTELY FREE!
 
 **NOTE: THIS PROJECT IS NOT AFFILIATED WITH UDEMY.**
+**NOTE: THIS PROJECT WILL NOT WORK WITH NON ENGLISH UDEMY.**
 
 The code scrapes course links and coupons from:
  - [tutorialbar.com](https://tutorialbar.com)
