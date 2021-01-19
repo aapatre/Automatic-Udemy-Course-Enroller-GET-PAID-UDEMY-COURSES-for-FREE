@@ -10,12 +10,15 @@ web-scraping and automation, this script will find the necessary Udemy Coupons
 
 **NOTE: THIS PROJECT IS NOT AFFILIATED WITH UDEMY.**
 
-The code scrapes course links and coupons from
-[tutorialbar.com](https://tutorialbar.com)
+The code scrapes course links and coupons from:
+ - [tutorialbar.com](https://tutorialbar.com)
+ - [discudemy.com](https://discudemy.com)
 
 In case of any bugs or issues, please open an issue in github.
 
 Also, don't forget to **Fork & Star the repository if you like it!**
+
+***We are also on [GitLab](https://gitlab.com/the-automators/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE)***
 
 **_Video Proof:_**
 
@@ -69,63 +72,55 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
 
 [![GET Udemy Courses for FREE with Python | 2 Minute Tuesday](https://i.ytimg.com/vi/tdLsVoraMxw/hq720.jpg)](https://www.youtube.com/watch?v=tdLsVoraMxw "GET Udemy Courses for FREE with Python | 2 Minute Tuesday")
 
-1 . Make sure to install all the requirements above.
+1 . Install from PyPI `pip install udemy_enroller`
 
 - Run the script and the cli will guide you through the settings required
-- Otherwise you can rename the following file
-  [sample_settings.yaml](sample_settings.yaml) to **settings.yaml** and edit it
-  using a text editor and insert your **Udemy registered email in the email
-  section**, your **Udemy password in the password section**, and the **ZIP Code
-  in the zipcode section (if you reside in the United States or any other region
-  where Udemy asks for ZIP Code as Billing Info, else enter a random number)**
-  Additionally you can add your preferred languages and course categories.
+- If you decide to save the settings they will be stored in your home directory: <br>
+**Windows**:
+    C:/Users/CurrentUserName/.udemy_enroller<br>
+**Linux**:
+    /home/username/.udemy_enroller
 
-2 . Choose the appropriate file for your browser (from the list below):
+2 . Choose the appropriate command for your browser (from the list below):
 
 - **Tested and works perfectly:**
 
   - Chrome:
-    [udemy_enroller_chrome.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_chrome.py)
+    [udemy_enroller --browser=chrome](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
   - Chromium:
-    [udemy_enroller_chromium.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_chromium.py)
+    [udemy_enroller --browser=chromium](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
   - Edge:
-    [udemy_enroller_edge.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_edge.py)
+    [udemy_enroller --browser=edge](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
 
 - **Has issues when run on custom kernel but works fine on vanilla OS:**
 
   - Firefox:
-    [udemy_enroller_firefox.py(might require manual driver installation)](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_firefox.py)
+    [udemy_enroller --browser=firefox (might require manual driver installation)](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
 
 - **Untested:**
 
   - Opera:
-    [udemy_enroller_opera.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_opera.py)
-
-- **Experimentation or other Browsers (especially Safari):**
-
-  - [aka the old bot- requires manual driver setup](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_vanilla.py)
-
+    [udemy_enroller --browser=opera](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
+    
 - **Use at your own risk:**
-  - Vanilla
   - Internet Explorer:
-    [udemy_enroller_internet_explorer.py](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller_internet_explorer.py)
+    [udemy_enroller --browser=internet_explorer](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
 
 3 . The script can be passed arguments:
 - `--help`: View full list of arguments available
-- `--max-pages=<NUMBER>`: Max number of pages to scrape from tutorialbar.com before exiting the script
 - `--browser=<BROWSER_NAME>`: Run with a specific browser 
-- `--cache-hits=<NUMBER>`: If we hit the cache this number of times in a row we will exit the script
+- `--discudemy`: Run the discudemy scraper only
+- `--tutorialbar`: Run the tutorialbar scraper only
+- `--max-pages=<NUMBER>`: Max number of pages to scrape from sites before exiting the script (default is 5)
+- `--debug`: Enable debug logging
 
 4 . Run the chosen script in terminal like so:
-- `python udemy_enroller_firefox.py`
-
-   Or by using the generic script:
-- `python udemy_enroller.py --browser=firefox`
+- `udemy_enroller --browser=firefox`
 
 5 . The bot starts scraping the course links from the first **All Courses** page
-on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1) and starts
+on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1) and [DiscUdemy](https://www.discudemy.com/all) and starts
 enrolling you to Udemy courses. After it has enrolled you to courses from the
-first page, it then moves to the next Tutorial Bar page and the cycle continues.
+first page, it then moves to the next site page and the cycle continues.
 
 - Stop the script by pressing ctrl+c in terminal to stop the enrollment process.
 
@@ -145,7 +140,7 @@ which of course I got for free! :)
 
 ### 2. How does the bot work?
 
-The bot retrieves coupon links from Tutorial Bar's list to cut the prices and
+The bot retrieves coupon links from Tutorial Bar's and DiscUdemy list to cut the prices and
 then uses Selenium's Browser automation features to login and enroll to the
 courses. Think of it this way: Epic Games & other clients like Steam provide you
 a handful of games each week, for free; Only in this case, we need a coupon code
@@ -209,6 +204,12 @@ Thanks to [JetBrains](https://jetbrains.com/?from=udemy-free-course-enroller) fo
 
 ### GitBook
 
-[![Gitbook](https://i.imgur.com/OkuB14I.jpg)](https://gitbook.com)
+[![GitBook](https://i.imgur.com/OkuB14I.jpg)](https://gitbook.com)
 
-Thanks to [Gitbook](https://gitbook.com) for supporting us. Gitbook is the best place to track personal notes and ideas for teams. If you think their product might help you, please support them.
+Thanks to [GitBook](https://gitbook.com) for supporting us. GitBook is the best place to track personal notes and ideas for teams. If you think their product might help you, please support them.
+
+### GitLab
+
+[![GitLab](https://i.imgur.com/aUWtSn4.png)](https://gitlab.com)
+
+Thanks to [GitLab](https://gitlab.com) for supporting us. GitLab is one of the main code hosting and CI/CD providers out there. They support the open source community through their GitLab for [Open Source program](https://about.gitlab.com/solutions/open-source/). Please check them out.

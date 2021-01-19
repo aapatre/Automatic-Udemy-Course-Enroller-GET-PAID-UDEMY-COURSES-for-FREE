@@ -2,9 +2,28 @@ from unittest import mock
 
 import pytest
 
-from core import TutorialBarScraper
+from udemy_enroller.scrapers.tutorialbar import TutorialBarScraper
 
 
+class MockResponse:
+    def __init__(self, data, status):
+        self._data = data
+        self.status = status
+
+    async def read(self):
+        return self._data
+
+    async def json(self):
+        return self._data
+
+    async def __aexit__(self, exc_type, exc, tb):
+        pass
+
+    async def __aenter__(self):
+        return self
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "tutorialbar_course_page_link,tutorialbar_links,udemy_links",
     [
@@ -25,7 +44,7 @@ from core import TutorialBarScraper
 )
 @mock.patch.object(TutorialBarScraper, "gather_udemy_course_links")
 @mock.patch.object(TutorialBarScraper, "get_course_links")
-def test_run(
+async def test_run(
     mock_get_course_links,
     mock_gather_udemy_course_links,
     tutorialbar_course_page_link,
@@ -34,8 +53,8 @@ def test_run(
 ):
     mock_get_course_links.return_value = tutorialbar_links
     mock_gather_udemy_course_links.return_value = udemy_links
-    tbs = TutorialBarScraper()
-    links = tbs.run()
+    tbs = TutorialBarScraper(enabled=True)
+    links = await tbs.run()
 
     mock_get_course_links.assert_called_with(tutorialbar_course_page_link)
     mock_gather_udemy_course_links.assert_called_with(tutorialbar_links)
@@ -43,29 +62,15 @@ def test_run(
         assert link in udemy_links
 
 
-@pytest.mark.parametrize(
-    "page_number,is_first_page",
-    [(1, True), (2, False)],
-    ids=(
-        "First Page",
-        "Not first page",
-    ),
-)
-def test_check_page_number(page_number, is_first_page):
-    tbs = TutorialBarScraper()
-    tbs.current_page = page_number
-    assert tbs.is_first_loop() == is_first_page
-
-
-@mock.patch("core.tutorialbar.requests")
-def test_get_course_links(mock_requests, tutorialbar_main_page):
+@pytest.mark.asyncio
+@mock.patch("aiohttp.ClientSession.get")
+async def test_get_course_links(mock_get, tutorialbar_main_page):
     url = "https://www.tutorialbar.com/main"
-    requests_response = mock.Mock()
-    requests_response.content = tutorialbar_main_page
-    mock_requests.get.return_value = requests_response
-    tbs = TutorialBarScraper()
+
+    mock_get.return_value = MockResponse(tutorialbar_main_page, 200)
+    tbs = TutorialBarScraper(enabled=True)
     tbs.current_page = 1
-    links = tbs.get_course_links(url)
+    links = await tbs.get_course_links(url)
 
     assert tbs.last_page == "601"
     assert links == [
@@ -82,3 +87,19 @@ def test_get_course_links(mock_requests, tutorialbar_main_page):
         "https://www.tutorialbar.com/quickbooks-pro-desktop-bookkeeping-business-easy-way/",
         "https://www.tutorialbar.com/quickbooks-online-bank-feeds-credit-card-feeds-2020/",
     ]
+
+
+@pytest.mark.parametrize(
+    "enabled",
+    [
+        (True,),
+        (False,),
+    ],
+    ids=("Test enabled", "Test disabled"),
+)
+def test_enable_status(
+    enabled,
+):
+
+    tbs = TutorialBarScraper(enabled=enabled)
+    assert tbs.is_disabled() is not enabled

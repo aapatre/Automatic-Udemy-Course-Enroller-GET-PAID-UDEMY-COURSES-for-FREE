@@ -2,6 +2,8 @@ import datetime
 import json
 import os
 
+from udemy_enroller.utils import get_app_dir
+
 
 class CourseCache:
     """
@@ -9,7 +11,7 @@ class CourseCache:
     """
 
     def __init__(self, file_name=".course_cache"):
-        self._file_name = file_name
+        self._file_name = os.path.join(get_app_dir(), file_name)
         self._cache = []
         self._load_cache()
 

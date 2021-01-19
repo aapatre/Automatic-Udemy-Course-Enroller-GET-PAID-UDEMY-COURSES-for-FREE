@@ -1,17 +1,16 @@
-import logging
-import time
 from enum import Enum
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from core.exceptions import RobotException
-from core.settings import Settings
+from udemy_enroller.exceptions import LoginException, RobotException
+from udemy_enroller.logging import get_logger
+from udemy_enroller.settings import Settings
 
-logger = logging.getLogger("udemy_enroller")
+logger = get_logger()
 
 
 class UdemyStatus(Enum):
@@ -59,7 +58,7 @@ class UdemyActions:
                 is_robot = self._check_if_robot()
                 if is_robot and not is_retry:
                     input(
-                        "Please solve the captcha before proceeding. Hit enter once solved "
+                        "Before login. Please solve the captcha before proceeding. Hit enter once solved "
                     )
                     self.login(is_retry=True)
                     return
@@ -67,7 +66,22 @@ class UdemyActions:
                     raise RobotException("I am a bot!")
                 raise e
             else:
-                # TODO: Verify successful login
+                user_dropdown_xpath = "//a[@data-purpose='user-dropdown']"
+                try:
+                    WebDriverWait(self.driver, 10).until(
+                        EC.presence_of_element_located((By.XPATH, user_dropdown_xpath))
+                    )
+                except TimeoutException:
+                    is_robot = self._check_if_robot()
+                    if is_robot and not is_retry:
+                        input(
+                            "After login. Please solve the captcha before proceeding. Hit enter once solved "
+                        )
+                        if self._check_if_robot():
+                            raise RobotException("I am a bot!")
+                        self.logged_in = True
+                        return
+                    raise LoginException("Udemy user failed to login")
                 self.logged_in = True
 
     def redeem(self, url: str) -> str:
@@ -91,7 +105,7 @@ class UdemyActions:
             )
 
             if element_text not in self.settings.languages:
-                logger.info(f"Course language not wanted: {element_text}")
+                logger.debug(f"Course language not wanted: {element_text}")
                 return UdemyStatus.UNWANTED_LANGUAGE.value
 
         if self.settings.categories:
@@ -110,7 +124,7 @@ class UdemyActions:
                 if category in breadcrumbs:
                     break
             else:
-                logger.info("Skipping course as it does not have a wanted category")
+                logger.debug("Skipping course as it does not have a wanted category")
                 return UdemyStatus.UNWANTED_CATEGORY.value
 
         # Enroll Now 1
@@ -120,12 +134,13 @@ class UdemyActions:
             EC.element_to_be_clickable((By.XPATH, buy_course_button_xpath))
         )
 
-        # Check if already enrolled
-        already_purchased_xpath = (
-            "//div[starts-with(@class, 'buy-box--purchased-text-banner')]"
-        )
-        if self.driver.find_elements_by_xpath(already_purchased_xpath):
-            logger.info(f"Already enrolled in {course_name}")
+        # Check if already enrolled. If add to cart is available we have not yet enrolled
+        add_to_cart_xpath = "//div[@data-purpose='add-to-cart']"
+        add_to_cart_elements = self.driver.find_elements_by_xpath(add_to_cart_xpath)
+        if not add_to_cart_elements or (
+            add_to_cart_elements and not add_to_cart_elements[0].is_displayed()
+        ):
+            logger.debug(f"Already enrolled in {course_name}")
             return UdemyStatus.ENROLLED.value
 
         # Click to enroll in the course
@@ -146,17 +161,25 @@ class UdemyActions:
 
         # Check if zipcode exists before doing this
         if self.settings.zip_code:
-            # Assume sometimes zip is not required because script was originally pushed without this
+            # zipcode is only required in certain regions (e.g USA)
             try:
-                zipcode_element = self.driver.find_element_by_id(
-                    "billingAddressSecondaryInput"
+                element_present = EC.presence_of_element_located(
+                    (
+                        By.ID,
+                        "billingAddressSecondaryInput",
+                    )
                 )
-                zipcode_element.send_keys(self.settings.zip_code)
+                WebDriverWait(self.driver, 5).until(element_present).send_keys(
+                    self.settings.zip_code
+                )
 
                 # After you put the zip code in, the page refreshes itself and disables the enroll button for a split
                 # second.
-                time.sleep(1)
-            except NoSuchElementException:
+                enroll_button_is_clickable = EC.element_to_be_clickable(
+                    (By.XPATH, enroll_button_xpath)
+                )
+                WebDriverWait(self.driver, 5).until(enroll_button_is_clickable)
+            except (TimeoutException, NoSuchElementException):
                 pass
 
         # Make sure the price has loaded
@@ -178,7 +201,7 @@ class UdemyActions:
                 # This logic should work for different locales and currencies
                 _numbers = "".join(filter(lambda x: x if x.isdigit() else None, _price))
                 if _numbers.isdigit() and int(_numbers) > 0:
-                    logger.info(
+                    logger.debug(
                         f"Skipping course as it now costs {_price}: {course_name}"
                     )
                     return UdemyStatus.EXPIRED.value

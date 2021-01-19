@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [2.0.0] - 2021-01-19
+
+### Added
+
+- New coupon source from discudemy.com
+- Refactored to have generic scrapers and manager
+- Improved performance (asyncio)
+- Packaged and published to PyPI
+- Added cli args --debug, --tutorialbar, --discudemy
+- Removed unpopular cli arg -> --cache-hits
+- Write settings/cache to home folder so we can persist settings between versions (installed from PyPI)
+
 ## [1.0.0] - 2020-12-09
 
 ### Added
@@ -52,6 +64,8 @@ can continue as normal
   project running locally. Suitable for users who are not looking forward to
   contribute.
 
+[2.0.0]:
+  https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v2.0.0
 [1.0.0]:
   https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v1.0.0
 [0.3]:

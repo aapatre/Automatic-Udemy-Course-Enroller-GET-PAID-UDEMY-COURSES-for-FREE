@@ -4,7 +4,8 @@ from unittest import mock
 import pytest
 from ruamel.yaml import YAML
 
-from core import Settings
+from udemy_enroller import Settings
+from udemy_enroller.utils import get_app_dir
 
 
 @pytest.mark.parametrize(
@@ -59,7 +60,7 @@ def test_settings(email, password, zip_code, languages, categories, save, file_n
         "builtins.input", side_effect=[email, zip_code, languages, categories, save]
     ):
         with mock.patch("getpass.getpass", return_value=password):
-            settings_path = f"test_tmp/{file_name}"
+            settings_path = os.path.join(get_app_dir(), f"test_tmp/{file_name}")
             settings = Settings(settings_path)
             assert settings.email == email
             assert settings.password == password

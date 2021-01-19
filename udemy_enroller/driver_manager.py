@@ -1,5 +1,3 @@
-import logging
-
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from webdriver_manager.chrome import ChromeDriverManager
@@ -7,6 +5,10 @@ from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager, IEDriverManager
 from webdriver_manager.opera import OperaDriverManager
 from webdriver_manager.utils import ChromeType
+
+from udemy_enroller.logging import get_logger
+
+logger = get_logger()
 
 VALID_FIREFOX_STRINGS = {"ff", "firefox"}
 VALID_CHROME_STRINGS = {"chrome", "google-chrome"}
@@ -23,9 +25,6 @@ ALL_VALID_BROWSER_STRINGS = (
     .union(VALID_OPERA_STRINGS)
     .union(VALID_EDGE_STRINGS)
 )
-
-
-logger = logging.getLogger("udemy_enroller")
 
 
 class DriverManager:
@@ -87,6 +86,7 @@ class DriverManager:
         # We need to run headless when using github CI
         options.add_argument("--headless")
         options.add_argument("user-agent={0}".format(user_agent))
+        options.add_argument("accept-language=en-GB,en-US;q=0.9,en;q=0.8")
         options.add_argument("--window-size=1325x744")
         logger.info("This is a CI run")
         return options

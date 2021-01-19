@@ -3,17 +3,21 @@ import shutil
 
 import pytest
 
+from udemy_enroller.utils import get_app_dir
+
 
 @pytest.fixture(scope="session", autouse=True)
 def test_file_dir():
+    app_dir = get_app_dir()
     test_file_dir = "test_tmp"
+    full_dir = os.path.join(app_dir, test_file_dir)
     # Try to delete directory in case it wasn't deleted after last test run
-    if os.path.isdir(test_file_dir):
-        shutil.rmtree(test_file_dir)
-    yield os.mkdir(test_file_dir)
+    if os.path.isdir(full_dir):
+        shutil.rmtree(full_dir)
+    yield os.mkdir(full_dir)
     # Delete directory after all tests completed
-    if os.path.isdir(test_file_dir):
-        shutil.rmtree(test_file_dir)
+    if os.path.isdir(full_dir):
+        shutil.rmtree(full_dir)
 
 
 @pytest.fixture()

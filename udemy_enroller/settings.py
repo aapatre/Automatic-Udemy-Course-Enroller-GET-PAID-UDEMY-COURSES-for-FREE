@@ -1,12 +1,14 @@
 import getpass
-import logging
 import os.path
 from distutils.util import strtobool
 from typing import Dict, List
 
 from ruamel.yaml import YAML, dump
 
-logger = logging.getLogger("udemy_enroller")
+from udemy_enroller.logging import get_logger
+from udemy_enroller.utils import get_app_dir
+
+logger = get_logger()
 
 
 class Settings:
@@ -21,7 +23,7 @@ class Settings:
         self.languages = []
         self.categories = []
 
-        self._settings_path = settings_path
+        self._settings_path = os.path.join(get_app_dir(), settings_path)
         self.is_ci_build = strtobool(os.environ.get("CI_TEST", "False"))
         self._init_settings()
 
