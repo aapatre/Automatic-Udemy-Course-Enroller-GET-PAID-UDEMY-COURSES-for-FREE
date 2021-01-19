@@ -8,6 +8,8 @@ Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of
 web-scraping and automation, this script will find the necessary Udemy Coupons
 &amp; enroll you to PAID UDEMY COURSES, ABSOLUTELY FREE!
 
+**NOTE: THIS PROJECT IS NOT AFFILIATED WITH UDEMY.**
+
 The code scrapes course links and coupons from:
  - [tutorialbar.com](https://tutorialbar.com)
  - [discudemy.com](https://discudemy.com)
@@ -28,7 +30,7 @@ Also, don't forget to **Fork & Star the repository if you like it!**
 
 
 1. **Use** this ONLY for **Educational Purposes!** By using this code you agree
-   that **I'm not responsible for any kind of trouble** caused by the code.
+   that **I'm not responsible for any kind of trouble** caused by the code. **THIS PROJECT IS NOT AFFILIATED WITH UDEMY.** 
 2. **Make sure web-scraping is legal in your region.**
 3. This is **NOT a hacking script**, i.e., it can't enroll you for a specific
    course! Instead it finds courses that provide coupon links to make the
@@ -65,6 +67,11 @@ get all the requirements installed in one go. Similar instructions applies for p
 ---
 
 ## Instructions
+
+Props to Davidd Sargent for making a super simple video tutorial. If you prefer written instructions then continue reading further, else click on the image below for a quick video tutorial:
+
+[![GET Udemy Courses for FREE with Python | 2 Minute Tuesday](https://i.ytimg.com/vi/tdLsVoraMxw/hq720.jpg)](https://www.youtube.com/watch?v=tdLsVoraMxw "GET Udemy Courses for FREE with Python | 2 Minute Tuesday")
+
 1 . Install from PyPI `pip install udemy_enroller`
 
 - Run the script and the cli will guide you through the settings required
