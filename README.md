@@ -74,7 +74,7 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
 
 [![GET Udemy Courses for FREE with Python | 2 Minute Tuesday](https://i.ytimg.com/vi/tdLsVoraMxw/hq720.jpg)](https://www.youtube.com/watch?v=tdLsVoraMxw "GET Udemy Courses for FREE with Python | 2 Minute Tuesday")
 
-1 . Install from PyPI `pip install udemy_enroller`
+1 . Install from PyPI `pip install udemy-enroller`
 
 - Run the script and the cli will guide you through the settings required
 - If you decide to save the settings they will be stored in your home directory: <br>
