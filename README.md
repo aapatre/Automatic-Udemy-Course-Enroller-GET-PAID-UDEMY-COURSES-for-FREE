@@ -10,6 +10,8 @@ web-scraping and automation, this script will find the necessary Udemy Coupons
 
 **NOTE: THIS PROJECT IS NOT AFFILIATED WITH UDEMY.**
 
+**NOTE: THIS PROJECT WILL NOT WORK WITH NON ENGLISH UDEMY.**
+
 The code scrapes course links and coupons from:
  - [tutorialbar.com](https://tutorialbar.com)
  - [discudemy.com](https://discudemy.com)
@@ -80,6 +82,8 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
     C:/Users/CurrentUserName/.udemy_enroller<br>
 **Linux**:
     /home/username/.udemy_enroller
+    
+ **The values in settings.yaml should be in the same language as the site you are browsing on**
 
 2 . Choose the appropriate command for your browser (from the list below):
 

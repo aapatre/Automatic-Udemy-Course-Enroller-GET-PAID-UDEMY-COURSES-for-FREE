@@ -1,3 +1,4 @@
+requests
 aiohttp
 beautifulsoup4
 ruamel.yaml
