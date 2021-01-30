@@ -116,6 +116,7 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
 - `--discudemy`: Run the discudemy scraper only
 - `--tutorialbar`: Run the tutorialbar scraper only
 - `--max-pages=<NUMBER>`: Max number of pages to scrape from sites before exiting the script (default is 5)
+- `--delete-settings`: Delete existing settings file
 - `--debug`: Enable debug logging
 
 4 . Run the chosen script in terminal like so:
