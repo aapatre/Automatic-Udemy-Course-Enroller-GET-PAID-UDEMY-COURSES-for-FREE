@@ -1,4 +1,4 @@
-aiohttp
+aiohttp[speedups]
 beautifulsoup4
 ruamel.yaml
 selenium
