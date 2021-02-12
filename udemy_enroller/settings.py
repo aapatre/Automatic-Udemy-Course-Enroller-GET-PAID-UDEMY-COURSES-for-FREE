@@ -16,7 +16,7 @@ class Settings:
     Contains all logic related to the scripts settings
     """
 
-    def __init__(self, settings_path="settings.yaml"):
+    def __init__(self, delete_settings, settings_path="settings.yaml"):
         self.email = None
         self.password = None
         self.zip_code = None
@@ -25,6 +25,8 @@ class Settings:
 
         self._settings_path = os.path.join(get_app_dir(), settings_path)
         self.is_ci_build = strtobool(os.environ.get("CI_TEST", "False"))
+        if delete_settings:
+            self.delete()
         self._init_settings()
 
     def _init_settings(self) -> None:
@@ -169,3 +171,19 @@ class Settings:
             logger.info(f"Saved your settings in {self._settings_path}")
         else:
             logger.info("Not saving your settings as requested")
+
+    def delete(self) -> None:
+        """
+        Delete the settings file
+
+        :return: None
+        """
+        if os.path.isfile(self._settings_path):
+            delete_settings = input(
+                "Please confirm that you want to delete your saved settings (Y/N): "
+            )
+            if delete_settings.lower() == "y":
+                os.remove(self._settings_path)
+                logger.info(f"Settings file deleted: {self._settings_path}")
+        else:
+            logger.info("No settings to delete")
