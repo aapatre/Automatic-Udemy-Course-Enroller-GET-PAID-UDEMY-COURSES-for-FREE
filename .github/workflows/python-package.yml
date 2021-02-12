@@ -50,10 +50,10 @@ jobs:
     - name: Run unittests
       run: |
         poetry run pytest
-    - name: Make sure chrome crawler is working (Attempt to subscribe to 1 course)
+    - name: Make sure crawler is working (Attempt to subscribe to 1 course)
       env:
         UDEMY_EMAIL: ${{ secrets.UDEMY_EMAIL }}
         UDEMY_PASSWORD: ${{ secrets.UDEMY_PASSWORD }}
         CI_TEST: "True"
       run: |
-        poetry run python udemy_enroller.py --browser=chrome
+        poetry run python udemy_enroller.py --debug
