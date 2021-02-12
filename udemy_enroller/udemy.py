@@ -1,14 +1,16 @@
+import json
+import os
+import time
 from enum import Enum
+from typing import Dict, List
 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webdriver import WebDriver, WebElement
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+import requests
+from bs4 import BeautifulSoup
+from cloudscraper import create_scraper
 
-from udemy_enroller.exceptions import LoginException, RobotException
 from udemy_enroller.logging import get_logger
 from udemy_enroller.settings import Settings
+from udemy_enroller.utils import get_app_dir
 
 logger = get_logger()
 
@@ -25,238 +27,235 @@ class UdemyStatus(Enum):
 
 
 class UdemyActions:
-    """
-    Contains any logic related to interacting with udemy website
-    """
+    LOGIN_URL = "https://www.udemy.com/join/login-popup/?locale=en_US"
+    MY_COURSES = (
+        "https://www.udemy.com/api-2.0/users/me/subscribed-courses/?ordering=-last_accessed&fields["
+        "course]=@min,enrollment_time,published_title,&fields[user]=@min"
+    )
+    CHECKOUT_URL = "https://www.udemy.com/payment/checkout-submit/"
+    CHECK_PRICE = "https://www.udemy.com/api-2.0/course-landing-components/{}/me/?couponCode={}&components=price_text,deal_badge,discount_expiration"
+    COURSE_DETAILS = "https://www.udemy.com/api-2.0/courses/{}/?fields[course]=context_info,primary_category,primary_subcategory,avg_rating_recent,visible_instructors,locale,estimated_content_length,num_subscribers"
 
-    DOMAIN = "https://www.udemy.com"
+    HEADERS = {
+        "origin": "https://www.udemy.com",
+        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 "
+        "Safari/537.36",
+        "accept": "application/json, text/plain, */*",
+        "accept-encoding": "gzip, deflate, br",
+        "content-type": "application/json;charset=UTF-8",
+        "x-requested-with": "XMLHttpRequest",
+        "x-checkout-version": "2",
+        "referer": "https://www.udemy.com/",
+    }
 
-    def __init__(self, driver: WebDriver, settings: Settings):
-        self.driver = driver
+    def __init__(self, settings: Settings, cookie_file_name: str = ".cookie"):
         self.settings = settings
-        self.logged_in = False
+        self.user_has_preferences = self.settings.categories or self.settings.languages
+        self.session = requests.Session()
+        self.udemy_scraper = create_scraper()
+        self._cookie_file = os.path.join(get_app_dir(), cookie_file_name)
+        self._enrolled_course_info = []
 
-    def login(self, is_retry=False) -> None:
-        """
-        Login to your udemy account
-
-        :param bool is_retry: Is this is a login retry and we still have captcha raise RobotException
-
-        :return: None
-        """
-        if not self.logged_in:
-            self.driver.get(f"{self.DOMAIN}/join/login-popup/")
-            try:
-                email_element = self.driver.find_element_by_name("email")
-                email_element.send_keys(self.settings.email)
-
-                password_element = self.driver.find_element_by_name("password")
-                password_element.send_keys(self.settings.password)
-
-                self.driver.find_element_by_name("submit").click()
-            except NoSuchElementException as e:
-                is_robot = self._check_if_robot()
-                if is_robot and not is_retry:
-                    input(
-                        "Before login. Please solve the captcha before proceeding. Hit enter once solved "
-                    )
-                    self.login(is_retry=True)
-                    return
-                if is_robot and is_retry:
-                    raise RobotException("I am a bot!")
-                raise e
-            else:
-                user_dropdown_xpath = "//a[@data-purpose='user-dropdown']"
-                try:
-                    WebDriverWait(self.driver, 10).until(
-                        EC.presence_of_element_located((By.XPATH, user_dropdown_xpath))
-                    )
-                except TimeoutException:
-                    is_robot = self._check_if_robot()
-                    if is_robot and not is_retry:
-                        input(
-                            "After login. Please solve the captcha before proceeding. Hit enter once solved "
-                        )
-                        if self._check_if_robot():
-                            raise RobotException("I am a bot!")
-                        self.logged_in = True
-                        return
-                    raise LoginException("Udemy user failed to login")
-                self.logged_in = True
-
-    def redeem(self, url: str) -> str:
-        """
-        Redeems the course url passed in
-
-        :param str url: URL of the course to redeem
-        :return: A string detailing course status
-        """
-        self.driver.get(url)
-
-        course_name = self.driver.title
-
-        # If the user has configured languages check it is a supported option
-        if self.settings.languages:
-            locale_xpath = "//div[@data-purpose='lead-course-locale']"
-            element_text = (
-                WebDriverWait(self.driver, 10)
-                .until(EC.presence_of_element_located((By.XPATH, locale_xpath)))
-                .text
+    def login(self) -> None:
+        cookie_details = self._load_cookies()
+        if cookie_details is None:
+            response = self.udemy_scraper.get(self.LOGIN_URL)
+            soup = BeautifulSoup(response.content, "html.parser")
+            csrf_token = soup.find("input", {"name": "csrfmiddlewaretoken"})["value"]
+            _form_data = {
+                "email": self.settings.email,
+                "password": self.settings.password,
+                "csrfmiddlewaretoken": csrf_token,
+            }
+            self.udemy_scraper.headers.update({"Referer": self.LOGIN_URL})
+            auth_response = self.udemy_scraper.post(
+                self.LOGIN_URL, data=_form_data, allow_redirects=False
             )
-
-            if element_text not in self.settings.languages:
-                logger.debug(f"Course language not wanted: {element_text}")
-                return UdemyStatus.UNWANTED_LANGUAGE.value
-
-        if self.settings.categories:
-            # If the wanted categories are specified, get all the categories of the course by
-            # scraping the breadcrumbs on the top
-
-            breadcrumbs_path = "udlite-breadcrumb"
-            breadcrumbs_text_path = "udlite-heading-sm"
-            breadcrumbs: WebElement = self.driver.find_element_by_class_name(
-                breadcrumbs_path
-            )
-            breadcrumbs = breadcrumbs.find_elements_by_class_name(breadcrumbs_text_path)
-            breadcrumbs = [bc.text for bc in breadcrumbs]  # Get only the text
-
-            for category in self.settings.categories:
-                if category in breadcrumbs:
-                    break
+            if auth_response.status_code != 302:
+                raise Exception("Could not login")
             else:
-                logger.debug("Skipping course as it does not have a wanted category")
-                return UdemyStatus.UNWANTED_CATEGORY.value
+                cookie_details = {
+                    "csrf_token": csrf_token,
+                    "access_token": auth_response.cookies["access_token"],
+                    "client_id": auth_response.cookies["client_id"],
+                }
+                self._cache_cookies(cookie_details)
+        else:
+            cookie_details = self._load_cookies()
+            logger.info("Loaded cookies from file")
 
-        # Enroll Now 1
-        buy_course_button_xpath = "//button[@data-purpose='buy-this-course-button']"
-        # We need to wait for this element to be clickable before checking if already purchased
-        WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, buy_course_button_xpath))
+        bearer_token = f"Bearer {cookie_details['access_token']}"
+        self.session.headers = self.HEADERS
+        self.session.headers.update(
+            {
+                "authorization": bearer_token,
+                "x-udemy-authorization": bearer_token,
+                "x-csrftoken": cookie_details["csrf_token"],
+            }
         )
+        self.session.cookies.update({"access_token": cookie_details["access_token"]})
+        self.session.cookies.update({"client_id": cookie_details["client_id"]})
 
-        # Check if already enrolled. If add to cart is available we have not yet enrolled
-        add_to_cart_xpath = "//div[@data-purpose='add-to-cart']"
-        add_to_cart_elements = self.driver.find_elements_by_xpath(add_to_cart_xpath)
-        if not add_to_cart_elements or (
-            add_to_cart_elements and not add_to_cart_elements[0].is_displayed()
+        try:
+            self._enrolled_course_info = self.load_my_courses()
+        except Exception as e:
+            logger.error("Unable to fetch existing courses. Login was not successful")
+            raise e
+
+    def load_my_courses(self) -> List:
+        logger.info("Loading existing course details")
+        all_courses = list()
+        page_size = 100
+
+        my_courses = self.my_courses(1, page_size)
+        all_courses.extend(my_courses["results"])
+        total_pages = my_courses["count"] // page_size
+        for page in range(2, total_pages + 2):
+            my_courses = self.my_courses(page, page_size)
+            all_courses.extend(my_courses["results"])
+            time.sleep(1)
+
+        return all_courses
+
+    def is_enrolled(self, course_id) -> bool:
+        enrolled = False
+        all_course_ids = [course["id"] for course in self._enrolled_course_info]
+        if course_id in all_course_ids:
+            enrolled = True
+
+        return enrolled
+
+    def is_coupon_valid(self, course_id: int, coupon_code: str) -> bool:
+        coupon_valid = True
+        coupon_details = self.coupon_details(course_id, coupon_code)
+        current_price = coupon_details["price_text"]["data"]["pricing_result"]["price"][
+            "amount"
+        ]
+        if bool(current_price):
+            logger.debug(f"Skipping course as it now costs {current_price}")
+            coupon_valid = False
+
+        return coupon_valid
+
+    def is_preferred_language(self, course_details: Dict) -> bool:
+        is_preferred_language = True
+        course_language = course_details["locale"]["simple_english_title"]
+        if course_language not in self.settings.languages:
+            logger.debug(f"Course language not wanted: {course_language}")
+            is_preferred_language = False
+
+        return is_preferred_language
+
+    def is_preferred_category(self, course_details: Dict) -> bool:
+        is_preferred_category = True
+
+        if (
+            course_details["primary_category"]["title"] not in self.settings.categories
+            and course_details["primary_subcategory"]["title"]
+            not in self.settings.categories
         ):
-            logger.debug(f"Already enrolled in {course_name}")
+            logger.debug("Skipping course as it does not have a wanted category")
+            is_preferred_category = False
+        return is_preferred_category
+
+    def my_courses(self, page, page_size) -> Dict:
+        response = self.session.get(
+            self.MY_COURSES + f"&page={page}&page_size={page_size}"
+        )
+        return response.json()
+
+    def coupon_details(self, course_id: int, coupon_code: str) -> Dict:
+        response = requests.get(self.CHECK_PRICE.format(course_id, coupon_code))
+        return response.json()
+
+    def course_details(self, course_id: int) -> Dict:
+        response = requests.get(self.COURSE_DETAILS.format(course_id))
+        return response.json()
+
+    def enroll(self, course_link: str) -> str:
+        url, coupon_code = course_link.split("?couponCode=")
+        course_id = self._get_course_id(url)
+
+        if self.is_enrolled(course_id):
+            logger.info(f"Already enrolled in {url}")
             return UdemyStatus.ENROLLED.value
 
-        # Click to enroll in the course
-        element_present = EC.presence_of_element_located(
-            (By.XPATH, buy_course_button_xpath)
-        )
-        WebDriverWait(self.driver, 10).until(element_present).click()
+        if self.user_has_preferences:
+            course_details = self.course_details(course_id)
+            if self.settings.languages:
+                if not self.is_preferred_language(course_details):
+                    return UdemyStatus.UNWANTED_LANGUAGE.value
+            if self.settings.categories:
+                if not self.is_preferred_category(course_details):
+                    return UdemyStatus.UNWANTED_CATEGORY.value
 
-        enroll_button_xpath = "//*[@class='udemy pageloaded']/div[1]/div[2]/div/div/div/div[2]/form/div[2]/div/div[4]/button"
-        # Enroll Now 2
-        element_present = EC.presence_of_element_located(
-            (
-                By.XPATH,
-                enroll_button_xpath,
+        if not self.is_coupon_valid(course_id, coupon_code):
+            return UdemyStatus.EXPIRED.value
+
+        self._checkout(course_id, coupon_code, url)
+
+    def _get_course_id(self, url: str) -> int:
+        response = self.session.get(url)
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        return int(soup.find("body")["data-clp-course-id"])
+
+    def _checkout(self, course_id: int, coupon_code: str, url: str) -> str:
+        payload = self._build_checkout_payload(course_id, coupon_code)
+        checkout_result = self.session.post(self.CHECKOUT_URL, json=payload)
+        if not checkout_result.ok:
+            logger.error(
+                f"Checkout failed: Code: {checkout_result.status_code} Text: {checkout_result.text}"
             )
-        )
-        WebDriverWait(self.driver, 10).until(element_present)
+            # TODO: Handle non 200 responses
+            #  e.g. Status code: 429 {"detail":"Request was throttled. Expected available in 9 seconds."}
+        else:
+            result = checkout_result.json()
+            if result["status"] == "failed":
+                logger.warning("Checkout failed")
+                # TODO: Shouldn't happen. Need to monitor if it does
+                return UdemyStatus.EXPIRED.value
+            elif result["status"] == "succeeded":
+                logger.info(f"Successfully enrolled: {url}")
+                return UdemyStatus.ENROLLED.value
 
-        # Check if zipcode exists before doing this
-        if self.settings.zip_code:
-            # zipcode is only required in certain regions (e.g USA)
-            try:
-                element_present = EC.presence_of_element_located(
-                    (
-                        By.ID,
-                        "billingAddressSecondaryInput",
-                    )
-                )
-                WebDriverWait(self.driver, 5).until(element_present).send_keys(
-                    self.settings.zip_code
-                )
-
-                # After you put the zip code in, the page refreshes itself and disables the enroll button for a split
-                # second.
-                enroll_button_is_clickable = EC.element_to_be_clickable(
-                    (By.XPATH, enroll_button_xpath)
-                )
-                WebDriverWait(self.driver, 5).until(enroll_button_is_clickable)
-            except (TimeoutException, NoSuchElementException):
-                pass
-
-        # Make sure the price has loaded
-        price_class_loading = "udi-circle-loader"
-        WebDriverWait(self.driver, 10).until_not(
-            EC.presence_of_element_located((By.CLASS_NAME, price_class_loading))
-        )
-
-        # Make sure the course is Free
-        price_xpath = "//span[@data-purpose='total-price']//span"
-        price_elements = self.driver.find_elements_by_xpath(price_xpath)
-        # We get elements here as one of there are 2 matches for this xpath
-
-        for price_element in price_elements:
-            # We are only interested in the element which is displaying the price details
-            if price_element.is_displayed():
-                _price = price_element.text
-                # Extract the numbers from the price text
-                # This logic should work for different locales and currencies
-                _numbers = "".join(filter(lambda x: x if x.isdigit() else None, _price))
-                if _numbers.isdigit() and int(_numbers) > 0:
-                    logger.debug(
-                        f"Skipping course as it now costs {_price}: {course_name}"
-                    )
-                    return UdemyStatus.EXPIRED.value
-
-        # Check if state/province element exists
-        billing_state_element_id = "billingAddressSecondarySelect"
-        billing_state_elements = self.driver.find_elements_by_id(
-            billing_state_element_id
-        )
-        if billing_state_elements:
-            # If we are here it means a state/province element exists and needs to be filled
-            # Open the dropdown menu
-            billing_state_elements[0].click()
-
-            # Pick the first element in the state/province dropdown
-            first_state_xpath = (
-                "//select[@id='billingAddressSecondarySelect']//option[2]"
-            )
-            element_present = EC.presence_of_element_located(
-                (By.XPATH, first_state_xpath)
-            )
-            WebDriverWait(self.driver, 10).until(element_present).click()
-
-        # Hit the final Enroll now button
-        enroll_button_is_clickable = EC.element_to_be_clickable(
-            (By.XPATH, enroll_button_xpath)
-        )
-        WebDriverWait(self.driver, 10).until(enroll_button_is_clickable).click()
-
-        # Wait for success page to load
-        success_element_class = "alert-success"
-        WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, success_element_class))
-        )
-
-        logger.info(f"Successfully enrolled in: {course_name}")
-        return UdemyStatus.ENROLLED.value
-
-    def _check_if_robot(self) -> bool:
+    @staticmethod
+    def _build_checkout_payload(course_id: int, discount_code: str) -> Dict:
         """
-        Simply checks if the captcha element is present on login if email/password elements are not
 
-        :return: Bool
+        :param course_id:
+        :param discount_code:
+        :return:
         """
-        is_robot = False
-        try:
-            self.driver.find_element_by_id("px-captcha")
-            is_robot = True
-        except NoSuchElementException:
-            pass
+        return {
+            "checkout_event": "Submit",
+            "shopping_cart": {
+                "items": [
+                    {
+                        "discountInfo": {"code": discount_code},
+                        "purchasePrice": {
+                            "amount": 0,
+                            "currency": "EUR",
+                            "price_string": "Free",
+                            "currency_symbol": "€",
+                        },
+                        "buyableType": "course",
+                        "buyableId": course_id,
+                        "buyableContext": {},
+                    }
+                ],
+                "is_cart": True,
+            },
+            "payment_info": {"payment_vendor": "Free", "payment_method": "free-method"},
+        }
 
-        # Check for cloudflare robot check
-        try:
-            self.driver.find_element_by_id("captcha-bypass")
-            is_robot = True
-        except NoSuchElementException:
-            pass
-        return is_robot
+    def _cache_cookies(self, cookies: Dict) -> None:
+        with open(self._cookie_file, "a+") as f:
+            f.write(json.dumps(cookies))
+
+    def _load_cookies(self) -> Dict:
+        cookies = None
+        if os.path.isfile(self._cookie_file):
+            with open(self._cookie_file) as f:
+                cookies = json.loads(f.read())
+        return cookies

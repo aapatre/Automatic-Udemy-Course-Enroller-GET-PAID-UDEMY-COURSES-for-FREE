@@ -3,7 +3,7 @@ import logging
 from argparse import Namespace
 from typing import Tuple, Union
 
-from udemy_enroller import ALL_VALID_BROWSER_STRINGS, DriverManager, Settings
+from udemy_enroller import Settings
 from udemy_enroller.logging import get_logger
 from udemy_enroller.runner import redeem_courses
 
@@ -38,7 +38,6 @@ def determine_if_scraper_enabled(
 
 
 def run(
-    browser: str,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
     max_pages: Union[int, None],
@@ -55,10 +54,7 @@ def run(
     :return:
     """
     settings = Settings(delete_settings)
-    dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
-    redeem_courses(
-        dm.driver, settings, tutorialbar_enabled, discudemy_enabled, max_pages
-    )
+    redeem_courses(settings, tutorialbar_enabled, discudemy_enabled, max_pages)
 
 
 def parse_args(browser=None) -> Namespace:
@@ -70,13 +66,6 @@ def parse_args(browser=None) -> Namespace:
     """
     parser = argparse.ArgumentParser(description="Udemy Enroller")
 
-    parser.add_argument(
-        "--browser",
-        type=str,
-        default=browser,
-        choices=ALL_VALID_BROWSER_STRINGS,
-        help="Browser to use for Udemy Enroller",
-    )
     parser.add_argument(
         "--tutorialbar",
         action="store_true",
@@ -109,10 +98,7 @@ def parse_args(browser=None) -> Namespace:
 
     args = parser.parse_args()
 
-    if args.browser is None:
-        parser.print_help()
-    else:
-        return args
+    return args
 
 
 def main():
@@ -124,7 +110,6 @@ def main():
             args.tutorialbar, args.discudemy
         )
         run(
-            args.browser,
             tutorialbar_enabled,
             discudemy_enabled,
             args.max_pages,
