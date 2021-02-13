@@ -33,7 +33,7 @@ def determine_if_scraper_enabled(
     :return: tuple containing boolean of what scrapers should run
     """
     if not tutorialbar_enabled and not discudemy_enabled and not coursevania_enabled:
-        # Set all three to True since user has not enabled a specific scraper i.e Run all scrapers
+        # Set all to True
         tutorialbar_enabled, discudemy_enabled, coursevania_enabled = True, True, True
     return tutorialbar_enabled, discudemy_enabled, coursevania_enabled
 

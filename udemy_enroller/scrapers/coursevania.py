@@ -18,7 +18,6 @@ class CoursevaniaScraper(BaseScraper):
     """
 
     DOMAIN = "https://coursevania.com"
-    AD_DOMAINS = ("https://amzn",)
 
     def __init__(self, enabled, max_pages=None):
         super().__init__()
@@ -81,7 +80,6 @@ class CoursevaniaScraper(BaseScraper):
             'X-Requested-With': 'XMLHttpRequest',
             'Connection': 'keep-alive',
             'Referer': 'https://coursevania.com/courses/',
-            'Cookie': '__cfduid=d022269be97a5d35b1db7c0195a0a1c091611526580',
             'TE': 'Trailers',
         }
         query_string = urlencode(query_params)
