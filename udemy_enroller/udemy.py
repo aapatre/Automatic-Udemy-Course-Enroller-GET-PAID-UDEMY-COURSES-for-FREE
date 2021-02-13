@@ -210,7 +210,7 @@ class UdemyActions:
 
             self._checkout(course_id, coupon_code, url)
         else:
-            logger.error(f"Malformed url passed in: {course_link}")
+            raise Exception(f"Malformed url passed in: {course_link}")
 
     def _get_course_id(self, url: str) -> int:
         response = self.session.get(url)
