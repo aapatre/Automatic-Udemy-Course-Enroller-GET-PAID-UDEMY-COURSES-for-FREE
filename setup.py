@@ -30,8 +30,8 @@ setup(
         "aiohttp",
         "beautifulsoup4",
         "ruamel.yaml",
-        "selenium",
-        "webdriver-manager",
+        "requests",
+        "cloudscraper",
     ],
     setup_requires=["pytest-runner"],
     extras_require={

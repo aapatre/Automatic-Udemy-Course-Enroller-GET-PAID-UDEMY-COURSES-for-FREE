@@ -55,6 +55,8 @@ class UdemyActions:
         self.udemy_scraper = create_scraper()
         self._cookie_file = os.path.join(get_app_dir(), cookie_file_name)
         self._enrolled_course_info = []
+        self._currency_symbol = None
+        self._currency = None
 
     def login(self) -> None:
         cookie_details = self._load_cookies()
@@ -72,7 +74,9 @@ class UdemyActions:
                 self.LOGIN_URL, data=_form_data, allow_redirects=False
             )
             if auth_response.status_code != 302:
-                raise Exception("Could not login")
+                raise Exception(
+                    f"Could not login. Code: {auth_response.status_code} Text: {auth_response.text}"
+                )
             else:
                 cookie_details = {
                     "csrf_token": csrf_token,
@@ -131,8 +135,18 @@ class UdemyActions:
         current_price = coupon_details["price_text"]["data"]["pricing_result"]["price"][
             "amount"
         ]
+        if self._currency_symbol is None and self._currency is None:
+            self._currency_symbol = coupon_details["price_text"]["data"][
+                "pricing_result"
+            ]["price"]["currency_symbol"]
+            self._currency = coupon_details["price_text"]["data"]["pricing_result"][
+                "price"
+            ]["currency"]
+
         if bool(current_price):
-            logger.debug(f"Skipping course as it now costs {current_price}")
+            logger.debug(
+                f"Skipping course as it now costs {self._currency_symbol}{current_price}"
+            )
             coupon_valid = False
 
         return coupon_valid
@@ -173,26 +187,30 @@ class UdemyActions:
         return response.json()
 
     def enroll(self, course_link: str) -> str:
-        url, coupon_code = course_link.split("?couponCode=")
-        course_id = self._get_course_id(url)
+        str_check = "?couponCode="
+        if str_check in course_link:
+            url, coupon_code = course_link.split(str_check)
+            course_id = self._get_course_id(url)
 
-        if self.is_enrolled(course_id):
-            logger.info(f"Already enrolled in {url}")
-            return UdemyStatus.ENROLLED.value
+            if self.is_enrolled(course_id):
+                logger.info(f"Already enrolled in {url}")
+                return UdemyStatus.ENROLLED.value
 
-        if self.user_has_preferences:
-            course_details = self.course_details(course_id)
-            if self.settings.languages:
-                if not self.is_preferred_language(course_details):
-                    return UdemyStatus.UNWANTED_LANGUAGE.value
-            if self.settings.categories:
-                if not self.is_preferred_category(course_details):
-                    return UdemyStatus.UNWANTED_CATEGORY.value
+            if self.user_has_preferences:
+                course_details = self.course_details(course_id)
+                if self.settings.languages:
+                    if not self.is_preferred_language(course_details):
+                        return UdemyStatus.UNWANTED_LANGUAGE.value
+                if self.settings.categories:
+                    if not self.is_preferred_category(course_details):
+                        return UdemyStatus.UNWANTED_CATEGORY.value
 
-        if not self.is_coupon_valid(course_id, coupon_code):
-            return UdemyStatus.EXPIRED.value
+            if not self.is_coupon_valid(course_id, coupon_code):
+                return UdemyStatus.EXPIRED.value
 
-        self._checkout(course_id, coupon_code, url)
+            self._checkout(course_id, coupon_code, url)
+        else:
+            raise Exception(f"Malformed url passed in: {course_link}")
 
     def _get_course_id(self, url: str) -> int:
         response = self.session.get(url)
@@ -212,15 +230,15 @@ class UdemyActions:
         else:
             result = checkout_result.json()
             if result["status"] == "failed":
-                logger.warning("Checkout failed")
+                logger.warning(f"Checkout failed: {url}")
+                logger.debug(f"Checkout payload: {payload}")
                 # TODO: Shouldn't happen. Need to monitor if it does
                 return UdemyStatus.EXPIRED.value
             elif result["status"] == "succeeded":
                 logger.info(f"Successfully enrolled: {url}")
                 return UdemyStatus.ENROLLED.value
 
-    @staticmethod
-    def _build_checkout_payload(course_id: int, discount_code: str) -> Dict:
+    def _build_checkout_payload(self, course_id: int, discount_code: str) -> Dict:
         """
 
         :param course_id:
@@ -235,9 +253,9 @@ class UdemyActions:
                         "discountInfo": {"code": discount_code},
                         "purchasePrice": {
                             "amount": 0,
-                            "currency": "EUR",
+                            "currency": self._currency,
                             "price_string": "Free",
-                            "currency_symbol": "€",
+                            "currency_symbol": self._currency_symbol,
                         },
                         "buyableType": "course",
                         "buyableId": course_id,
