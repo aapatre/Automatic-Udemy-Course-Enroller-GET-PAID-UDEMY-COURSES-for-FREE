@@ -44,6 +44,7 @@ def run(
     discudemy_enabled: bool,
     coursevania_enabled: bool,
     max_pages: Union[int, None],
+    delete_settings: bool,
 ):
     """
     Run the udemy enroller script
@@ -54,7 +55,7 @@ def run(
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :return:
     """
-    settings = Settings()
+    settings = Settings(delete_settings)
     dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
     redeem_courses(
         dm.driver, settings, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
@@ -102,6 +103,12 @@ def parse_args(browser=None) -> Namespace:
         help=f"Max pages to scrape from sites (if pagination exists) (Default is 5)",
     )
     parser.add_argument(
+        "--delete-settings",
+        action="store_true",
+        default=False,
+        help="Delete any existing settings file",
+    )
+    parser.add_argument(
         "--debug",
         action="store_true",
         help="Enable debug logging",
@@ -123,4 +130,11 @@ def main():
         tutorialbar_enabled, discudemy_enabled, coursevania_enabled = determine_if_scraper_enabled(
             args.tutorialbar, args.discudemy, args.coursevania
         )
-        run(args.browser, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, args.max_pages)
+        run(
+            args.browser,
+            tutorialbar_enabled,
+            discudemy_enabled,
+            coursevania_enabled,
+            args.max_pages,
+            args.delete_settings,
+        )
