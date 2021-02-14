@@ -248,7 +248,7 @@ class UdemyActions:
         """
         is_robot = True
         try:
-            self.driver.find_element_by_id("px-captcha")
+            self.driver.find_element_by_id("challenge-form")
         except NoSuchElementException:
             is_robot = False
         return is_robot
