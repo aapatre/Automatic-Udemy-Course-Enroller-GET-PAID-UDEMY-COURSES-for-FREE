@@ -58,7 +58,13 @@ class UdemyActions:
         self._currency_symbol = None
         self._currency = None
 
-    def login(self) -> None:
+    def login(self, retry=False) -> None:
+        """
+        Login to Udemy using REST api
+        Saves login cookies for future use
+
+        :return: None
+        """
         cookie_details = self._load_cookies()
         if cookie_details is None:
             response = self.udemy_scraper.get(self.LOGIN_URL)
@@ -84,9 +90,6 @@ class UdemyActions:
                     "client_id": auth_response.cookies["client_id"],
                 }
                 self._cache_cookies(cookie_details)
-        else:
-            cookie_details = self._load_cookies()
-            logger.info("Loaded cookies from file")
 
         bearer_token = f"Bearer {cookie_details['access_token']}"
         self.session.headers = self.HEADERS
@@ -103,10 +106,22 @@ class UdemyActions:
         try:
             self._enrolled_course_info = self.load_my_courses()
         except Exception as e:
-            logger.error("Unable to fetch existing courses. Login was not successful")
-            raise e
+            if not retry:
+                logger.info("Retrying login")
+                self._delete_cookies()
+                return self.login(retry=True)
+            else:
+                logger.error(
+                    "Unable to fetch existing courses. Login was not successful"
+                )
+                raise e
 
     def load_my_courses(self) -> List:
+        """
+        Loads users currently enrolled courses from Udemy
+
+        :return: List of logged in users courses
+        """
         logger.info("Loading existing course details")
         all_courses = list()
         page_size = 100
@@ -118,10 +133,16 @@ class UdemyActions:
             my_courses = self.my_courses(page, page_size)
             all_courses.extend(my_courses["results"])
             time.sleep(1)
-
+        logger.info(f"Currently enrolled in {len(all_courses)} courses")
         return all_courses
 
-    def is_enrolled(self, course_id) -> bool:
+    def is_enrolled(self, course_id: int) -> bool:
+        """
+        Check if the user is currently enrolled in the course based on course_id passed in
+
+        :param int course_id: Check if the course_id is in the users current courses
+        :return:
+        """
         enrolled = False
         all_course_ids = [course["id"] for course in self._enrolled_course_info]
         if course_id in all_course_ids:
@@ -130,6 +151,13 @@ class UdemyActions:
         return enrolled
 
     def is_coupon_valid(self, course_id: int, coupon_code: str) -> bool:
+        """
+        Check if the coupon is valid for a course
+
+        :param int course_id: Id of the course to check the coupon against
+        :param str coupon_code: Coupon to apply to the course
+        :return:
+        """
         coupon_valid = True
         coupon_details = self.coupon_details(course_id, coupon_code)
         current_price = coupon_details["price_text"]["data"]["pricing_result"]["price"][
@@ -152,6 +180,12 @@ class UdemyActions:
         return coupon_valid
 
     def is_preferred_language(self, course_details: Dict) -> bool:
+        """
+        Check if the course is in one of the languages preferred by the user
+
+        :param dict course_details: Dictionary containing course details from Udemy
+        :return: boolean
+        """
         is_preferred_language = True
         course_language = course_details["locale"]["simple_english_title"]
         if course_language not in self.settings.languages:
@@ -161,6 +195,12 @@ class UdemyActions:
         return is_preferred_language
 
     def is_preferred_category(self, course_details: Dict) -> bool:
+        """
+        Check if the course is in one of the categories preferred by the user
+
+        :param dict course_details: Dictionary containing course details from Udemy
+        :return: boolean
+        """
         is_preferred_category = True
 
         if (
@@ -172,21 +212,47 @@ class UdemyActions:
             is_preferred_category = False
         return is_preferred_category
 
-    def my_courses(self, page, page_size) -> Dict:
+    def my_courses(self, page: int, page_size: int) -> Dict:
+        """
+        Load the current logged in users courses
+
+        :param int page: page number to load
+        :param int page_size: number of courses to load per page
+        :return: dict containing the current users courses
+        """
         response = self.session.get(
             self.MY_COURSES + f"&page={page}&page_size={page_size}"
         )
         return response.json()
 
     def coupon_details(self, course_id: int, coupon_code: str) -> Dict:
+        """
+        Check that the coupon is valid for the current course
+
+        :param int course_id: Id of the course to check the coupon against
+        :param str coupon_code: The coupon_code to check against the course
+        :return: dictionary containing the course pricing details
+        """
         response = requests.get(self.CHECK_PRICE.format(course_id, coupon_code))
         return response.json()
 
     def course_details(self, course_id: int) -> Dict:
+        """
+        Retrieves details relating to the course passed in
+
+        :param int course_id: Id of the course to get the details of
+        :return: dictionary containing the course details
+        """
         response = requests.get(self.COURSE_DETAILS.format(course_id))
         return response.json()
 
     def enroll(self, course_link: str) -> str:
+        """
+        Enroll the current user in the course provided
+
+        :param str course_link: Link to the course with valid coupon attached
+        :return: str representing the status of the enrolment
+        """
         str_check = "?couponCode="
         if str_check in course_link:
             url, coupon_code = course_link.split(str_check)
@@ -208,17 +274,31 @@ class UdemyActions:
             if not self.is_coupon_valid(course_id, coupon_code):
                 return UdemyStatus.EXPIRED.value
 
-            self._checkout(course_id, coupon_code, url)
+            return self._checkout(course_id, coupon_code, url)
         else:
             raise Exception(f"Malformed url passed in: {course_link}")
 
     def _get_course_id(self, url: str) -> int:
+        """
+        Get the course id from the url provided
+
+        :param str url: Udemy url to fetch the course from
+        :return: int representing the course id
+        """
         response = self.session.get(url)
         soup = BeautifulSoup(response.content, "html.parser")
 
         return int(soup.find("body")["data-clp-course-id"])
 
     def _checkout(self, course_id: int, coupon_code: str, url: str) -> str:
+        """
+        Checkout process for the course and coupon provided
+
+        :param int course_id: The course id of the course to enroll in
+        :param str coupon_code: The coupon code to apply on checkout
+        :param str url: Udemy url used in logging
+        :return:
+        """
         payload = self._build_checkout_payload(course_id, coupon_code)
         checkout_result = self.session.post(self.CHECKOUT_URL, json=payload)
         if not checkout_result.ok:
@@ -238,19 +318,20 @@ class UdemyActions:
                 logger.info(f"Successfully enrolled: {url}")
                 return UdemyStatus.ENROLLED.value
 
-    def _build_checkout_payload(self, course_id: int, discount_code: str) -> Dict:
+    def _build_checkout_payload(self, course_id: int, coupon_code: str) -> Dict:
         """
+        Build the payload for checkout
 
-        :param course_id:
-        :param discount_code:
-        :return:
+        :param int course_id: The course id to checkout
+        :param str coupon_code: The coupon code to use at checkout
+        :return: dict representing the checkout payload
         """
         return {
             "checkout_event": "Submit",
             "shopping_cart": {
                 "items": [
                     {
-                        "discountInfo": {"code": discount_code},
+                        "discountInfo": {"code": coupon_code},
                         "purchasePrice": {
                             "amount": 0,
                             "currency": self._currency,
@@ -268,12 +349,34 @@ class UdemyActions:
         }
 
     def _cache_cookies(self, cookies: Dict) -> None:
+        """
+        Caches cookies for future logins
+
+        :param cookies:
+        :return:
+        """
+        logger.info("Caching cookies for future use")
         with open(self._cookie_file, "a+") as f:
             f.write(json.dumps(cookies))
 
     def _load_cookies(self) -> Dict:
+        """
+        Loads existing cookie file
+
+        :return:
+        """
         cookies = None
+        logger.info("Loading cookies from file")
         if os.path.isfile(self._cookie_file):
             with open(self._cookie_file) as f:
                 cookies = json.loads(f.read())
         return cookies
+
+    def _delete_cookies(self) -> None:
+        """
+        Remove existing cookie file
+
+        :return:
+        """
+        logger.info("Deleting cookies")
+        os.remove(self._cookie_file)
