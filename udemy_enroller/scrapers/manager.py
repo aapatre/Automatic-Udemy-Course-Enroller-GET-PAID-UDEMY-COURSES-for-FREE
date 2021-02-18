@@ -8,7 +8,9 @@ from udemy_enroller.scrapers.coursevania import CoursevaniaScraper
 
 
 class ScraperManager:
-    def __init__(self, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages):
+    def __init__(
+        self, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+    ):
         self.tutorialbar_scraper = TutorialBarScraper(
             tutorialbar_enabled, max_pages=max_pages
         )
@@ -18,7 +20,11 @@ class ScraperManager:
         self.coursevania_scraper = CoursevaniaScraper(
             coursevania_enabled, max_pages=max_pages
         )
-        self._scrapers = (self.tutorialbar_scraper, self.discudemy_scraper, self.coursevania_scraper)
+        self._scrapers = (
+            self.tutorialbar_scraper,
+            self.discudemy_scraper,
+            self.coursevania_scraper,
+        )
 
     async def run(self) -> List:
         """

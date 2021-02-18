@@ -93,7 +93,9 @@ def redeem_courses(
     :return:
     """
     try:
-        scrapers = ScraperManager(tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages)
+        scrapers = ScraperManager(
+            tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+        )
         _redeem_courses(driver, settings, scrapers)
     except exceptions.LoginException as e:
         logger.error(str(e))

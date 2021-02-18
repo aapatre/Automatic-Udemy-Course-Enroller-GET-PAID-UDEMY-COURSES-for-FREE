@@ -58,7 +58,12 @@ def run(
     settings = Settings(delete_settings)
     dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
     redeem_courses(
-        dm.driver, settings, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+        dm.driver,
+        settings,
+        tutorialbar_enabled,
+        discudemy_enabled,
+        coursevania_enabled,
+        max_pages,
     )
 
 
@@ -127,7 +132,11 @@ def main():
     if args:
         if args.debug:
             enable_debug_logging()
-        tutorialbar_enabled, discudemy_enabled, coursevania_enabled = determine_if_scraper_enabled(
+        (
+            tutorialbar_enabled,
+            discudemy_enabled,
+            coursevania_enabled,
+        ) = determine_if_scraper_enabled(
             args.tutorialbar, args.discudemy, args.coursevania
         )
         run(
