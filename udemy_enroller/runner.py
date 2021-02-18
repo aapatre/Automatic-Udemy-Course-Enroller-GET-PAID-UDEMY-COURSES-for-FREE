@@ -33,7 +33,7 @@ def _redeem_courses(
                     if course_link not in cache:
                         status = udemy_actions.enroll(course_link)
                         cache.add(course_link, status)
-                        time.sleep(3)  # Try to avoid udemy throttling
+                        time.sleep(2)  # Try to avoid udemy throttling
                     else:
                         logger.debug(f"In cache: {course_link}")
                 except KeyboardInterrupt:
