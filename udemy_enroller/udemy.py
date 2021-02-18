@@ -246,9 +246,17 @@ class UdemyActions:
 
         :return: Bool
         """
-        is_robot = True
+        is_robot = False
         try:
-            self.driver.find_element_by_id("challenge-form")
+            self.driver.find_element_by_id("px-captcha")
+            is_robot = True
         except NoSuchElementException:
-            is_robot = False
+            pass
+
+        # Check for cloudflare robot check
+        try:
+            self.driver.find_element_by_id("captcha-bypass")
+            is_robot = True
+        except NoSuchElementException:
+            pass
         return is_robot
