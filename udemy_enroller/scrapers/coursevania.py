@@ -1,10 +1,10 @@
 import asyncio
+import json
 import logging
 from typing import List
-import json
+from urllib.parse import urlencode
 
 from bs4 import BeautifulSoup
-from urllib.parse import urlencode
 
 from udemy_enroller.http import get
 from udemy_enroller.scrapers.base_scraper import BaseScraper

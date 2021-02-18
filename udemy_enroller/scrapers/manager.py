@@ -2,9 +2,9 @@ import asyncio
 from functools import reduce
 from typing import List
 
+from udemy_enroller.scrapers.coursevania import CoursevaniaScraper
 from udemy_enroller.scrapers.discudemy import DiscUdemyScraper
 from udemy_enroller.scrapers.tutorialbar import TutorialBarScraper
-from udemy_enroller.scrapers.coursevania import CoursevaniaScraper
 
 
 class ScraperManager:
