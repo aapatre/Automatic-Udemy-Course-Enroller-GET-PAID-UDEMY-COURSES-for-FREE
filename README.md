@@ -16,6 +16,7 @@ web-scraping and automation, this script will find the necessary Udemy Coupons
 The code scrapes course links and coupons from:
  - [tutorialbar.com](https://tutorialbar.com)
  - [discudemy.com](https://discudemy.com)
+ - [coursevania.com](https://coursevania.com)
 
 In case of any bugs or issues, please open an issue in github.
 
@@ -75,6 +76,7 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
 2 . The script can be passed arguments:
 - `--help`: View full list of arguments available
 - `--discudemy`: Run the discudemy scraper only
+- `--coursevania`: Run the coursevania scraper only
 - `--tutorialbar`: Run the tutorialbar scraper only
 - `--max-pages=<NUMBER>`: Max number of pages to scrape from sites before exiting the script (default is 5)
 - `--delete-settings`: Delete existing settings file
@@ -84,7 +86,7 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
 - `udemy_enroller`
 
 4 . The bot starts scraping the course links from the first **All Courses** page
-on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1) and [DiscUdemy](https://www.discudemy.com/all) and starts
+on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1), [DiscUdemy](https://www.discudemy.com/all) and [Coursevania](https://coursevania.com) and starts
 enrolling you to Udemy courses. After it has enrolled you to courses from the
 first page, it then moves to the next site page and the cycle continues.
 
@@ -106,7 +108,7 @@ which of course I got for free! :)
 
 ### 2. How does the bot work?
 
-The bot retrieves coupon links from Tutorial Bar's and DiscUdemy list to cut the prices and
+The bot retrieves coupon links from Tutorial Bar, DiscUdemy and Coursevania's lists to cut the prices and
 then uses REST requests to authenticate and enroll to the
 courses. Think of it this way: Epic Games & other clients like Steam provide you
 a handful of games each week, for free; Only in this case, we need a coupon code
