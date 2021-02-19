@@ -78,6 +78,7 @@ def redeem_courses(
     settings: Settings,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
+    coursevania_enabled: bool,
     max_pages: Union[int, None],
 ) -> None:
     """
@@ -87,11 +88,12 @@ def redeem_courses(
     :param Settings settings: Core settings used for Udemy
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
     :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
+    :param bool coursevania_enabled: Boolean signifying if coursevania scraper should run
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :return:
     """
     try:
-        scrapers = ScraperManager(tutorialbar_enabled, discudemy_enabled, max_pages)
+        scrapers = ScraperManager(tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages)
         _redeem_courses(driver, settings, scrapers)
     except exceptions.LoginException as e:
         logger.error(str(e))

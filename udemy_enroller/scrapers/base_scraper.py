@@ -70,7 +70,7 @@ class BaseScraper(ABC):
             try:
                 response = await func(self)
             except Exception as e:
-                logger.error(f"Error while running {self.scraper_name} scrapper: {e}")
+                logger.error(f"Error while running {self.scraper_name} scraper: {e}")
                 self.is_complete()
                 return []
             end_time = datetime.datetime.utcnow()
