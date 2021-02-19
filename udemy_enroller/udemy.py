@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import time
 from enum import Enum
 from typing import Dict, List
@@ -176,6 +177,13 @@ class UdemyActions:
                 f"Skipping course as it now costs {self._currency_symbol}{current_price}"
             )
             coupon_valid = False
+        if not bool(
+            coupon_details["price_text"]["data"]["pricing_result"]["list_price"][
+                "amount"
+            ]
+        ):
+            logger.debug("Skipping course as it is always FREE")
+            coupon_valid = False
 
         return coupon_valid
 
@@ -290,33 +298,42 @@ class UdemyActions:
 
         return int(soup.find("body")["data-clp-course-id"])
 
-    def _checkout(self, course_id: int, coupon_code: str, url: str) -> str:
+    def _checkout(
+        self, course_id: int, coupon_code: str, url: str, retry: bool = False
+    ) -> str:
         """
         Checkout process for the course and coupon provided
 
         :param int course_id: The course id of the course to enroll in
         :param str coupon_code: The coupon code to apply on checkout
         :param str url: Udemy url used in logging
+        :param str retry: If this is a retried checkout raise exception if not successful
         :return:
         """
         payload = self._build_checkout_payload(course_id, coupon_code)
         checkout_result = self.session.post(self.CHECKOUT_URL, json=payload)
         if not checkout_result.ok:
-            logger.error(
-                f"Checkout failed: Code: {checkout_result.status_code} Text: {checkout_result.text}"
-            )
-            # TODO: Handle non 200 responses
-            #  e.g. Status code: 429 {"detail":"Request was throttled. Expected available in 9 seconds."}
+            if not retry:
+                seconds = int(re.search("\\d+", checkout_result.text).group()) + 1
+                logger.info(
+                    f"Script has been rate limited. Sleeping for {seconds} seconds"
+                )
+                time.sleep(seconds)
+                self._checkout(course_id, coupon_code, url, retry=True)
+            else:
+                raise Exception(
+                    f"Checkout failed: Code: {checkout_result.status_code} Text: {checkout_result.text}"
+                )
         else:
             result = checkout_result.json()
-            if result["status"] == "failed":
+            if result["status"] == "succeeded":
+                logger.info(f"Successfully enrolled: {url}")
+                return UdemyStatus.ENROLLED.value
+            elif result["status"] == "failed":
                 logger.warning(f"Checkout failed: {url}")
                 logger.debug(f"Checkout payload: {payload}")
                 # TODO: Shouldn't happen. Need to monitor if it does
                 return UdemyStatus.EXPIRED.value
-            elif result["status"] == "succeeded":
-                logger.info(f"Successfully enrolled: {url}")
-                return UdemyStatus.ENROLLED.value
 
     def _build_checkout_payload(self, course_id: int, coupon_code: str) -> Dict:
         """
