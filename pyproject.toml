@@ -8,9 +8,9 @@ authors = [""]
 python = "^3.8"
 beautifulsoup4 = "^4.9.3"
 "ruamel.yaml" = "^0.16.12"
-aiohttp = "^3.7.3"
 cloudscraper = "^1.2.56"
 requests = "^2.25.1"
+aiohttp = {extras = ["speedups"], version = "^3.7.3"}
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

@@ -48,9 +48,9 @@ def run(
     """
     Run the udemy enroller script
 
-    :param str browser: Name of the browser we want to create a driver for
     :param bool tutorialbar_enabled:
     :param bool discudemy_enabled:
+    :param bool coursevania_enabled:
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :param bool delete_settings: Determines if we should delete old settings file
     :return:
@@ -59,11 +59,10 @@ def run(
     redeem_courses(settings, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages)
 
 
-def parse_args(browser=None) -> Namespace:
+def parse_args() -> Namespace:
     """
     Parse args from the CLI or use the args passed in
 
-    :param str browser: Name of the browser we want to create a driver for
     :return: Args to be used in the script
     """
     parser = argparse.ArgumentParser(description="Udemy Enroller")
