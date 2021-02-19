@@ -25,43 +25,46 @@ def enable_debug_logging() -> None:
 def determine_if_scraper_enabled(
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
-) -> Tuple[bool, bool]:
+    coursevania_enabled: bool,
+) -> Tuple[bool, bool, bool]:
     """
     Determine what scrapers should be enabled and disabled
 
     :return: tuple containing boolean of what scrapers should run
     """
-    if not tutorialbar_enabled and not discudemy_enabled:
-        # Set both to True since user has not enabled a specific scraper i.e Run all scrapers
-        tutorialbar_enabled, discudemy_enabled = True, True
-    return tutorialbar_enabled, discudemy_enabled
+    if not tutorialbar_enabled and not discudemy_enabled and not coursevania_enabled:
+        # Set all to True
+        tutorialbar_enabled, discudemy_enabled, coursevania_enabled = True, True, True
+    return tutorialbar_enabled, discudemy_enabled, coursevania_enabled
 
 
 def run(
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
+    coursevania_enabled: bool,
     max_pages: Union[int, None],
     delete_settings: bool,
 ):
     """
     Run the udemy enroller script
 
-    :param str browser: Name of the browser we want to create a driver for
     :param bool tutorialbar_enabled:
     :param bool discudemy_enabled:
+    :param bool coursevania_enabled:
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :param bool delete_settings: Determines if we should delete old settings file
     :return:
     """
     settings = Settings(delete_settings)
-    redeem_courses(settings, tutorialbar_enabled, discudemy_enabled, max_pages)
+    redeem_courses(
+        settings, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+    )
 
 
-def parse_args(browser=None) -> Namespace:
+def parse_args() -> Namespace:
     """
     Parse args from the CLI or use the args passed in
 
-    :param str browser: Name of the browser we want to create a driver for
     :return: Args to be used in the script
     """
     parser = argparse.ArgumentParser(description="Udemy Enroller")
@@ -77,6 +80,12 @@ def parse_args(browser=None) -> Namespace:
         action="store_true",
         default=False,
         help="Run discudemy scraper",
+    )
+    parser.add_argument(
+        "--coursevania",
+        action="store_true",
+        default=False,
+        help="Run coursevania scraper",
     )
     parser.add_argument(
         "--max-pages",
@@ -106,12 +115,17 @@ def main():
     if args:
         if args.debug:
             enable_debug_logging()
-        tutorialbar_enabled, discudemy_enabled = determine_if_scraper_enabled(
-            args.tutorialbar, args.discudemy
+        (
+            tutorialbar_enabled,
+            discudemy_enabled,
+            coursevania_enabled,
+        ) = determine_if_scraper_enabled(
+            args.tutorialbar, args.discudemy, args.coursevania
         )
         run(
             tutorialbar_enabled,
             discudemy_enabled,
+            coursevania_enabled,
             args.max_pages,
             args.delete_settings,
         )
