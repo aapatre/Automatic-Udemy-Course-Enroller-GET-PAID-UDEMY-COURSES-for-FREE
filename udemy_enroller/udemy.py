@@ -132,7 +132,8 @@ class UdemyActions:
         total_pages = my_courses["count"] // page_size
         for page in range(2, total_pages + 2):
             my_courses = self.my_courses(page, page_size)
-            all_courses.extend(my_courses["results"])
+            if "results" in my_courses:
+                all_courses.extend(my_courses["results"])
             time.sleep(1)
         logger.info(f"Currently enrolled in {len(all_courses)} courses")
         return all_courses

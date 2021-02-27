@@ -91,7 +91,7 @@ class CoursevaniaScraper(BaseScraper):
             coupons_data = json_data.get("content")
             soup = BeautifulSoup(coupons_data, "html.parser")
             links = soup.find_all("a", class_="heading_font")
-            course_links = [link["href"] for link in links]
+            course_links = list({link["href"] for link in links})
 
             self.last_page = json_data.get("pages")
 
