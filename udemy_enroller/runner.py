@@ -1,41 +1,27 @@
 import asyncio
+import time
 from typing import Union
 
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    TimeoutException,
-    WebDriverException,
-)
-from selenium.webdriver.remote.webdriver import WebDriver
-
-from udemy_enroller import (
-    CourseCache,
-    ScraperManager,
-    Settings,
-    UdemyActions,
-    exceptions,
-)
+from udemy_enroller import CourseCache, ScraperManager, Settings, UdemyActions
 from udemy_enroller.logging import get_logger
 
 logger = get_logger()
 
 
 def _redeem_courses(
-    driver: WebDriver,
     settings: Settings,
     scrapers: ScraperManager,
 ) -> None:
     """
     Method to scrape courses from tutorialbar.com and enroll in them on udemy
 
-    :param WebDriver driver: Webdriver used to enroll in Udemy courses
     :param Settings settings: Core settings used for Udemy
     :param ScraperManager scrapers:
     :return:
     """
     cache = CourseCache()
-    udemy_actions = UdemyActions(driver, settings)
-    udemy_actions.login()  # login once outside while loop
+    udemy_actions = UdemyActions(settings)
+    udemy_actions.login()
     loop = asyncio.get_event_loop()
 
     while True:
@@ -45,21 +31,13 @@ def _redeem_courses(
             for course_link in udemy_course_links:
                 try:
                     if course_link not in cache:
-                        status = udemy_actions.redeem(course_link)
+                        status = udemy_actions.enroll(course_link)
                         cache.add(course_link, status)
+                        time.sleep(2)  # Try to avoid udemy throttling
                     else:
                         logger.debug(f"In cache: {course_link}")
-                except NoSuchElementException as e:
-                    logger.error(e)
-                except TimeoutException:
-                    logger.error(f"Timeout on link: {course_link}")
-                except WebDriverException:
-                    logger.error(f"Webdriver exception on link: {course_link}")
                 except KeyboardInterrupt:
                     logger.error("Exiting the script")
-                    return
-                except exceptions.RobotException as e:
-                    logger.error(e)
                     return
                 except Exception as e:
                     logger.error(f"Unexpected exception: {e}")
@@ -74,7 +52,6 @@ def _redeem_courses(
 
 
 def redeem_courses(
-    driver: WebDriver,
     settings: Settings,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
@@ -84,7 +61,6 @@ def redeem_courses(
     """
     Wrapper of _redeem_courses so we always close browser on completion
 
-    :param WebDriver driver: Webdriver used to enroll in Udemy courses
     :param Settings settings: Core settings used for Udemy
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
     :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
@@ -93,10 +69,9 @@ def redeem_courses(
     :return:
     """
     try:
-        scrapers = ScraperManager(tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages)
-        _redeem_courses(driver, settings, scrapers)
-    except exceptions.LoginException as e:
-        logger.error(str(e))
-    finally:
-        logger.info("Closing browser")
-        driver.quit()
+        scrapers = ScraperManager(
+            tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+        )
+        _redeem_courses(settings, scrapers)
+    except Exception as e:
+        logger.error(f"Exception in redeem courses: {e}")

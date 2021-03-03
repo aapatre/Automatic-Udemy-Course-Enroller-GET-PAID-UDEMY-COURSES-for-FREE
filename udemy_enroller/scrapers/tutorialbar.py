@@ -16,7 +16,7 @@ class TutorialBarScraper(BaseScraper):
     """
 
     DOMAIN = "https://www.tutorialbar.com"
-    AD_DOMAINS = ("https://amzn",)
+    AD_DOMAINS = ("https://amzn", "https://bit.ly")
 
     def __init__(self, enabled, max_pages=None):
         super().__init__()

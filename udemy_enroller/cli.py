@@ -3,7 +3,7 @@ import logging
 from argparse import Namespace
 from typing import Tuple, Union
 
-from udemy_enroller import ALL_VALID_BROWSER_STRINGS, DriverManager, Settings
+from udemy_enroller import Settings
 from udemy_enroller.logging import get_logger
 from udemy_enroller.runner import redeem_courses
 
@@ -39,7 +39,6 @@ def determine_if_scraper_enabled(
 
 
 def run(
-    browser: str,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
     coursevania_enabled: bool,
@@ -49,35 +48,27 @@ def run(
     """
     Run the udemy enroller script
 
-    :param str browser: Name of the browser we want to create a driver for
     :param bool tutorialbar_enabled:
     :param bool discudemy_enabled:
+    :param bool coursevania_enabled:
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
+    :param bool delete_settings: Determines if we should delete old settings file
     :return:
     """
     settings = Settings(delete_settings)
-    dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
     redeem_courses(
-        dm.driver, settings, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+        settings, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
     )
 
 
-def parse_args(browser=None) -> Namespace:
+def parse_args() -> Namespace:
     """
     Parse args from the CLI or use the args passed in
 
-    :param str browser: Name of the browser we want to create a driver for
     :return: Args to be used in the script
     """
     parser = argparse.ArgumentParser(description="Udemy Enroller")
 
-    parser.add_argument(
-        "--browser",
-        type=str,
-        default=browser,
-        choices=ALL_VALID_BROWSER_STRINGS,
-        help="Browser to use for Udemy Enroller",
-    )
     parser.add_argument(
         "--tutorialbar",
         action="store_true",
@@ -116,10 +107,7 @@ def parse_args(browser=None) -> Namespace:
 
     args = parser.parse_args()
 
-    if args.browser is None:
-        parser.print_help()
-    else:
-        return args
+    return args
 
 
 def main():
@@ -127,11 +115,14 @@ def main():
     if args:
         if args.debug:
             enable_debug_logging()
-        tutorialbar_enabled, discudemy_enabled, coursevania_enabled = determine_if_scraper_enabled(
+        (
+            tutorialbar_enabled,
+            discudemy_enabled,
+            coursevania_enabled,
+        ) = determine_if_scraper_enabled(
             args.tutorialbar, args.discudemy, args.coursevania
         )
         run(
-            args.browser,
             tutorialbar_enabled,
             discudemy_enabled,
             coursevania_enabled,

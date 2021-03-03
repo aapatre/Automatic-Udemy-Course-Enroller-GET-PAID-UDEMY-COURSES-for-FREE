@@ -27,11 +27,11 @@ setup(
     ),
     python_requires=">=3.8, <4",
     install_requires=[
-        "aiohttp",
+        "aiohttp[speedups]",
         "beautifulsoup4",
         "ruamel.yaml",
-        "selenium",
-        "webdriver-manager",
+        "requests",
+        "cloudscraper",
     ],
     setup_requires=["pytest-runner"],
     extras_require={
