@@ -8,7 +8,7 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="udemy-enroller",
-    version="2.0.0",
+    version="3.0.0",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="aapatre",

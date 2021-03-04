@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [3.0.0] - 2021-03-03
+
+### Added
+
+- Enrollment now relies on REST requests
+- New coupon source from coursevania
+
+### Removed
+- No longer supporting browser enrolment (Bot captcha was unsolvable)
+
 ## [2.0.0] - 2021-01-19
 
 ### Added
@@ -64,6 +75,8 @@ can continue as normal
   project running locally. Suitable for users who are not looking forward to
   contribute.
 
+[3.0.0]:
+  https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v3.0.0
 [2.0.0]:
   https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v2.0.0
 [1.0.0]:
