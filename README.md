@@ -1,6 +1,7 @@
 [![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/it-works-why.svg)](https://forthebadge.com)
 
+# ALPHA IS A PRE DEVELOPMENT BRANCH, DO NOT EXPECT USER FACING ISSUES TO BE ADDRESSED IN THIS BRANCH!
 
 # Udemy Coupon Grabber & Course Enroller: Grab FREE Coupons!
 
@@ -15,6 +16,7 @@ web-scraping and automation, this script will find the necessary Udemy Coupons
 The code scrapes course links and coupons from:
  - [tutorialbar.com](https://tutorialbar.com)
  - [discudemy.com](https://discudemy.com)
+ - [coursevania.com](https://coursevania.com)
 
 In case of any bugs or issues, please open an issue in github.
 
@@ -52,20 +54,6 @@ Download a release of this project or clone the repository then navigate to the
 folder where you placed the files on. Type `pip install -r requirements.txt` to
 get all the requirements installed in one go. Similar instructions applies for poetry.
 
-- **Webdrivers are now automatically installed! But here are some links in case
-  you are using the vanilla script or the Safari Browser:**
-
-* Edge- https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
-* Chrome- https://chromedriver.chromium.org/
-* Firefox- https://github.com/mozilla/geckodriver/releases/
-* Safari-
-  https://developer.apple.com/documentation/webkit/about_webdriver_for_safari/
-* Opera- https://github.com/operasoftware/operachromiumdriver/releases
-* Internet Explorer-
-  [Find it on your own accord](https://www.selenium.dev/downloads/)
-
-**Note:** Make sure that the driver version matches your browser.
-
 ---
 
 ## Instructions
@@ -85,44 +73,20 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
     
  **The values in settings.yaml should be in the same language as the site you are browsing on**
 
-2 . Choose the appropriate command for your browser (from the list below):
-
-- **Tested and works perfectly:**
-
-  - Chrome:
-    [udemy_enroller --browser=chrome](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
-  - Chromium:
-    [udemy_enroller --browser=chromium](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
-  - Edge:
-    [udemy_enroller --browser=edge](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
-
-- **Has issues when run on custom kernel but works fine on vanilla OS:**
-
-  - Firefox:
-    [udemy_enroller --browser=firefox (might require manual driver installation)](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
-
-- **Untested:**
-
-  - Opera:
-    [udemy_enroller --browser=opera](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
-    
-- **Use at your own risk:**
-  - Internet Explorer:
-    [udemy_enroller --browser=internet_explorer](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/blob/master/udemy_enroller.py)
-
-3 . The script can be passed arguments:
+2 . The script can be passed arguments:
 - `--help`: View full list of arguments available
-- `--browser=<BROWSER_NAME>`: Run with a specific browser 
 - `--discudemy`: Run the discudemy scraper only
+- `--coursevania`: Run the coursevania scraper only
 - `--tutorialbar`: Run the tutorialbar scraper only
 - `--max-pages=<NUMBER>`: Max number of pages to scrape from sites before exiting the script (default is 5)
+- `--delete-settings`: Delete existing settings file
 - `--debug`: Enable debug logging
 
-4 . Run the chosen script in terminal like so:
-- `udemy_enroller --browser=firefox`
+3 . Run the script in terminal like so:
+- `udemy_enroller`
 
-5 . The bot starts scraping the course links from the first **All Courses** page
-on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1) and [DiscUdemy](https://www.discudemy.com/all) and starts
+4 . The bot starts scraping the course links from the first **All Courses** page
+on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1), [DiscUdemy](https://www.discudemy.com/all) and [Coursevania](https://coursevania.com) and starts
 enrolling you to Udemy courses. After it has enrolled you to courses from the
 first page, it then moves to the next site page and the cycle continues.
 
@@ -144,8 +108,8 @@ which of course I got for free! :)
 
 ### 2. How does the bot work?
 
-The bot retrieves coupon links from Tutorial Bar's and DiscUdemy list to cut the prices and
-then uses Selenium's Browser automation features to login and enroll to the
+The bot retrieves coupon links from Tutorial Bar, DiscUdemy and Coursevania's lists to cut the prices and
+then uses REST requests to authenticate and enroll to the
 courses. Think of it this way: Epic Games & other clients like Steam provide you
 a handful of games each week, for free; Only in this case, we need a coupon code
 to make those courses free.
@@ -167,30 +131,23 @@ task that took around 15 minutes, for 10 courses. And then I suddenly got the
 idea to automate it, after I found the automation course mentioned above. I bet,
 it will save your precious time too! :)
 
-### 5. Udemy has detected that I'm using automation tools to browse the website! What should I do?
-
-![](https://i.imgur.com/pwseilE.jpg) Relax! This happens when you run the script
-several times in a short interval of time. Solve the captcha, hit enter in the terminal window you are running 
-the script from and allow the script to continue as normal.
-Easy peasy lemon squeezy! 🍋🙃 
-
-### 6. The code compiles successfully but it's taking too long to work! IS there any way to fix that?
+### 5. The code compiles successfully, but it's taking too long to work! IS there any way to fix that?
 
 Since we are heavily dependent on a third-party site to retrieve coupons links,
 there may be issues when the site is down. Needless to mention the connectivity
 issues too. If everything is working fine, you can see the courses being
 retrieved in the Python console/shell, which may take a while.
 
-### 7. Which is the best way to run the script?
+### 6. Which is the best way to run the script?
 
 It is recommended to run the script using your terminal and system python.
 
 
-### 8. Which branch to commit against?
+### 7. Which branch to commit against?
 
 Pull request should be made on "develop" branch.
 
-### 9. What's the roadmap?
+### 8. What's the roadmap?
 
 Take a look at our
 [Roadmap here](https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/projects/1)

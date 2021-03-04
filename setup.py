@@ -8,7 +8,7 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="udemy-enroller",
-    version="2.0.0",
+    version="3.0.0",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="aapatre",
@@ -27,11 +27,11 @@ setup(
     ),
     python_requires=">=3.8, <4",
     install_requires=[
-        "aiohttp",
+        "aiohttp[speedups]",
         "beautifulsoup4",
         "ruamel.yaml",
-        "selenium",
-        "webdriver-manager",
+        "requests",
+        "cloudscraper",
     ],
     setup_requires=["pytest-runner"],
     extras_require={

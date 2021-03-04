@@ -61,7 +61,7 @@ def test_settings(email, password, zip_code, languages, categories, save, file_n
     ):
         with mock.patch("getpass.getpass", return_value=password):
             settings_path = os.path.join(get_app_dir(), f"test_tmp/{file_name}")
-            settings = Settings(settings_path)
+            settings = Settings(False, settings_path)
             assert settings.email == email
             assert settings.password == password
             assert settings.zip_code == zip_code
@@ -86,7 +86,7 @@ def test_settings(email, password, zip_code, languages, categories, save, file_n
                         else categories
                     )
                 # Load settings just created
-                Settings(settings_path)
+                Settings(False, settings_path)
             else:
                 assert os.path.isdir(settings_path) is False
 
@@ -146,10 +146,10 @@ def test_load_existing_settings(
     ):
         with mock.patch("getpass.getpass", return_value=password):
             settings_path = f"test_tmp/{file_name}"
-            Settings(settings_path)
+            Settings(False, settings_path)
 
     # Load existing settings
-    settings = Settings(settings_path)
+    settings = Settings(False, settings_path)
     assert settings.email == email
     assert settings.password == password
     assert settings.zip_code == zip_code
@@ -181,7 +181,7 @@ def test_load_ci_settings(_, monkeypatch, is_ci_run, email, password):
     monkeypatch.setenv("CI_TEST", str(is_ci_run))
     monkeypatch.setenv("UDEMY_EMAIL", email)
     monkeypatch.setenv("UDEMY_PASSWORD", password)
-    settings = Settings("")
+    settings = Settings(False, "")
     if is_ci_run:
         assert settings.email == email
         assert settings.password == password
