@@ -1,8 +1,9 @@
 import asyncio
+import random
 import time
 from typing import Union
 
-from udemy_enroller import CourseCache, ScraperManager, Settings, UdemyActions
+from udemy_enroller import ScraperManager, Settings, UdemyActions, UdemyStatus
 from udemy_enroller.logging import get_logger
 
 logger = get_logger()
@@ -19,7 +20,6 @@ def _redeem_courses(
     :param ScraperManager scrapers:
     :return:
     """
-    cache = CourseCache()
     udemy_actions = UdemyActions(settings)
     udemy_actions.login()
     loop = asyncio.get_event_loop()
@@ -30,12 +30,14 @@ def _redeem_courses(
         if udemy_course_links:
             for course_link in udemy_course_links:
                 try:
-                    if course_link not in cache:
-                        status = udemy_actions.enroll(course_link)
-                        cache.add(course_link, status)
-                        time.sleep(2)  # Try to avoid udemy throttling
-                    else:
-                        logger.debug(f"In cache: {course_link}")
+                    status = udemy_actions.enroll(course_link)
+                    if status == UdemyStatus.ENROLLED.value:
+                        # Try to avoid udemy throttling by sleeping for 1-5 seconds
+                        sleep_time = random.choice(range(1, 5))
+                        logger.debug(
+                            f"Sleeping for {sleep_time} seconds between enrolments"
+                        )
+                        time.sleep(sleep_time)
                 except KeyboardInterrupt:
                     logger.error("Exiting the script")
                     return
