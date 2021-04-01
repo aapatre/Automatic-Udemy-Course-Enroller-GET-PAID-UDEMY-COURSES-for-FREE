@@ -269,32 +269,48 @@ class UdemyActions:
         if str_check in course_link:
             url, coupon_code = course_link.split(str_check)
             course_id = self._get_course_id(url)
-            self._courses_dict[course_id] = {coupon_code: {
-                    "status": "IN_PROCESS", "start_time": datetime.datetime.utcnow()
-            }}
+            self._courses_dict[course_id] = {
+                coupon_code: {
+                    "status": "IN_PROCESS",
+                    "start_time": datetime.datetime.utcnow(),
+                }
+            }
 
             if self.is_enrolled(course_id):
                 logger.info(f"Already enrolled in {url}")
                 self._courses_dict[course_id][coupon_code].update(
-                    {"status": "ALREADY_ENROLLED", "end_time": datetime.datetime.utcnow()}
+                    {
+                        "status": "ALREADY_ENROLLED",
+                        "end_time": datetime.datetime.utcnow(),
+                    }
                 )
                 return UdemyStatus.ENROLLED.value
 
             if self.user_has_preferences:
                 course_details = self.course_details(course_id)
                 self._courses_dict[course_id][coupon_code].update(
-                    {"price": course_details["price_detail"]["amount"] if course_details["price_detail"] else 0}
+                    {
+                        "price": course_details["price_detail"]["amount"]
+                        if course_details["price_detail"]
+                        else 0
+                    }
                 )
                 if self.settings.languages:
                     if not self.is_preferred_language(course_details):
                         self._courses_dict[course_id][coupon_code].update(
-                            {"status": "UNWANTED_LANGUAGE", "end_time": datetime.datetime.utcnow()}
+                            {
+                                "status": "UNWANTED_LANGUAGE",
+                                "end_time": datetime.datetime.utcnow(),
+                            }
                         )
                         return UdemyStatus.UNWANTED_LANGUAGE.value
                 if self.settings.categories:
                     if not self.is_preferred_category(course_details):
                         self._courses_dict[course_id][coupon_code].update(
-                            {"status": "UNWANTED_CATEGORY", "end_time": datetime.datetime.utcnow()}
+                            {
+                                "status": "UNWANTED_CATEGORY",
+                                "end_time": datetime.datetime.utcnow(),
+                            }
                         )
                         return UdemyStatus.UNWANTED_CATEGORY.value
 
@@ -433,31 +449,70 @@ class UdemyActions:
         :return:
         """
         # formation of the resulting list with the calculation of the running time
-        results_dict = [{'total_seconds': (result["end_time"] - result["start_time"]).total_seconds()
-                        if "end_time" in result else 0,
-                        **result} for course in self._courses_dict.values() for result in course.values()]
+        results_dict = [
+            {
+                "total_seconds": (
+                    result["end_time"] - result["start_time"]
+                ).total_seconds()
+                if "end_time" in result
+                else 0,
+                **result,
+            }
+            for course in self._courses_dict.values()
+            for result in course.values()
+        ]
         # creating counters for enrolled and scraped courses
         counter = Counter(result["status"] for result in results_dict)
         # creating a list with the cost of enrolled courses
-        prices = [result["price"] for result in results_dict if "price" in result if result["status"] == "ENROLLED"]
+        prices = [
+            result["price"]
+            for result in results_dict
+            if "price" in result
+            if result["status"] == "ENROLLED"
+        ]
         # create a list of course enroll times
-        enroll_seconds = [result["total_seconds"] for result in results_dict if "total_seconds" in result
-                          if result["status"] == "ENROLLED"]
+        enroll_seconds = [
+            result["total_seconds"]
+            for result in results_dict
+            if "total_seconds" in result
+            if result["status"] == "ENROLLED"
+        ]
         # create a list of course scrape times
-        scrape_seconds = [result["total_seconds"] for result in results_dict if "total_seconds" in result
-                          if result["status"] != "ALREADY_ENROLLED"]
+        scrape_seconds = [
+            result["total_seconds"]
+            for result in results_dict
+            if "total_seconds" in result
+            if result["status"] != "ALREADY_ENROLLED"
+        ]
         # forming a list for tabulate
         stats_list = [
             ["Number of courses enrolled", counter["ENROLLED"]],
-            ["Savings", f'{self._currency_symbol if self._currency_symbol else ""}'
-                        f'{sum(prices) / len(prices) if prices else 0}'],
-            ["Number of courses scraped", len([result for result in results_dict
-                                               if result["status"] != "ALREADY_ENROLLED"])],
-            ["Average enrol time", f'{sum(enroll_seconds)/len(enroll_seconds) if enroll_seconds else 0:.2f}'
-                                   f' seconds'],
-            ["Average scrape time", f'{sum(scrape_seconds)/len(scrape_seconds) if scrape_seconds else 0:.2f}'
-                                    f' seconds'],
+            [
+                "Savings",
+                f'{self._currency_symbol if self._currency_symbol else ""}'
+                f"{sum(prices) / len(prices) if prices else 0}",
+            ],
+            [
+                "Number of courses scraped",
+                len(
+                    [
+                        result
+                        for result in results_dict
+                        if result["status"] != "ALREADY_ENROLLED"
+                    ]
+                ),
+            ],
+            [
+                "Average enrol time",
+                f"{sum(enroll_seconds)/len(enroll_seconds) if enroll_seconds else 0:.2f}"
+                f" seconds",
+            ],
+            [
+                "Average scrape time",
+                f"{sum(scrape_seconds)/len(scrape_seconds) if scrape_seconds else 0:.2f}"
+                f" seconds",
+            ],
             ["Already enrolled count", counter["ALREADY_ENROLLED"]],
-            ["Coupon expired count", counter["EXPIRED"]]
+            ["Coupon expired count", counter["EXPIRED"]],
         ]
         return stats_list
