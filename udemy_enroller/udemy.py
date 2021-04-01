@@ -1,9 +1,11 @@
 import json
 import os
 import re
+import datetime
 import time
 from enum import Enum
 from typing import Dict, List
+from collections import Counter
 
 import requests
 from bs4 import BeautifulSoup
@@ -21,7 +23,6 @@ class UdemyStatus(Enum):
     Possible statuses of udemy course
     """
 
-    ALREADY_ENROLLED = "ALREADY_ENROLLED"
     ENROLLED = "ENROLLED"
     EXPIRED = "EXPIRED"
     UNWANTED_LANGUAGE = "UNWANTED_LANGUAGE"
@@ -35,16 +36,8 @@ class UdemyActions:
         "course]=@min,enrollment_time,published_title,&fields[user]=@min"
     )
     CHECKOUT_URL = "https://www.udemy.com/payment/checkout-submit/"
-    CHECK_PRICE = (
-        "https://www.udemy.com/api-2.0/course-landing-components/{}/me/?couponCode={"
-        "}&components=price_text,deal_badge,discount_expiration"
-    )
-    COURSE_DETAILS = (
-        "https://www.udemy.com/api-2.0/courses/{}/?fields[course]=title,context_info,primary_category,"
-        "primary_subcategory,avg_rating_recent,visible_instructors,locale,estimated_content_length,"
-        "num_subscribers"
-    )
-    USER_DETAILS = "https://www.udemy.com/api-2.0/contexts/me/?me=True&Config=True"
+    CHECK_PRICE = "https://www.udemy.com/api-2.0/course-landing-components/{}/me/?couponCode={}&components=price_text,deal_badge,discount_expiration"
+    COURSE_DETAILS = "https://www.udemy.com/api-2.0/courses/{}/?fields[course]=context_info,primary_category,primary_subcategory,avg_rating_recent,visible_instructors,locale,estimated_content_length,num_subscribers,price_detail"
 
     HEADERS = {
         "origin": "https://www.udemy.com",
@@ -65,9 +58,9 @@ class UdemyActions:
         self.udemy_scraper = create_scraper()
         self._cookie_file = os.path.join(get_app_dir(), cookie_file_name)
         self._enrolled_course_info = []
-        self._all_course_ids = []
         self._currency_symbol = None
         self._currency = None
+        self._courses_dict = {}
 
     def login(self, retry=False) -> None:
         """
@@ -116,15 +109,6 @@ class UdemyActions:
 
         try:
             self._enrolled_course_info = self.load_my_courses()
-            user_details = self.load_user_details()
-            # Extract the users currency info needed for checkout
-            self._currency = user_details["Config"]["price_country"]["currency"]
-            self._currency_symbol = user_details["Config"]["price_country"][
-                "currency_symbol"
-            ]
-            self._all_course_ids = [
-                course["id"] for course in self._enrolled_course_info
-            ]
         except Exception as e:
             if not retry:
                 logger.info("Retrying login")
@@ -157,14 +141,6 @@ class UdemyActions:
         logger.info(f"Currently enrolled in {len(all_courses)} courses")
         return all_courses
 
-    def load_user_details(self):
-        """
-        Load the current users details
-
-        :return: Dict containing the users details
-        """
-        return self.session.get(self.USER_DETAILS).json()
-
     def is_enrolled(self, course_id: int) -> bool:
         """
         Check if the user is currently enrolled in the course based on course_id passed in
@@ -172,16 +148,12 @@ class UdemyActions:
         :param int course_id: Check if the course_id is in the users current courses
         :return:
         """
-        return course_id in self._all_course_ids
+        enrolled = False
+        all_course_ids = [course["id"] for course in self._enrolled_course_info]
+        if course_id in all_course_ids:
+            enrolled = True
 
-    def _add_enrolled_course(self, course_id):
-        """
-        Add enrolled course to the list of enrolled course ids
-
-        :param int course_id: The course_id to add to the list
-        :return:
-        """
-        self._all_course_ids.append(course_id)
+        return enrolled
 
     def is_coupon_valid(self, course_id: int, coupon_code: str) -> bool:
         """
@@ -196,6 +168,14 @@ class UdemyActions:
         current_price = coupon_details["price_text"]["data"]["pricing_result"]["price"][
             "amount"
         ]
+        if self._currency_symbol is None and self._currency is None:
+            self._currency_symbol = coupon_details["price_text"]["data"][
+                "pricing_result"
+            ]["price"]["currency_symbol"]
+            self._currency = coupon_details["price_text"]["data"]["pricing_result"][
+                "price"
+            ]["currency"]
+
         if bool(current_price):
             logger.debug(
                 f"Skipping course as it now costs {self._currency_symbol}{current_price}"
@@ -289,28 +269,44 @@ class UdemyActions:
         if str_check in course_link:
             url, coupon_code = course_link.split(str_check)
             course_id = self._get_course_id(url)
-            course_details = self.course_details(course_id)
-            course_identifier = course_details.get("title", url)
+            self._courses_dict[course_id] = {coupon_code: {
+                    "status": "IN_PROCESS", "start_time": datetime.datetime.utcnow()
+            }}
 
             if self.is_enrolled(course_id):
-                logger.info(f"Already enrolled in: {course_identifier}")
-                return UdemyStatus.ALREADY_ENROLLED.value
+                logger.info(f"Already enrolled in {url}")
+                self._courses_dict[course_id][coupon_code].update(
+                    {"status": "ALREADY_ENROLLED", "end_time": datetime.datetime.utcnow()}
+                )
+                return UdemyStatus.ENROLLED.value
 
             if self.user_has_preferences:
+                course_details = self.course_details(course_id)
+                self._courses_dict[course_id][coupon_code].update(
+                    {"price": course_details["price_detail"]["amount"] if course_details["price_detail"] else 0}
+                )
                 if self.settings.languages:
                     if not self.is_preferred_language(course_details):
+                        self._courses_dict[course_id][coupon_code].update(
+                            {"status": "UNWANTED_LANGUAGE", "end_time": datetime.datetime.utcnow()}
+                        )
                         return UdemyStatus.UNWANTED_LANGUAGE.value
                 if self.settings.categories:
                     if not self.is_preferred_category(course_details):
+                        self._courses_dict[course_id][coupon_code].update(
+                            {"status": "UNWANTED_CATEGORY", "end_time": datetime.datetime.utcnow()}
+                        )
                         return UdemyStatus.UNWANTED_CATEGORY.value
 
             if not self.is_coupon_valid(course_id, coupon_code):
+                self._courses_dict[course_id][coupon_code].update(
+                    {"status": "EXPIRED", "end_time": datetime.datetime.utcnow()}
+                )
                 return UdemyStatus.EXPIRED.value
 
-            return self._checkout(course_id, coupon_code, course_identifier)
+            return self._checkout(course_id, coupon_code, url)
         else:
-            logger.debug(f"Malformed url passed in: {course_link}")
-            return UdemyStatus.EXPIRED.value
+            raise Exception(f"Malformed url passed in: {course_link}")
 
     def _get_course_id(self, url: str) -> int:
         """
@@ -325,18 +321,14 @@ class UdemyActions:
         return int(soup.find("body")["data-clp-course-id"])
 
     def _checkout(
-        self,
-        course_id: int,
-        coupon_code: str,
-        course_identifier: str,
-        retry: bool = False,
+        self, course_id: int, coupon_code: str, url: str, retry: bool = False
     ) -> str:
         """
         Checkout process for the course and coupon provided
 
         :param int course_id: The course id of the course to enroll in
         :param str coupon_code: The coupon code to apply on checkout
-        :param str course_identifier: Name of the course being checked out
+        :param str url: Udemy url used in logging
         :param str retry: If this is a retried checkout raise exception if not successful
         :return:
         """
@@ -349,7 +341,7 @@ class UdemyActions:
                     f"Script has been rate limited. Sleeping for {seconds} seconds"
                 )
                 time.sleep(seconds)
-                self._checkout(course_id, coupon_code, course_identifier, retry=True)
+                self._checkout(course_id, coupon_code, url, retry=True)
             else:
                 raise Exception(
                     f"Checkout failed: Code: {checkout_result.status_code} Text: {checkout_result.text}"
@@ -357,12 +349,17 @@ class UdemyActions:
         else:
             result = checkout_result.json()
             if result["status"] == "succeeded":
-                logger.info(f"Successfully enrolled: {course_identifier}")
-                self._add_enrolled_course(course_id)
+                logger.info(f"Successfully enrolled: {url}")
+                self._courses_dict[course_id][coupon_code].update(
+                    {"status": "ENROLLED", "end_time": datetime.datetime.utcnow()}
+                )
                 return UdemyStatus.ENROLLED.value
             elif result["status"] == "failed":
-                logger.warning(f"Checkout failed: {course_identifier}")
+                logger.warning(f"Checkout failed: {url}")
                 logger.debug(f"Checkout payload: {payload}")
+                self._courses_dict[course_id][coupon_code].update(
+                    {"status": "EXPIRED", "end_time": datetime.datetime.utcnow()}
+                )
                 # TODO: Shouldn't happen. Need to monitor if it does
                 return UdemyStatus.EXPIRED.value
 
@@ -376,13 +373,19 @@ class UdemyActions:
         """
         return {
             "checkout_event": "Submit",
-            "checkout_environment": "Marketplace",
-            "shopping_info": {
+            "shopping_cart": {
                 "items": [
                     {
                         "discountInfo": {"code": coupon_code},
-                        "buyable": {"type": "course", "id": course_id, "context": {}},
-                        "price": {"amount": 0, "currency": self._currency},
+                        "purchasePrice": {
+                            "amount": 0,
+                            "currency": self._currency,
+                            "price_string": "Free",
+                            "currency_symbol": self._currency_symbol,
+                        },
+                        "buyableType": "course",
+                        "buyableId": course_id,
+                        "buyableContext": {},
                     }
                 ],
                 "is_cart": True,
@@ -422,3 +425,39 @@ class UdemyActions:
         """
         logger.info("Deleting cookies")
         os.remove(self._cookie_file)
+
+    def stats(self) -> List:
+        """
+        Return of work statistics
+
+        :return:
+        """
+        # formation of the resulting list with the calculation of the running time
+        results_dict = [{'total_seconds': (result["end_time"] - result["start_time"]).total_seconds()
+                        if "end_time" in result else 0,
+                        **result} for course in self._courses_dict.values() for result in course.values()]
+        # creating counters for enrolled and scraped courses
+        counter = Counter(result["status"] for result in results_dict)
+        # creating a list with the cost of enrolled courses
+        prices = [result["price"] for result in results_dict if "price" in result if result["status"] == "ENROLLED"]
+        # create a list of course enroll times
+        enroll_seconds = [result["total_seconds"] for result in results_dict if "total_seconds" in result
+                          if result["status"] == "ENROLLED"]
+        # create a list of course scrape times
+        scrape_seconds = [result["total_seconds"] for result in results_dict if "total_seconds" in result
+                          if result["status"] != "ALREADY_ENROLLED"]
+        # forming a list for tabulate
+        stats_list = [
+            ["Number of courses enrolled", counter["ENROLLED"]],
+            ["Savings", f'{self._currency_symbol if self._currency_symbol else ""}'
+                        f'{sum(prices) / len(prices) if prices else 0}'],
+            ["Number of courses scraped", len([result for result in results_dict
+                                               if result["status"] != "ALREADY_ENROLLED"])],
+            ["Average enrol time", f'{sum(enroll_seconds)/len(enroll_seconds) if enroll_seconds else 0:.2f}'
+                                   f' seconds'],
+            ["Average scrape time", f'{sum(scrape_seconds)/len(scrape_seconds) if scrape_seconds else 0:.2f}'
+                                    f' seconds'],
+            ["Already enrolled count", counter["ALREADY_ENROLLED"]],
+            ["Coupon expired count", counter["EXPIRED"]]
+        ]
+        return stats_list

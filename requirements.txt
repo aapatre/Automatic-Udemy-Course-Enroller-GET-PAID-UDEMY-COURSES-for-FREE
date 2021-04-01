@@ -3,3 +3,4 @@ beautifulsoup4
 ruamel.yaml
 requests
 cloudscraper
+tabulate

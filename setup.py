@@ -32,6 +32,7 @@ setup(
         "ruamel.yaml",
         "requests",
         "cloudscraper",
+        "tabulate",
     ],
     setup_requires=["pytest-runner"],
     extras_require={
