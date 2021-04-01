@@ -1,6 +1,7 @@
 import asyncio
 import time
 from typing import Union
+
 from tabulate import tabulate
 
 from udemy_enroller import CourseCache, ScraperManager, Settings, UdemyActions

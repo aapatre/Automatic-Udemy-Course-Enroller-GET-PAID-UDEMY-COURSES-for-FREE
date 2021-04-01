@@ -1,11 +1,11 @@
+import datetime
 import json
 import os
 import re
-import datetime
 import time
+from collections import Counter
 from enum import Enum
 from typing import Dict, List
-from collections import Counter
 
 import requests
 from bs4 import BeautifulSoup
