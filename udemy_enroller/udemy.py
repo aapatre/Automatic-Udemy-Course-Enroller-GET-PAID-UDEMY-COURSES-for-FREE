@@ -35,8 +35,15 @@ class UdemyActions:
         "course]=@min,enrollment_time,published_title,&fields[user]=@min"
     )
     CHECKOUT_URL = "https://www.udemy.com/payment/checkout-submit/"
-    CHECK_PRICE = "https://www.udemy.com/api-2.0/course-landing-components/{}/me/?couponCode={}&components=price_text,deal_badge,discount_expiration"
-    COURSE_DETAILS = "https://www.udemy.com/api-2.0/courses/{}/?fields[course]=title,context_info,primary_category,primary_subcategory,avg_rating_recent,visible_instructors,locale,estimated_content_length,num_subscribers"
+    CHECK_PRICE = (
+        "https://www.udemy.com/api-2.0/course-landing-components/{}/me/?couponCode={"
+        "}&components=price_text,deal_badge,discount_expiration"
+    )
+    COURSE_DETAILS = (
+        "https://www.udemy.com/api-2.0/courses/{}/?fields[course]=title,context_info,primary_category,"
+        "primary_subcategory,avg_rating_recent,visible_instructors,locale,estimated_content_length,"
+        "num_subscribers"
+    )
     USER_DETAILS = "https://www.udemy.com/api-2.0/contexts/me/?me=True&Config=True"
 
     HEADERS = {
@@ -369,19 +376,13 @@ class UdemyActions:
         """
         return {
             "checkout_event": "Submit",
-            "shopping_cart": {
+            "checkout_environment": "Marketplace",
+            "shopping_info": {
                 "items": [
                     {
                         "discountInfo": {"code": coupon_code},
-                        "purchasePrice": {
-                            "amount": 0,
-                            "currency": self._currency,
-                            "price_string": "Free",
-                            "currency_symbol": self._currency_symbol,
-                        },
-                        "buyableType": "course",
-                        "buyableId": course_id,
-                        "buyableContext": {},
+                        "buyable": {"type": "course", "id": course_id, "context": {}},
+                        "price": {"amount": 0, "currency": self._currency},
                     }
                 ],
                 "is_cart": True,
