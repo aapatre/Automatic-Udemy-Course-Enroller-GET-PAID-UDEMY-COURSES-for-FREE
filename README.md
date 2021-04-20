@@ -155,6 +155,12 @@ and help us on what you want or talk to us about your proposed changes.
 
 ---
 
+## Support & Maintenance Notice
+
+By using this repo/script, you agree that the authors and contributors are under no obligation to provide support for the script and can discontinue it's development, as and when necessary, without prior notice. 
+
+---
+
 ## Supporters
 
 ### Jetbrains
