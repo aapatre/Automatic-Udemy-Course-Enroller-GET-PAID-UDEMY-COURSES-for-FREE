@@ -26,6 +26,7 @@ class CoursevaniaScraper(BaseScraper):
             self.set_state_disabled()
         self.last_page = None
         self.max_pages = max_pages
+        self._nonce = None
 
     @BaseScraper.time_run
     async def run(self) -> List:
@@ -48,6 +49,7 @@ class CoursevaniaScraper(BaseScraper):
         :return: List of udemy course urls
         """
         self.current_page += 1
+        await self.load_nonce()
         course_links = await self.get_course_links()
 
         links = await self.gather_udemy_course_links(course_links)
@@ -57,11 +59,27 @@ class CoursevaniaScraper(BaseScraper):
 
         return links
 
+    async def load_nonce(self) -> None:
+        """
+        Load the nonce value needed to load the correct page data
+
+        :return: None
+        """
+        if self._nonce is None:
+            response = await get(f"{self.DOMAIN}/courses")
+            if response is not None:
+                soup = BeautifulSoup(response, "html.parser")
+                for script_element in soup.find_all("script"):
+                    if "var stm_lms_nonces" in str(script_element):
+                        data = json.loads(
+                            script_element.string.split(" = ")[1].strip()[:-1]
+                        )
+                        self._nonce = data.get("load_content")
+
     async def get_course_links(self) -> List:
         """
         Gets the url of pages which contain the udemy link we want to get
 
-        :param int page: The page number to scrape data from
         :return: list of pages on coursevania.com that contain Udemy coupons
         """
         query_params = {
@@ -70,6 +88,7 @@ class CoursevaniaScraper(BaseScraper):
             "args": '{"image_d":"img-480-380","per_row":"4","posts_per_page":"12","class":"archive_grid"}',
             "action": "stm_lms_load_content",
             "sort": "date_high",
+            "nonce": self._nonce,
         }
         headers = {
             "Host": "coursevania.com",

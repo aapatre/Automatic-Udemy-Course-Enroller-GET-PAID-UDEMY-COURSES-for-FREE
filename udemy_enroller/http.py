@@ -5,7 +5,7 @@ from udemy_enroller.logging import get_logger
 logger = get_logger()
 
 
-async def get(url, headers={}):
+async def get(url, headers=None):
     """
     Send REST get request to the url passed in
 
@@ -13,6 +13,8 @@ async def get(url, headers={}):
     :param headers: The headers to pass with the get request
     :return: data if any exists
     """
+    if headers is None:
+        headers = {}
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as response:
