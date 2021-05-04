@@ -81,6 +81,13 @@ class UdemyActions:
             response = self.udemy_scraper.get(self.LOGIN_URL)
             soup = BeautifulSoup(response.content, "html.parser")
             csrf_token = soup.find("input", {"name": "csrfmiddlewaretoken"})["value"]
+
+            # Prompt for email/password if we don't have them saved in settings
+            if self.settings.email is None:
+                self.settings.prompt_email()
+            if self.settings.password is None:
+                self.settings.prompt_password()
+
             _form_data = {
                 "email": self.settings.email,
                 "password": self.settings.password,
