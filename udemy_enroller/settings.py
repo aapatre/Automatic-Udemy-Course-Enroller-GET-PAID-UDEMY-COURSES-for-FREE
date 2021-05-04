@@ -1,7 +1,7 @@
 import getpass
 import os.path
 from distutils.util import strtobool
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from ruamel.yaml import YAML, dump
 
@@ -24,6 +24,8 @@ class Settings:
         self.categories = []
 
         self._settings_path = os.path.join(get_app_dir(), settings_path)
+        self._should_store_email = False
+        self._should_store_password = False
         self.is_ci_build = strtobool(os.environ.get("CI_TEST", "False"))
         if delete_settings:
             self.delete()
@@ -81,35 +83,47 @@ class Settings:
 
         :return:
         """
-        self.email = self._get_email()
-        self.password = self._get_password()
+        self.email, self._should_store_email = self._get_email()
+        self.password, self._should_store_password = self._get_password()
         self.zip_code = self._get_zip_code()
         self.languages = self._get_languages()
         self.categories = self._get_categories()
 
-    def _get_email(self) -> str:
+    def _get_email(self, prompt_save=True) -> Tuple[str, bool]:
         """
         Get input from user on the email to use for udemy
 
-        :return: The users udemy email
+        :return: The users udemy email and if it should be saved
         """
         email = input("Please enter your udemy email address: ")
         if len(email) == 0:
             logger.warning("You must provide your email")
             return self._get_email()
-        return email
+        if prompt_save:
+            save_email = input("Do you want to save your email for future use (Y/N): ")
+            should_store = save_email.lower() == "y"
+        else:
+            should_store = False
+        return email, should_store
 
-    def _get_password(self) -> str:
+    def _get_password(self, prompt_save=True) -> Tuple[str, bool]:
         """
         Get input from user on the password to use for udemy
 
-        :return: The users udemy password
+        :return: The users udemy password and if it should be saved
         """
         password = getpass.getpass(prompt="Please enter your udemy password: ")
         if len(password) == 0:
             logger.warning("You must provide your password")
             return self._get_password()
-        return password
+        if prompt_save:
+            save_password = input(
+                "Do you want to save your password for future use (Y/N): "
+            )
+            should_store = save_password.lower() == "y"
+        else:
+            should_store = False
+        return password, should_store
 
     @staticmethod
     def _get_zip_code() -> str:
@@ -155,22 +169,29 @@ class Settings:
 
         :return:
         """
-        yaml_structure = {}
-        save_settings = input("Do you want to save settings for future use (Y/N): ")
-        if save_settings.lower() == "y":
-            yaml_structure["udemy"] = {
-                "email": str(self.email),
-                "password": str(self.password),
+        yaml_structure = {
+            "udemy": {
+                "email": str(self.email) if self._should_store_email else None,
+                "password": str(self.password) if self._should_store_password else None,
                 "zipcode": str(self.zip_code),
                 "languages": self.languages,
                 "categories": self.categories,
             }
+        }
 
-            with open(self._settings_path, "w+") as f:
-                dump(yaml_structure, stream=f)
-            logger.info(f"Saved your settings in {self._settings_path}")
-        else:
-            logger.info("Not saving your settings as requested")
+        with open(self._settings_path, "w+") as f:
+            dump(yaml_structure, stream=f)
+        logger.info(f"Saved your settings in {self._settings_path}")
+
+        # Log some details for the user
+        if not self._should_store_email:
+            logger.info(f"Your email has not been saved to settings.")
+        if not self._should_store_password:
+            logger.info("Your password has not been saved to settings.")
+        if not self._should_store_email or self._should_store_password:
+            logger.info(
+                "You will be prompted to enter your email/password again when the cookie expires"
+            )
 
     def delete(self) -> None:
         """
@@ -187,3 +208,19 @@ class Settings:
                 logger.info(f"Settings file deleted: {self._settings_path}")
         else:
             logger.info("No settings to delete")
+
+    def prompt_email(self) -> None:
+        """
+        Prompt for Udemy email only. Does not prompt for saving
+
+        :return: None
+        """
+        self.email, _ = self._get_email(prompt_save=False)
+
+    def prompt_password(self) -> None:
+        """
+        Prompt for Udemy password only. Does not prompt for saving
+
+        :return: None
+        """
+        self.password, _ = self._get_password(prompt_save=False)
