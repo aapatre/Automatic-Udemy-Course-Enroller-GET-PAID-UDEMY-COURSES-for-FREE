@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2021-05-04
+
+### Added
+
+- Fixing issues with enrollment and scraping
+- Updated to allow conditional saving of email/password in settings
+
 ## [3.0.0] - 2021-03-03
 
 ### Added
@@ -74,7 +81,9 @@ can continue as normal
   zip, extract, install the requirement and get a working version of this
   project running locally. Suitable for users who are not looking forward to
   contribute.
-
+  
+[3.1.0]:
+  https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v3.1.0
 [3.0.0]:
   https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v3.0.0
 [2.0.0]:
