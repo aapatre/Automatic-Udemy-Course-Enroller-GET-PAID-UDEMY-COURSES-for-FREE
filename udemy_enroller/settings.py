@@ -1,9 +1,9 @@
-import bcrypt
 import getpass
 import os.path
 from distutils.util import strtobool
 from typing import Dict, List, Tuple
 
+import bcrypt
 from ruamel.yaml import YAML, dump
 
 from udemy_enroller.logging import get_logger
