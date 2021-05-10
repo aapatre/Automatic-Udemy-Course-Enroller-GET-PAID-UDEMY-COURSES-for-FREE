@@ -188,7 +188,7 @@ class Settings:
             logger.info(f"Your email has not been saved to settings.")
         if not self._should_store_password:
             logger.info("Your password has not been saved to settings.")
-        if not self._should_store_email or self._should_store_password:
+        if not self._should_store_email or not self._should_store_password:
             logger.info(
                 "You will be prompted to enter your email/password again when the cookie expires"
             )
