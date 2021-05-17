@@ -55,6 +55,8 @@ def _redeem_courses(
 
 def redeem_courses(
     settings: Settings,
+    freebiesglobal_enabled: bool,
+    comidoc_enabled: bool,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
     coursevania_enabled: bool,
@@ -64,6 +66,8 @@ def redeem_courses(
     Wrapper of _redeem_courses so we always close browser on completion
 
     :param Settings settings: Core settings used for Udemy
+    :param bool freebiesglobal_enabled: Boolean signifying if freebiesglobal scraper should run
+    :param bool comidoc_enabled: Boolean signifying if comidoc scraper should run
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
     :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
     :param bool coursevania_enabled: Boolean signifying if coursevania scraper should run
@@ -72,7 +76,12 @@ def redeem_courses(
     """
     try:
         scrapers = ScraperManager(
-            tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+            freebiesglobal_enabled,
+            comidoc_enabled,
+            tutorialbar_enabled,
+            discudemy_enabled,
+            coursevania_enabled,
+            max_pages
         )
         _redeem_courses(settings, scrapers)
     except Exception as e:
