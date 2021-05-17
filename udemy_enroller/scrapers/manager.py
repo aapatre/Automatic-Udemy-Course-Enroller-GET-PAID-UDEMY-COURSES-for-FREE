@@ -2,6 +2,8 @@ import asyncio
 from functools import reduce
 from typing import List
 
+from udemy_enroller.scrapers.freebiesglobal import FreebiesglobalScraper
+from udemy_enroller.scrapers.comidoc import ComidocScraper
 from udemy_enroller.scrapers.coursevania import CoursevaniaScraper
 from udemy_enroller.scrapers.discudemy import DiscUdemyScraper
 from udemy_enroller.scrapers.tutorialbar import TutorialBarScraper
@@ -9,8 +11,20 @@ from udemy_enroller.scrapers.tutorialbar import TutorialBarScraper
 
 class ScraperManager:
     def __init__(
-        self, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+        self,
+            freebiesglobal_enabled,
+            comidoc_enabled,
+            tutorialbar_enabled,
+            discudemy_enabled,
+            coursevania_enabled,
+            max_pages
     ):
+        self.freebiesglobal_scraper = FreebiesglobalScraper(
+            freebiesglobal_enabled, max_pages=max_pages
+        )
+        self.comidoc_scraper = ComidocScraper(
+            comidoc_enabled, max_pages=max_pages
+        )
         self.tutorialbar_scraper = TutorialBarScraper(
             tutorialbar_enabled, max_pages=max_pages
         )
@@ -21,6 +35,8 @@ class ScraperManager:
             coursevania_enabled, max_pages=max_pages
         )
         self._scrapers = (
+            self.freebiesglobal_scraper,
+            self.comidoc_scraper,
             self.tutorialbar_scraper,
             self.discudemy_scraper,
             self.coursevania_scraper,

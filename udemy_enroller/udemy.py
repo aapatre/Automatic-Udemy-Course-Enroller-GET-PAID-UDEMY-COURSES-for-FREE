@@ -49,7 +49,7 @@ class UdemyActions:
     HEADERS = {
         "origin": "https://www.udemy.com",
         "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 "
-        "Safari/537.36",
+                      "Safari/537.36",
         "accept": "application/json, text/plain, */*",
         "accept-encoding": "gzip, deflate, br",
         "content-type": "application/json;charset=UTF-8",
@@ -123,6 +123,7 @@ class UdemyActions:
 
         try:
             self._enrolled_course_info = self.load_my_courses()
+
             user_details = self.load_user_details()
             # Extract the users currency info needed for checkout
             self._currency = user_details["Config"]["price_country"]["currency"]
@@ -152,7 +153,7 @@ class UdemyActions:
         logger.info("Loading existing course details")
         all_courses = list()
         page_size = 100
-
+        # return all_courses
         my_courses = self.my_courses(1, page_size)
         all_courses.extend(my_courses["results"])
         total_pages = my_courses["count"] // page_size
@@ -162,6 +163,11 @@ class UdemyActions:
                 all_courses.extend(my_courses["results"])
             time.sleep(1)
         logger.info(f"Currently enrolled in {len(all_courses)} courses")
+
+        for counter, course in enumerate(all_courses):
+            with open("Courses.txt", "a") as file:
+                file.write(f"{counter}\t==>\t{course[counter]}\n")
+
         return all_courses
 
     def load_user_details(self):
@@ -209,9 +215,9 @@ class UdemyActions:
             )
             coupon_valid = False
         if not bool(
-            coupon_details["price_text"]["data"]["pricing_result"]["list_price"][
-                "amount"
-            ]
+                coupon_details["price_text"]["data"]["pricing_result"]["list_price"][
+                    "amount"
+                ]
         ):
             logger.debug("Skipping course as it is always FREE")
             coupon_valid = False
@@ -243,9 +249,9 @@ class UdemyActions:
         is_preferred_category = True
 
         if (
-            course_details["primary_category"]["title"] not in self.settings.categories
-            and course_details["primary_subcategory"]["title"]
-            not in self.settings.categories
+                course_details["primary_category"]["title"] not in self.settings.categories
+                and course_details["primary_subcategory"]["title"]
+                not in self.settings.categories
         ):
             logger.debug("Skipping course as it does not have a wanted category")
             is_preferred_category = False
@@ -332,11 +338,11 @@ class UdemyActions:
         return int(soup.find("body")["data-clp-course-id"])
 
     def _checkout(
-        self,
-        course_id: int,
-        coupon_code: str,
-        course_identifier: str,
-        retry: bool = False,
+            self,
+            course_id: int,
+            coupon_code: str,
+            course_identifier: str,
+            retry: bool = False,
     ) -> str:
         """
         Checkout process for the course and coupon provided
