@@ -101,17 +101,15 @@ Total courses this time: 54
 6. _[New]_ At the end of process a detailed result is shown:
 
     
-    ####################################
-	#             RESULTS              #
-	####################################
-	#  New Enrolled Courses:     0000  #
-	#  Already Enrolled Courses: 0204  #
-	#  Expired:                  0003  #
-	#  Other Languages:          0021  #
-	#  Other Categories          0081  #
-	####################################
-	#  Total Courses Scraped:    0309  #
-	####################################
+                 RESULTS              
+	
+	  New Enrolled Courses:     0000  
+	  Already Enrolled Courses: 0204  
+	  Expired:                  0003  
+	  Other Languages:          0021  
+	  Other Categories          0081  
+	  Total Courses Scraped:    0309  
+	
 
 ---
 
