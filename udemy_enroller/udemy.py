@@ -68,6 +68,8 @@ class UdemyActions:
         self._all_course_ids = []
         self._currency_symbol = None
         self._currency = None
+        self.counter_enroled: int = 0
+        self.counter_already_enroled: int = 0
 
     def login(self, retry=False) -> None:
         """
@@ -153,7 +155,7 @@ class UdemyActions:
         logger.info("Loading existing course details")
         all_courses = list()
         page_size = 100
-        # return all_courses
+
         my_courses = self.my_courses(1, page_size)
         all_courses.extend(my_courses["results"])
         total_pages = my_courses["count"] // page_size
@@ -164,9 +166,9 @@ class UdemyActions:
             time.sleep(1)
         logger.info(f"Currently enrolled in {len(all_courses)} courses")
 
-        for counter, course in enumerate(all_courses):
-            with open("Courses.txt", "a") as file:
-                file.write(f"{counter}\t==>\t{course[counter]}\n")
+        # for counter, course in enumerate(all_courses):
+        #     with open("Courses.txt", "a") as file:
+        #         file.write(f"{counter}\t==>\t{course[counter]}\n")
 
         return all_courses
 
@@ -306,7 +308,9 @@ class UdemyActions:
             course_identifier = course_details.get("title", url)
 
             if self.is_enrolled(course_id):
-                logger.info(f"Already enrolled in: {course_identifier}")
+                self.counter_already_enroled += 1
+
+                logger.info(f"Already enrolled in: {course_identifier} --> {self.counter_already_enroled}")
                 return UdemyStatus.ALREADY_ENROLLED.value
 
             if self.user_has_preferences:
@@ -342,7 +346,7 @@ class UdemyActions:
             course_id: int,
             coupon_code: str,
             course_identifier: str,
-            retry: bool = False,
+            retry: bool = False
     ) -> str:
         """
         Checkout process for the course and coupon provided
@@ -370,7 +374,8 @@ class UdemyActions:
         else:
             result = checkout_result.json()
             if result["status"] == "succeeded":
-                logger.info(f"Successfully enrolled: {course_identifier}")
+                self.counter_enroled += 1
+                logger.info(f"Successfully enrolled: {course_identifier} --> {self.counter_enroled}")
                 self._add_enrolled_course(course_id)
                 return UdemyStatus.ENROLLED.value
             elif result["status"] == "failed":

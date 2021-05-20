@@ -24,30 +24,26 @@ def enable_debug_logging() -> None:
 
 def determine_if_scraper_enabled(
         freebiesglobal_enabled: bool,
-        comidoc_enabled: bool,
         tutorialbar_enabled: bool,
         discudemy_enabled: bool,
         coursevania_enabled: bool,
-) -> Tuple[bool, bool, bool, bool, bool]:
+) -> tuple[bool, bool, bool, bool]:
     """
     Determine what scrapers should be enabled and disabled
 
     :return: tuple containing boolean of what scrapers should run
     """
     if not freebiesglobal_enabled \
-            and not comidoc_enabled \
             and not tutorialbar_enabled \
             and not discudemy_enabled \
             and not coursevania_enabled:
         # Set all to True
         freebiesglobal_enabled, \
-        comidoc_enabled, \
         tutorialbar_enabled, \
         discudemy_enabled, \
-        coursevania_enabled = True, True, True, True, True
+        coursevania_enabled = True, True, True, True
 
     return freebiesglobal_enabled, \
-           comidoc_enabled, \
            tutorialbar_enabled, \
            discudemy_enabled, \
            coursevania_enabled
@@ -55,7 +51,6 @@ def determine_if_scraper_enabled(
 
 def run(
         freebiesglobal_enabled: bool,
-        comidoc_enabled: bool,
         tutorialbar_enabled: bool,
         discudemy_enabled: bool,
         coursevania_enabled: bool,
@@ -65,7 +60,6 @@ def run(
     """
     Run the udemy enroller script
     :param bool freebiesglobal_enabled:
-    :param bool comidoc_enabled:
     :param bool tutorialbar_enabled:
     :param bool discudemy_enabled:
     :param bool coursevania_enabled:
@@ -77,7 +71,6 @@ def run(
     redeem_courses(
         settings,
         freebiesglobal_enabled,
-        comidoc_enabled,
         tutorialbar_enabled,
         discudemy_enabled,
         coursevania_enabled,
@@ -101,41 +94,40 @@ def parse_args() -> Namespace:
     )
 
     parser.add_argument(
-        "--comidoc",
-        action="store_true",
-        default=False,
-        help="Run comidoc scraper",
-    )
-    parser.add_argument(
         "--tutorialbar",
         action="store_true",
         default=False,
         help="Run tutorialbar scraper",
     )
+
     parser.add_argument(
         "--discudemy",
         action="store_true",
         default=False,
         help="Run discudemy scraper",
     )
+
     parser.add_argument(
         "--coursevania",
         action="store_true",
         default=False,
         help="Run coursevania scraper",
     )
+
     parser.add_argument(
         "--max-pages",
         type=int,
         default=5,
         help=f"Max pages to scrape from sites (if pagination exists) (Default is 5)",
     )
+
     parser.add_argument(
         "--delete-settings",
         action="store_true",
         default=False,
         help="Delete any existing settings file",
     )
+
     parser.add_argument(
         "--debug",
         action="store_true",
@@ -154,20 +146,17 @@ def main():
             enable_debug_logging()
         (
             freebiesglobal_enabled,
-            comidoc_enabled,
             tutorialbar_enabled,
             discudemy_enabled,
             coursevania_enabled,
         ) = determine_if_scraper_enabled(
             args.freebiesglobal,
-            args.comidoc,
             args.tutorialbar,
             args.discudemy,
             args.coursevania
         )
         run(
             freebiesglobal_enabled,
-            comidoc_enabled,
             tutorialbar_enabled,
             discudemy_enabled,
             coursevania_enabled,

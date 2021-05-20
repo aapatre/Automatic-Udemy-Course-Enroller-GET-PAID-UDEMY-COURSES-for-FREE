@@ -81,7 +81,7 @@ class FreebiesglobalScraper(BaseScraper):
 
     async def gather_udemy_course_links(self, courses: List[str]):
         """
-        Async fetching of the udemy course links from discudemy.com
+        Async fetching of the udemy course links from freebiesglobal.com
 
         :param list courses: A list of discudemy.com course links we want to fetch the udemy links for
         :return: list of udemy links
