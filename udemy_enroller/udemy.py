@@ -2,6 +2,7 @@ import json
 import os
 import re
 import time
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List
 
@@ -14,6 +15,41 @@ from udemy_enroller.settings import Settings
 from udemy_enroller.utils import get_app_dir
 
 logger = get_logger()
+
+
+@dataclass(unsafe_hash=True)
+class RunStatistics:
+    prices: List[float] = field(default_factory=list)
+
+    expired: int = 0
+    enrolled: int = 0
+    already_enrolled: int = 0
+    unwanted_language: int = 0
+    unwanted_category: int = 0
+
+    course_ids_start: int = 0
+    course_ids_end: int = 0
+
+    start_time = None
+    end_time = None
+
+    currency_symbol = "$"
+
+    def savings(self):
+        return sum(self.prices) or 0
+
+    def table(self):
+        logger.info("==================Run Statistics==================")
+        logger.info(f"Enrolled:                   {self.enrolled}")
+        logger.info(f"Unwanted Category:          {self.unwanted_category}")
+        logger.info(f"Unwanted Language:          {self.unwanted_language}")
+        logger.info(f"Already Claimed:            {self.already_enrolled}")
+        logger.info(f"Expired:                    {self.expired}")
+        logger.info(f"Total Enrolments:           {self.course_ids_end}")
+        logger.info(
+            f"Savings:                    {self.currency_symbol}{self.savings():.2f}"
+        )
+        logger.info("==================Run Statistics==================")
 
 
 class UdemyStatus(Enum):
@@ -68,6 +104,7 @@ class UdemyActions:
         self._all_course_ids = []
         self._currency_symbol = None
         self._currency = None
+        self.stats = RunStatistics()
 
     def login(self, retry=False) -> None:
         """
@@ -98,9 +135,11 @@ class UdemyActions:
                 self.LOGIN_URL, data=_form_data, allow_redirects=False
             )
             if auth_response.status_code != 302:
-                raise Exception(
-                    f"Could not login. Code: {auth_response.status_code} Text: {auth_response.text}"
+                logger.debug(
+                    f"Error while trying to login: {auth_response.status_code}"
                 )
+                logger.debug(f"Failed login response: {auth_response.text}")
+                raise Exception(f"Could not login. Code: {auth_response.status_code}")
             else:
                 cookie_details = {
                     "csrf_token": csrf_token,
@@ -132,6 +171,8 @@ class UdemyActions:
             self._all_course_ids = [
                 course["id"] for course in self._enrolled_course_info
             ]
+            self.stats.course_ids_start = len(self._all_course_ids)
+            self.stats.currency_symbol = self._currency_symbol
         except Exception as e:
             if not retry:
                 logger.info("Retrying login")
@@ -189,13 +230,17 @@ class UdemyActions:
         :return:
         """
         self._all_course_ids.append(course_id)
+        self.stats.course_ids_end = len(self._all_course_ids)
 
-    def is_coupon_valid(self, course_id: int, coupon_code: str) -> bool:
+    def is_coupon_valid(
+        self, course_id: int, coupon_code: str, course_identifier: str
+    ) -> bool:
         """
         Check if the coupon is valid for a course
 
         :param int course_id: Id of the course to check the coupon against
         :param str coupon_code: Coupon to apply to the course
+        :param str course_identifier: Name of the course used for logging
         :return:
         """
         coupon_valid = True
@@ -205,7 +250,7 @@ class UdemyActions:
         ]
         if bool(current_price):
             logger.debug(
-                f"Skipping course as it now costs {self._currency_symbol}{current_price}"
+                f"Skipping course '{course_identifier}' as it now costs {self._currency_symbol}{current_price}"
             )
             coupon_valid = False
         if not bool(
@@ -213,31 +258,44 @@ class UdemyActions:
                 "amount"
             ]
         ):
-            logger.debug("Skipping course as it is always FREE")
+            logger.debug(f"Skipping course '{course_identifier}' as it is always FREE")
             coupon_valid = False
 
+        if coupon_valid:
+            usual_price = coupon_details["price_text"]["data"]["pricing_result"][
+                "saving_price"
+            ]["amount"]
+            self.stats.prices.append(usual_price)
         return coupon_valid
 
-    def is_preferred_language(self, course_details: Dict) -> bool:
+    def is_preferred_language(
+        self, course_details: Dict, course_identifier: str
+    ) -> bool:
         """
         Check if the course is in one of the languages preferred by the user
 
         :param dict course_details: Dictionary containing course details from Udemy
+        :param str course_identifier: Name of the course used for logging
         :return: boolean
         """
         is_preferred_language = True
         course_language = course_details["locale"]["simple_english_title"]
         if course_language not in self.settings.languages:
-            logger.debug(f"Course language not wanted: {course_language}")
+            logger.debug(
+                f"Course '{course_identifier}' language not wanted: {course_language}"
+            )
             is_preferred_language = False
 
         return is_preferred_language
 
-    def is_preferred_category(self, course_details: Dict) -> bool:
+    def is_preferred_category(
+        self, course_details: Dict, course_identifier: str
+    ) -> bool:
         """
         Check if the course is in one of the categories preferred by the user
 
         :param dict course_details: Dictionary containing course details from Udemy
+        :param str course_identifier: Name of the course used for logging
         :return: boolean
         """
         is_preferred_category = True
@@ -247,7 +305,9 @@ class UdemyActions:
             and course_details["primary_subcategory"]["title"]
             not in self.settings.categories
         ):
-            logger.debug("Skipping course as it does not have a wanted category")
+            logger.debug(
+                f"Skipping course '{course_identifier}' as it does not have a wanted category"
+            )
             is_preferred_category = False
         return is_preferred_category
 
@@ -300,18 +360,26 @@ class UdemyActions:
             course_identifier = course_details.get("title", url)
 
             if self.is_enrolled(course_id):
-                logger.info(f"Already enrolled in: {course_identifier}")
+                logger.info(f"Already enrolled in: '{course_identifier}'")
+                self.stats.already_enrolled += 1
                 return UdemyStatus.ALREADY_ENROLLED.value
 
             if self.user_has_preferences:
                 if self.settings.languages:
-                    if not self.is_preferred_language(course_details):
+                    if not self.is_preferred_language(
+                        course_details, course_identifier
+                    ):
+                        self.stats.unwanted_language += 1
                         return UdemyStatus.UNWANTED_LANGUAGE.value
                 if self.settings.categories:
-                    if not self.is_preferred_category(course_details):
+                    if not self.is_preferred_category(
+                        course_details, course_identifier
+                    ):
+                        self.stats.unwanted_category += 1
                         return UdemyStatus.UNWANTED_CATEGORY.value
 
-            if not self.is_coupon_valid(course_id, coupon_code):
+            if not self.is_coupon_valid(course_id, coupon_code, course_identifier):
+                self.stats.expired += 1
                 return UdemyStatus.EXPIRED.value
 
             return self._checkout(course_id, coupon_code, course_identifier)
@@ -364,11 +432,12 @@ class UdemyActions:
         else:
             result = checkout_result.json()
             if result["status"] == "succeeded":
-                logger.info(f"Successfully enrolled: {course_identifier}")
+                logger.info(f"Successfully enrolled: '{course_identifier}'")
                 self._add_enrolled_course(course_id)
+                self.stats.enrolled += 1
                 return UdemyStatus.ENROLLED.value
             elif result["status"] == "failed":
-                logger.warning(f"Checkout failed: {course_identifier}")
+                logger.warning(f"Checkout failed: '{course_identifier}'")
                 logger.debug(f"Checkout payload: {payload}")
                 # TODO: Shouldn't happen. Need to monitor if it does
                 return UdemyStatus.EXPIRED.value
