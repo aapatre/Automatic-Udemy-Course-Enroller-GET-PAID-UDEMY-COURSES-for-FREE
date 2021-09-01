@@ -48,7 +48,7 @@ Also, don't forget to **Fork & Star the repository if you like it!**
 
 **Required Python version:** [Python 3.8+](https://www.python.org/downloads/)
 
-**Required Microsoft Visual C++ 14.0+ version:** [Microsoft Visual C++ 14.0+](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+**(Only for Windows users) Required Microsoft Visual C++ 14.0+ version:** [Microsoft Visual C++ 14.0+](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 ![alt text](https://docs.microsoft.com/answers/storage/attachments/34873-10262.png)
 
