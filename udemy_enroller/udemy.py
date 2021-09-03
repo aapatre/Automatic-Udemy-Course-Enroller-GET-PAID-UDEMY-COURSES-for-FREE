@@ -17,6 +17,19 @@ from udemy_enroller.utils import get_app_dir
 logger = get_logger()
 
 
+def format_requests(func):
+    """
+    Convenience method for handling requests response
+    """
+
+    def formatting(*args, **kwargs):
+        result = func(*args, **kwargs)
+        result.raise_for_status()
+        return result.json()
+
+    return formatting
+
+
 @dataclass(unsafe_hash=True)
 class RunStatistics:
     prices: List[float] = field(default_factory=list)
@@ -117,7 +130,11 @@ class UdemyActions:
         if cookie_details is None:
             response = self.udemy_scraper.get(self.LOGIN_URL)
             soup = BeautifulSoup(response.content, "html.parser")
-            csrf_token = soup.find("input", {"name": "csrfmiddlewaretoken"})["value"]
+            csrf_token = soup.find("input", {"name": "csrfmiddlewaretoken"}).get(
+                "value"
+            )
+            if csrf_token is None:
+                raise Exception(f"Unable to get csrf_token")
 
             # Prompt for email/password if we don't have them saved in settings
             if self.settings.email is None:
@@ -174,6 +191,11 @@ class UdemyActions:
             self.stats.course_ids_start = len(self._all_course_ids)
             self.stats.currency_symbol = self._currency_symbol
         except Exception as e:
+            # Log some info on the HTTPError we are getting
+            if isinstance(e, requests.HTTPError):
+                logger.error("HTTP error while trying to fetch Udemy information")
+                logger.error(e)
+                retry = True
             if not retry:
                 logger.info("Retrying login")
                 self._delete_cookies()
@@ -205,13 +227,14 @@ class UdemyActions:
         logger.info(f"Currently enrolled in {len(all_courses)} courses")
         return all_courses
 
+    @format_requests
     def load_user_details(self):
         """
         Load the current users details
 
         :return: Dict containing the users details
         """
-        return self.session.get(self.USER_DETAILS).json()
+        return self.session.get(self.USER_DETAILS)
 
     def is_enrolled(self, course_id: int) -> bool:
         """
@@ -311,6 +334,7 @@ class UdemyActions:
             is_preferred_category = False
         return is_preferred_category
 
+    @format_requests
     def my_courses(self, page: int, page_size: int) -> Dict:
         """
         Load the current logged in users courses
@@ -319,11 +343,9 @@ class UdemyActions:
         :param int page_size: number of courses to load per page
         :return: dict containing the current users courses
         """
-        response = self.session.get(
-            self.MY_COURSES + f"&page={page}&page_size={page_size}"
-        )
-        return response.json()
+        return self.session.get(self.MY_COURSES + f"&page={page}&page_size={page_size}")
 
+    @format_requests
     def coupon_details(self, course_id: int, coupon_code: str) -> Dict:
         """
         Check that the coupon is valid for the current course
@@ -332,9 +354,9 @@ class UdemyActions:
         :param str coupon_code: The coupon_code to check against the course
         :return: dictionary containing the course pricing details
         """
-        response = requests.get(self.CHECK_PRICE.format(course_id, coupon_code))
-        return response.json()
+        return requests.get(self.CHECK_PRICE.format(course_id, coupon_code))
 
+    @format_requests
     def course_details(self, course_id: int) -> Dict:
         """
         Retrieves details relating to the course passed in
@@ -342,8 +364,7 @@ class UdemyActions:
         :param int course_id: Id of the course to get the details of
         :return: dictionary containing the course details
         """
-        response = requests.get(self.COURSE_DETAILS.format(course_id))
-        return response.json()
+        return requests.get(self.COURSE_DETAILS.format(course_id))
 
     def enroll(self, course_link: str) -> str:
         """
@@ -395,6 +416,7 @@ class UdemyActions:
         :return: int representing the course id
         """
         response = self.session.get(url)
+        response.raise_for_status()
         soup = BeautifulSoup(response.content, "html.parser")
 
         return int(soup.find("body")["data-clp-course-id"])
