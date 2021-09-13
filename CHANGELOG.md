@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2021-09-13
+
+### Added
+
+- View run statistics at the end of the script
+- Documentation updates
+- Improved error handling and logging
+
 ## [3.1.0] - 2021-05-04
 
 ### Added
@@ -82,6 +90,8 @@ can continue as normal
   project running locally. Suitable for users who are not looking forward to
   contribute.
   
+[3.2.0]:
+  https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v3.2.0
 [3.1.0]:
   https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v3.1.0
 [3.0.0]:
