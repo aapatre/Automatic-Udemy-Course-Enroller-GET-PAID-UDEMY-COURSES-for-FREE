@@ -49,6 +49,7 @@ def _redeem_courses(
                         logger.info("Ending test")
                         return
         else:
+            udemy_actions.stats.table()
             logger.info("All scrapers complete")
             return
 

@@ -1,7 +1,6 @@
 [![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/it-works-why.svg)](https://forthebadge.com)
 
-# ALPHA IS A PRE DEVELOPMENT BRANCH, DO NOT EXPECT USER FACING ISSUES TO BE ADDRESSED IN THIS BRANCH!
 
 # Udemy Coupon Grabber & Course Enroller: Grab FREE Coupons!
 
@@ -14,15 +13,16 @@ web-scraping and automation, this script will find the necessary Udemy Coupons
 **NOTE: THIS PROJECT WILL NOT WORK WITH NON ENGLISH UDEMY.**
 
 The code scrapes course links and coupons from:
- - [tutorialbar.com](https://tutorialbar.com)
- - [discudemy.com](https://discudemy.com)
- - [coursevania.com](https://coursevania.com)
+
+-   [tutorialbar.com](https://tutorialbar.com)
+-   [discudemy.com](https://discudemy.com)
+-   [coursevania.com](https://coursevania.com)
 
 In case of any bugs or issues, please open an issue in github.
 
 Also, don't forget to **Fork & Star the repository if you like it!**
 
-***We are also on [GitLab](https://gitlab.com/the-automators/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE)***
+**_We are also on [GitLab](https://gitlab.com/the-automators/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE)_**
 
 **_Video Proof:_**
 
@@ -32,9 +32,8 @@ Also, don't forget to **Fork & Star the repository if you like it!**
 
 ## **_Disclaimer & WARNINGS:_**
 
-
 1. **Use** this ONLY for **Educational Purposes!** By using this code you agree
-   that **I'm not responsible for any kind of trouble** caused by the code. **THIS PROJECT IS NOT AFFILIATED WITH UDEMY.** 
+   that **I'm not responsible for any kind of trouble** caused by the code. **THIS PROJECT IS NOT AFFILIATED WITH UDEMY.**
 2. **Make sure web-scraping is legal in your region.**
 3. This is **NOT a hacking script**, i.e., it can't enroll you for a specific
    course! Instead it finds courses that provide coupon links to make the
@@ -48,6 +47,10 @@ Also, don't forget to **Fork & Star the repository if you like it!**
 
 **Required Python version:** [Python 3.8+](https://www.python.org/downloads/)
 
+**(Windows users only) Required Microsoft Visual C++ 14.0+ version:** [Microsoft Visual C++ 14.0+](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+
+![alt text](https://docs.microsoft.com/answers/storage/attachments/34873-10262.png)
+
 **You must have pip or poetry installed. Please look up how to install them in your OS.**
 
 Download a release of this project or clone the repository then navigate to the
@@ -60,37 +63,38 @@ get all the requirements installed in one go. Similar instructions applies for p
 
 Props to Davidd Sargent for making a super simple video tutorial. If you prefer written instructions then continue reading further, else click on the image below for a quick video tutorial:
 
-[![GET Udemy Courses for FREE with Python | 2 Minute Tuesday](https://i.ytimg.com/vi/tdLsVoraMxw/hq720.jpg)](https://www.youtube.com/watch?v=tdLsVoraMxw "GET Udemy Courses for FREE with Python | 2 Minute Tuesday")
+[![GET Udemy Courses for FREE with Python | 2 Minute Tuesday](https://i.ytimg.com/vi/6HLbqM-598k/hq720.jpg)](https://www.youtube.com/watch?v=6HLbqM-598k "pip installation of Automatic Udemy Course Enroller")
 
 1 . Install from PyPI `pip install udemy-enroller`
 
-- Run the script and the cli will guide you through the settings required
-- If you decide to save the settings they will be stored in your home directory: <br>
-**Windows**:
+-   Run the script and the cli will guide you through the settings required
+-   If you decide to save the settings they will be stored in your home directory: <br>
+    **Windows**:
     C:/Users/CurrentUserName/.udemy_enroller<br>
-**Linux**:
+    **Linux**:
     /home/username/.udemy_enroller
-    
- **The values in settings.yaml should be in the same language as the site you are browsing on**
+    **The values in settings.yaml should be in the same language as the site you are browsing on**
 
 2 . The script can be passed arguments:
-- `--help`: View full list of arguments available
-- `--discudemy`: Run the discudemy scraper only
-- `--coursevania`: Run the coursevania scraper only
-- `--tutorialbar`: Run the tutorialbar scraper only
-- `--max-pages=<NUMBER>`: Max number of pages to scrape from sites before exiting the script (default is 5)
-- `--delete-settings`: Delete existing settings file
-- `--debug`: Enable debug logging
+
+-   `--help`: View full list of arguments available
+-   `--discudemy`: Run the discudemy scraper only
+-   `--coursevania`: Run the coursevania scraper only
+-   `--tutorialbar`: Run the tutorialbar scraper only
+-   `--max-pages=<NUMBER>`: Max number of pages to scrape from sites before exiting the script (default is 5)
+-   `--delete-settings`: Delete existing settings file
+-   `--debug`: Enable debug logging
 
 3 . Run the script in terminal like so:
-- `udemy_enroller`
+
+-   `udemy_enroller`
 
 4 . The bot starts scraping the course links from the first **All Courses** page
 on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1), [DiscUdemy](https://www.discudemy.com/all) and [Coursevania](https://coursevania.com) and starts
 enrolling you to Udemy courses. After it has enrolled you to courses from the
 first page, it then moves to the next site page and the cycle continues.
 
-- Stop the script by pressing ctrl+c in terminal to stop the enrollment process.
+-   Stop the script by pressing ctrl+c in terminal to stop the enrollment process.
 
 ---
 
@@ -142,7 +146,6 @@ retrieved in the Python console/shell, which may take a while.
 
 It is recommended to run the script using your terminal and system python.
 
-
 ### 7. Which branch to commit against?
 
 Pull request should be made on "develop" branch.
@@ -157,7 +160,7 @@ and help us on what you want or talk to us about your proposed changes.
 
 ## Support & Maintenance Notice
 
-By using this repo/script, you agree that the authors and contributors are under no obligation to provide support for the script and can discontinue it's development, as and when necessary, without prior notice. 
+By using this repo/script, you agree that the authors and contributors are under no obligation to provide support for the script and can discontinue it's development, as and when necessary, without prior notice.
 
 ---
 
@@ -167,7 +170,7 @@ By using this repo/script, you agree that the authors and contributors are under
 
 [![JetBrains](https://i.imgur.com/h2R018M.jpg)](https://jetbrains.com/?from=udemy-free-course-enroller)
 
-Thanks to [JetBrains](https://jetbrains.com/?from=udemy-free-course-enroller) for supporting us. They are the maker of world class IDE and developer tooling. If you think their product might help you, please support them. 
+Thanks to [JetBrains](https://jetbrains.com/?from=udemy-free-course-enroller) for supporting us. They are the maker of world class IDE and developer tooling. If you think their product might help you, please support them.
 
 ### GitBook
 
