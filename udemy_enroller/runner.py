@@ -10,14 +10,14 @@ logger = get_logger()
 
 
 def _redeem_courses(
-        settings: Settings,
-        scrapers: ScraperManager,
-        counter_enroled: int = 0,
-        counter_already_enroled: int = 0,
-        counter_expired: int = 0,
-        counter_other_languages: int = 0,
-        counter_other_categories: int = 0,
-        counter_total: int = 0
+    settings: Settings,
+    scrapers: ScraperManager,
+    counter_enroled: int = 0,
+    counter_already_enroled: int = 0,
+    counter_expired: int = 0,
+    counter_other_languages: int = 0,
+    counter_other_categories: int = 0,
+    counter_total: int = 0,
 ) -> None:
     """
     Method to scrape courses from tutorialbar.com and enroll in them on udemy
@@ -73,14 +73,20 @@ def _redeem_courses(
             logger.info("\t#             RESULTS              #")
             logger.info("\t####################################")
             logger.info(f"\t#  New Enrolled Courses:     {counter_enroled:04}  #")
-            logger.info(f"\t#  Already Enrolled Courses: {counter_already_enroled:04}  #")
+            logger.info(
+                f"\t#  Already Enrolled Courses: {counter_already_enroled:04}  #"
+            )
             logger.info(f"\t#  Expired:                  {counter_expired:04}  #")
-            logger.info(f"\t#  Other Languages:          {counter_other_languages:04}  #")
-            logger.info(f"\t#  Other Categories:         {counter_other_categories:04}  #")
+            logger.info(
+                f"\t#  Other Languages:          {counter_other_languages:04}  #"
+            )
+            logger.info(
+                f"\t#  Other Categories:         {counter_other_categories:04}  #"
+            )
             logger.info("\t####################################")
             logger.info(f"\t#  Total Courses Scraped:    {counter_total:04}  #")
             logger.info("\t####################################")
-           
+
             udemy_actions.stats.table()
             logger.info("All scrapers complete")
 
@@ -88,12 +94,12 @@ def _redeem_courses(
 
 
 def redeem_courses(
-        settings: Settings,
-        freebiesglobal_enabled: bool,
-        tutorialbar_enabled: bool,
-        discudemy_enabled: bool,
-        coursevania_enabled: bool,
-        max_pages: Union[int, None],
+    settings: Settings,
+    freebiesglobal_enabled: bool,
+    tutorialbar_enabled: bool,
+    discudemy_enabled: bool,
+    coursevania_enabled: bool,
+    max_pages: Union[int, None],
 ) -> None:
     """
     Wrapper of _redeem_courses so we always close browser on completion
@@ -112,7 +118,7 @@ def redeem_courses(
             tutorialbar_enabled,
             discudemy_enabled,
             coursevania_enabled,
-            max_pages
+            max_pages,
         )
         _redeem_courses(settings, scrapers)
     except Exception as e:

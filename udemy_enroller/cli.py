@@ -23,39 +23,45 @@ def enable_debug_logging() -> None:
 
 
 def determine_if_scraper_enabled(
-        freebiesglobal_enabled: bool,
-        tutorialbar_enabled: bool,
-        discudemy_enabled: bool,
-        coursevania_enabled: bool,
+    freebiesglobal_enabled: bool,
+    tutorialbar_enabled: bool,
+    discudemy_enabled: bool,
+    coursevania_enabled: bool,
 ) -> tuple[bool, bool, bool, bool]:
     """
     Determine what scrapers should be enabled and disabled
 
     :return: tuple containing boolean of what scrapers should run
     """
-    if not freebiesglobal_enabled \
-            and not tutorialbar_enabled \
-            and not discudemy_enabled \
-            and not coursevania_enabled:
+    if (
+        not freebiesglobal_enabled
+        and not tutorialbar_enabled
+        and not discudemy_enabled
+        and not coursevania_enabled
+    ):
         # Set all to True
-        freebiesglobal_enabled, \
-        tutorialbar_enabled, \
-        discudemy_enabled, \
-        coursevania_enabled = True, True, True, True
+        (
+            freebiesglobal_enabled,
+            tutorialbar_enabled,
+            discudemy_enabled,
+            coursevania_enabled,
+        ) = (True, True, True, True)
 
-    return freebiesglobal_enabled, \
-           tutorialbar_enabled, \
-           discudemy_enabled, \
-           coursevania_enabled
+    return (
+        freebiesglobal_enabled,
+        tutorialbar_enabled,
+        discudemy_enabled,
+        coursevania_enabled,
+    )
 
 
 def run(
-        freebiesglobal_enabled: bool,
-        tutorialbar_enabled: bool,
-        discudemy_enabled: bool,
-        coursevania_enabled: bool,
-        max_pages: Union[int, None],
-        delete_settings: bool,
+    freebiesglobal_enabled: bool,
+    tutorialbar_enabled: bool,
+    discudemy_enabled: bool,
+    coursevania_enabled: bool,
+    max_pages: Union[int, None],
+    delete_settings: bool,
 ):
     """
     Run the udemy enroller script
@@ -74,7 +80,7 @@ def run(
         tutorialbar_enabled,
         discudemy_enabled,
         coursevania_enabled,
-        max_pages
+        max_pages,
     )
 
 
@@ -150,10 +156,7 @@ def main():
             discudemy_enabled,
             coursevania_enabled,
         ) = determine_if_scraper_enabled(
-            args.freebiesglobal,
-            args.tutorialbar,
-            args.discudemy,
-            args.coursevania
+            args.freebiesglobal, args.tutorialbar, args.discudemy, args.coursevania
         )
         run(
             freebiesglobal_enabled,

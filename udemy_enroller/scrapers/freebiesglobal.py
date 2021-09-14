@@ -46,10 +46,14 @@ class FreebiesglobalScraper(BaseScraper):
         """
         freebiesglobal_links = []
         self.current_page += 1
-        coupons_data = await get(f"{self.DOMAIN}/dealstore/udemy/page/{self.current_page}")
+        coupons_data = await get(
+            f"{self.DOMAIN}/dealstore/udemy/page/{self.current_page}"
+        )
         soup = BeautifulSoup(coupons_data.decode("utf-8"), "html.parser")
 
-        for course_card in soup.find_all("a", class_="img-centered-flex rh-flex-center-align rh-flex-justify-center"):
+        for course_card in soup.find_all(
+            "a", class_="img-centered-flex rh-flex-center-align rh-flex-justify-center"
+        ):
             url_end = course_card["href"].split("/")[-1]
             freebiesglobal_links.append(f"{self.DOMAIN}/{url_end}")
 

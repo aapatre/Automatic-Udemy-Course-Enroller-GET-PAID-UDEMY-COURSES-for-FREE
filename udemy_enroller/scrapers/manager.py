@@ -11,11 +11,11 @@ from udemy_enroller.scrapers.tutorialbar import TutorialBarScraper
 class ScraperManager:
     def __init__(
         self,
-            freebiesglobal_enabled,
-            tutorialbar_enabled,
-            discudemy_enabled,
-            coursevania_enabled,
-            max_pages
+        freebiesglobal_enabled,
+        tutorialbar_enabled,
+        discudemy_enabled,
+        coursevania_enabled,
+        max_pages,
     ):
         self.freebiesglobal_scraper = FreebiesglobalScraper(
             freebiesglobal_enabled, max_pages=max_pages
