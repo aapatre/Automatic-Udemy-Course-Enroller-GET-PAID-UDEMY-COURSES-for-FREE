@@ -80,6 +80,10 @@ def _redeem_courses(
             logger.info("\t####################################")
             logger.info(f"\t#  Total Courses Scraped:    {counter_total:04}  #")
             logger.info("\t####################################")
+           
+            udemy_actions.stats.table()
+            logger.info("All scrapers complete")
+
             return
 
 
