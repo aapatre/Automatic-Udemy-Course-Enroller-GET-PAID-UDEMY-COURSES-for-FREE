@@ -10,16 +10,16 @@ from udemy_enroller.scrapers.base_scraper import BaseScraper
 logger = logging.getLogger("udemy_enroller")
 
 
-class ComidocScraper(BaseScraper):
+class FreebiesglobalScraper(BaseScraper):
     """
-    Contains any logic related to scraping of data from comidoc.net
+    Contains any logic related to scraping of data from Freebiesglobal.com
     """
 
-    DOMAIN = "https://comidoc.net"
+    DOMAIN = "https://freebiesglobal.com"
 
     def __init__(self, enabled, max_pages=None):
         super().__init__()
-        self.scraper_name = "comidoc"
+        self.scraper_name = "freebiesglobal"
         if not enabled:
             self.set_state_disabled()
         self.max_pages = max_pages
@@ -33,27 +33,31 @@ class ComidocScraper(BaseScraper):
         """
         links = await self.get_links()
         logger.info(
-            f"Page: {self.current_page} of {self.last_page} scraped from comidoc.net"
+            f"Page: {self.current_page} of {self.last_page} scraped from freebiesglobal.com"
         )
         self.max_pages_reached()
         return links
 
     async def get_links(self) -> List:
         """
-        Scrape udemy links from comidoc.net
+        Scrape udemy links from freebiesglobal.com
 
         :return: List of udemy course urls
         """
-        comidoc_links = []
+        freebiesglobal_links = []
         self.current_page += 1
-        coupons_data = await get(f"{self.DOMAIN}/coupons?page={self.current_page}")
+        coupons_data = await get(f"{self.DOMAIN}/dealstore/udemy/page/{self.current_page}")
         soup = BeautifulSoup(coupons_data.decode("utf-8"), "html.parser")
-        for course_card in soup.find_all("div", class_="MuiPaper-root"):
-            all_links = course_card.find_all("a")
-            if len(all_links) == 2:
-                comidoc_links.append(f"{self.DOMAIN}{all_links[1].get('href')}")
 
-        links = await self.gather_udemy_course_links(comidoc_links)
+        for course_card in soup.find_all("a", class_="img-centered-flex rh-flex-center-align rh-flex-justify-center"):
+            url_end = course_card["href"].split("/")[-1]
+            freebiesglobal_links.append(f"{self.DOMAIN}/{url_end}")
+
+        links = await self.gather_udemy_course_links(freebiesglobal_links)
+
+        for counter, course in enumerate(links):
+            logger.debug(f"Received Link {counter + 1} : {course}")
+
         self.last_page = self._get_last_page(soup)
 
         return links
@@ -69,16 +73,17 @@ class ComidocScraper(BaseScraper):
 
         data = await get(url)
         soup = BeautifulSoup(data.decode("utf-8"), "html.parser")
-        for link in soup.find_all("a", href=True):
+        for link in soup.find_all("a", class_="re_track_btn"):
             udemy_link = cls.validate_coupon_url(link["href"])
+
             if udemy_link is not None:
                 return udemy_link
 
     async def gather_udemy_course_links(self, courses: List[str]):
         """
-        Async fetching of the udemy course links from comidoc.net
+        Async fetching of the udemy course links from freebiesglobal.com
 
-        :param list courses: A list of comidoc.net course links we want to fetch the udemy links for
+        :param list courses: A list of discudemy.com course links we want to fetch the udemy links for
         :return: list of udemy links
         """
         return [
@@ -95,13 +100,11 @@ class ComidocScraper(BaseScraper):
         :param soup:
         :return: The last page number to scrape
         """
-        all_pages = []
-        for page_link in soup.find("ul", class_="MuiPagination-ul").find_all("li"):
-            pagination = page_link.find("a")
 
-            if pagination:
-                page_number = pagination["aria-label"].split()[-1]
-                if page_number.isdigit():
-                    all_pages.append(int(page_number))
-
-        return max(all_pages)
+        return max(
+            [
+                int(i.text)
+                for i in soup.find("ul", class_="page-numbers").find_all("li")
+                if i.text.isdigit()
+            ]
+        )
