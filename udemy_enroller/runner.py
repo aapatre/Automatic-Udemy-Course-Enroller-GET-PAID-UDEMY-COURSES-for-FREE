@@ -9,12 +9,9 @@ from udemy_enroller.logging import get_logger
 logger = get_logger()
 
 
-def _redeem_courses(
-    settings: Settings,
-    scrapers: ScraperManager,
-) -> None:
+def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
     """
-    Method to scrape courses from tutorialbar.com and enroll in them on udemy
+    Method to scrape courses from the supported sites and enroll in them on udemy
 
     :param Settings settings: Core settings used for Udemy
     :param ScraperManager scrapers:
@@ -26,11 +23,12 @@ def _redeem_courses(
 
     while True:
         udemy_course_links = loop.run_until_complete(scrapers.run())
-
+        logger.info(f"Total courses this time: {len(udemy_course_links)}")
         if udemy_course_links:
             for course_link in udemy_course_links:
                 try:
                     status = udemy_actions.enroll(course_link)
+
                     if status == UdemyStatus.ENROLLED.value:
                         # Try to avoid udemy throttling by sleeping for 1-5 seconds
                         sleep_time = random.choice(range(1, 5))
@@ -56,15 +54,17 @@ def _redeem_courses(
 
 def redeem_courses(
     settings: Settings,
+    freebiesglobal_enabled: bool,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
     coursevania_enabled: bool,
     max_pages: Union[int, None],
 ) -> None:
     """
-    Wrapper of _redeem_courses so we always close browser on completion
+    Wrapper of _redeem_courses which catches unhandled exceptions
 
     :param Settings settings: Core settings used for Udemy
+    :param bool freebiesglobal_enabled: Boolean signifying if freebiesglobal scraper should run
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
     :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
     :param bool coursevania_enabled: Boolean signifying if coursevania scraper should run
@@ -73,7 +73,11 @@ def redeem_courses(
     """
     try:
         scrapers = ScraperManager(
-            tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+            freebiesglobal_enabled,
+            tutorialbar_enabled,
+            discudemy_enabled,
+            coursevania_enabled,
+            max_pages,
         )
         _redeem_courses(settings, scrapers)
     except Exception as e:

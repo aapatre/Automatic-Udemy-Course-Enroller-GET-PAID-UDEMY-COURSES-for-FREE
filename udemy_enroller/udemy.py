@@ -52,7 +52,7 @@ class RunStatistics:
         return sum(self.prices) or 0
 
     def table(self):
-        logger.info("==================Run Statistics==================")
+        logger.info("================== Run Statistics ==================")
         logger.info(f"Enrolled:                   {self.enrolled}")
         logger.info(f"Unwanted Category:          {self.unwanted_category}")
         logger.info(f"Unwanted Language:          {self.unwanted_language}")
@@ -62,7 +62,7 @@ class RunStatistics:
         logger.info(
             f"Savings:                    {self.currency_symbol}{self.savings():.2f}"
         )
-        logger.info("==================Run Statistics==================")
+        logger.info("================== Run Statistics ==================")
 
 
 class UdemyStatus(Enum):
@@ -117,6 +117,7 @@ class UdemyActions:
         self._all_course_ids = []
         self._currency_symbol = None
         self._currency = None
+
         self.stats = RunStatistics()
 
     def login(self, retry=False) -> None:
@@ -179,6 +180,7 @@ class UdemyActions:
 
         try:
             self._enrolled_course_info = self.load_my_courses()
+
             user_details = self.load_user_details()
             # Extract the users currency info needed for checkout
             self._currency = user_details["Config"]["price_country"]["currency"]
