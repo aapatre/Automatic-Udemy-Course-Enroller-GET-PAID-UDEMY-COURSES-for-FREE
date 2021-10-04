@@ -9,18 +9,9 @@ from udemy_enroller.logging import get_logger
 logger = get_logger()
 
 
-def _redeem_courses(
-    settings: Settings,
-    scrapers: ScraperManager,
-    counter_enroled: int = 0,
-    counter_already_enroled: int = 0,
-    counter_expired: int = 0,
-    counter_other_languages: int = 0,
-    counter_other_categories: int = 0,
-    counter_total: int = 0,
-) -> None:
+def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
     """
-    Method to scrape courses from tutorialbar.com and enroll in them on udemy
+    Method to scrape courses from the supported sites and enroll in them on udemy
 
     :param Settings settings: Core settings used for Udemy
     :param ScraperManager scrapers:
@@ -35,27 +26,16 @@ def _redeem_courses(
         logger.info(f"Total courses this time: {len(udemy_course_links)}")
         if udemy_course_links:
             for course_link in udemy_course_links:
-                counter_total += 1
                 try:
                     status = udemy_actions.enroll(course_link)
 
                     if status == UdemyStatus.ENROLLED.value:
-                        counter_enroled += 1
                         # Try to avoid udemy throttling by sleeping for 1-5 seconds
                         sleep_time = random.choice(range(1, 5))
                         logger.debug(
                             f"Sleeping for {sleep_time} seconds between enrolments"
                         )
                         time.sleep(sleep_time)
-                    elif status == UdemyStatus.ALREADY_ENROLLED.value:
-                        counter_already_enroled += 1
-                    elif status == UdemyStatus.EXPIRED.value:
-                        counter_expired += 1
-                    elif status == UdemyStatus.UNWANTED_LANGUAGE.value:
-                        counter_other_languages += 1
-                    elif status == UdemyStatus.UNWANTED_CATEGORY.value:
-                        counter_other_categories += 1
-
                 except KeyboardInterrupt:
                     logger.error("Exiting the script")
                     return
@@ -66,30 +46,9 @@ def _redeem_courses(
                         logger.info("We have attempted to subscribe to 1 udemy course")
                         logger.info("Ending test")
                         return
-
         else:
-            logger.info("All scrapers complete\n\n")
-            logger.info("\t####################################")
-            logger.info("\t#             RESULTS              #")
-            logger.info("\t####################################")
-            logger.info(f"\t#  New Enrolled Courses:     {counter_enroled:04}  #")
-            logger.info(
-                f"\t#  Already Enrolled Courses: {counter_already_enroled:04}  #"
-            )
-            logger.info(f"\t#  Expired:                  {counter_expired:04}  #")
-            logger.info(
-                f"\t#  Other Languages:          {counter_other_languages:04}  #"
-            )
-            logger.info(
-                f"\t#  Other Categories:         {counter_other_categories:04}  #"
-            )
-            logger.info("\t####################################")
-            logger.info(f"\t#  Total Courses Scraped:    {counter_total:04}  #")
-            logger.info("\t####################################")
-
             udemy_actions.stats.table()
             logger.info("All scrapers complete")
-
             return
 
 
@@ -102,7 +61,7 @@ def redeem_courses(
     max_pages: Union[int, None],
 ) -> None:
     """
-    Wrapper of _redeem_courses so we always close browser on completion
+    Wrapper of _redeem_courses which catches unhandled exceptions
 
     :param Settings settings: Core settings used for Udemy
     :param bool freebiesglobal_enabled: Boolean signifying if freebiesglobal scraper should run

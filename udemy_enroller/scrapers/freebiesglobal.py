@@ -87,7 +87,7 @@ class FreebiesglobalScraper(BaseScraper):
         """
         Async fetching of the udemy course links from freebiesglobal.com
 
-        :param list courses: A list of discudemy.com course links we want to fetch the udemy links for
+        :param list courses: A list of freebiesglobal.com course links we want to fetch the udemy links for
         :return: list of udemy links
         """
         return [

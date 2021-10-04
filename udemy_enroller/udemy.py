@@ -52,7 +52,7 @@ class RunStatistics:
         return sum(self.prices) or 0
 
     def table(self):
-        logger.info("==================Run Statistics==================")
+        logger.info("================== Run Statistics ==================")
         logger.info(f"Enrolled:                   {self.enrolled}")
         logger.info(f"Unwanted Category:          {self.unwanted_category}")
         logger.info(f"Unwanted Language:          {self.unwanted_language}")
@@ -62,7 +62,7 @@ class RunStatistics:
         logger.info(
             f"Savings:                    {self.currency_symbol}{self.savings():.2f}"
         )
-        logger.info("==================Run Statistics==================")
+        logger.info("================== Run Statistics ==================")
 
 
 class UdemyStatus(Enum):
@@ -117,9 +117,6 @@ class UdemyActions:
         self._all_course_ids = []
         self._currency_symbol = None
         self._currency = None
-
-        self.counter_enroled: int = 0
-        self.counter_already_enroled: int = 0
 
         self.stats = RunStatistics()
 
@@ -230,11 +227,6 @@ class UdemyActions:
                 all_courses.extend(my_courses["results"])
             time.sleep(1)
         logger.info(f"Currently enrolled in {len(all_courses)} courses")
-
-        # for counter, course in enumerate(all_courses):
-        #     with open("Courses.txt", "a") as file:
-        #         file.write(f"{counter}\t==>\t{course[counter]}\n")
-
         return all_courses
 
     @format_requests
@@ -391,12 +383,8 @@ class UdemyActions:
             course_identifier = course_details.get("title", url)
 
             if self.is_enrolled(course_id):
-                self.counter_already_enroled += 1
-
-                logger.info(
-                    f"Already enrolled in: {course_identifier} --> {self.counter_already_enroled}"
-                )
-
+                logger.info(f"Already enrolled in: '{course_identifier}'")
+                self.stats.already_enrolled += 1
                 return UdemyStatus.ALREADY_ENROLLED.value
 
             if self.user_has_preferences:
@@ -468,12 +456,7 @@ class UdemyActions:
         else:
             result = checkout_result.json()
             if result["status"] == "succeeded":
-
-                self.counter_enroled += 1
-                logger.info(
-                    f"Successfully enrolled: {course_identifier} --> {self.counter_enroled}"
-                )
-
+                logger.info(f"Successfully enrolled: '{course_identifier}'")
                 self._add_enrolled_course(course_id)
                 self.stats.enrolled += 1
                 return UdemyStatus.ENROLLED.value

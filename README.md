@@ -96,27 +96,26 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
 -   `udemy_enroller`
 
 4 . The bot starts scraping the course links from the first **All Courses** page
-on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1), [DiscUdemy](https://www.discudemy.com/all) and [Coursevania](https://coursevania.com) and [FreebiesGlobal](https://freebiesglobal.com) and starts
+on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1), [DiscUdemy](https://www.discudemy.com/all), [Coursevania](https://coursevania.com) and [FreebiesGlobal](https://freebiesglobal.com) and starts
 enrolling you to Udemy courses. After it has enrolled you to courses from the
 first page, it then moves to the next site page and the cycle continues.
 
 -   Stop the script by pressing ctrl+c in terminal to stop the enrollment process.
 
-5. _[New]_ After each scrap how many courses was found is shown.
+5 . _[New]_ At the end of process a detailed result is shown:
 
-Total courses this time: 54
+```
+================== Run Statistics ==================
 
-6. _[New]_ At the end of process a detailed result is shown:
-
-    
-                 RESULTS              
-	
-	  New Enrolled Courses:     0000  
-	  Already Enrolled Courses: 0204  
-	  Expired:                  0003  
-	  Other Languages:          0021  
-	  Other Categories          0081  
-	  Total Courses Scraped:    0309  
+Enrolled:                   56
+Unwanted Category:          0
+Unwanted Language:          1
+Already Claimed:            93
+Expired:                    7
+Total Enrolments:           1705
+Savings:                    €2674.44
+================== Run Statistics ==================
+```
 	
 
 ---

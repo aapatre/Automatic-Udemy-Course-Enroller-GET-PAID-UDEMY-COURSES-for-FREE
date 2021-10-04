@@ -27,7 +27,7 @@ def determine_if_scraper_enabled(
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
     coursevania_enabled: bool,
-) -> tuple[bool, bool, bool, bool]:
+) -> Tuple[bool, bool, bool, bool]:
     """
     Determine what scrapers should be enabled and disabled
 
