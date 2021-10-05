@@ -497,7 +497,7 @@ class UdemyActions:
         :param cookies:
         :return:
         """
-        logger.info("Caching cookies for future use")
+        logger.info("Caching cookie for future use")
         with open(self._cookie_file, "a+") as f:
             f.write(json.dumps(cookies))
 
@@ -508,10 +508,13 @@ class UdemyActions:
         :return:
         """
         cookies = None
-        logger.info("Loading cookies from file")
+
         if os.path.isfile(self._cookie_file):
+            logger.info("Loading cookie from file")
             with open(self._cookie_file) as f:
                 cookies = json.loads(f.read())
+        else:
+            logger.info("No cookie available")
         return cookies
 
     def _delete_cookies(self) -> None:
@@ -520,5 +523,5 @@ class UdemyActions:
 
         :return:
         """
-        logger.info("Deleting cookies")
+        logger.info("Deleting cookie")
         os.remove(self._cookie_file)
