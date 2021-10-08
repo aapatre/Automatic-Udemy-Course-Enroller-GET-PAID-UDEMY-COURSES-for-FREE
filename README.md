@@ -88,6 +88,7 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
 - `--freebiesglobal`: Run the freebiesglobal scraper only _[New]_ 
 - `--max-pages=<NUMBER>`: Max number of pages to scrape from sites before exiting the script (default is 5)
 - `--delete-settings`: Delete existing settings file
+- `--delete-cookie`: Delete the cookie file if it exists _[New]_
 - `--debug`: Enable debug logging
 
 

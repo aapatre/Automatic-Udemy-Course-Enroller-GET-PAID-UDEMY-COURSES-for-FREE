@@ -62,6 +62,7 @@ def run(
     coursevania_enabled: bool,
     max_pages: Union[int, None],
     delete_settings: bool,
+    delete_cookie: bool,
 ):
     """
     Run the udemy enroller script
@@ -71,9 +72,10 @@ def run(
     :param bool coursevania_enabled:
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :param bool delete_settings: Determines if we should delete old settings file
+    :param bool delete_cookie: Determines if we should delete the cookie file
     :return:
     """
-    settings = Settings(delete_settings)
+    settings = Settings(delete_settings, delete_cookie)
     redeem_courses(
         settings,
         freebiesglobal_enabled,
@@ -135,6 +137,13 @@ def parse_args() -> Namespace:
     )
 
     parser.add_argument(
+        "--delete-cookie",
+        action="store_true",
+        default=False,
+        help="Delete existing cookie file",
+    )
+
+    parser.add_argument(
         "--debug",
         action="store_true",
         help="Enable debug logging",
@@ -165,4 +174,5 @@ def main():
             coursevania_enabled,
             args.max_pages,
             args.delete_settings,
+            args.delete_cookie,
         )
