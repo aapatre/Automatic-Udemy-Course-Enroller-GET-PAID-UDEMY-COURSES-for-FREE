@@ -159,7 +159,11 @@ def redeem_courses_ui(
 
     try:
         scrapers = ScraperManager(
-            freebiesglobal_enabled, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+            freebiesglobal_enabled,
+            tutorialbar_enabled,
+            discudemy_enabled,
+            coursevania_enabled,
+            max_pages,
         )
         _redeem_courses_ui(driver, settings, scrapers)
     except Exception as e:
