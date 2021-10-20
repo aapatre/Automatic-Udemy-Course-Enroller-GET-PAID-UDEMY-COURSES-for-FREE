@@ -229,9 +229,9 @@ class UdemyActionsUI:
             WebDriverWait(self.driver, 10).until(enroll_button_is_clickable).click()
 
             # Wait for success page to load
-            success_element_class = "alert-success"
+            success_element_class = "//div[contains(@class, 'success-alert-banner-container')]"
             WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, success_element_class))
+                EC.presence_of_element_located((By.XPATH, success_element_class))
             )
 
             logger.info(f"Successfully enrolled in: {course_name}")
