@@ -3,12 +3,19 @@ import random
 import time
 from typing import Union
 
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+    WebDriverException,
+)
+
 from udemy_enroller import (
     ScraperManager,
     Settings,
     UdemyActions,
     UdemyActionsUI,
     UdemyStatus,
+    exceptions,
 )
 from udemy_enroller.logging import get_logger
 
@@ -96,8 +103,9 @@ def _redeem_courses_ui(
     scrapers: ScraperManager,
 ) -> None:
     """
-    Method to scrape courses from tutorialbar.com and enroll in them on udemy
+    Method to scrape courses from the supported sites and enroll in them on udemy.
 
+    :param WebDriver driver: WebDriver to use to complete enrolment
     :param Settings settings: Core settings used for Udemy
     :param ScraperManager scrapers:
     :return:
@@ -110,7 +118,9 @@ def _redeem_courses_ui(
         udemy_course_links = loop.run_until_complete(scrapers.run())
 
         if udemy_course_links:
-            for course_link in udemy_course_links:
+            for course_link in set(
+                udemy_course_links
+            ):  # Cast to set to remove duplicate links
                 try:
                     status = udemy_actions.enroll(course_link)
                     if status == UdemyStatus.ENROLLED.value:
@@ -120,8 +130,17 @@ def _redeem_courses_ui(
                             f"Sleeping for {sleep_time} seconds between enrolments"
                         )
                         time.sleep(sleep_time)
+                except NoSuchElementException as e:
+                    logger.error(f"No such element: {e}")
+                except TimeoutException:
+                    logger.error(f"Timeout on link: {course_link}")
+                except WebDriverException:
+                    logger.error(f"Webdriver exception on link: {course_link}")
                 except KeyboardInterrupt:
-                    logger.error("Exiting the script")
+                    logger.warning("Exiting the script")
+                    return
+                except exceptions.RobotException as e:
+                    logger.error(e)
                     return
                 except Exception as e:
                     logger.error(f"Unexpected exception: {e}")
@@ -148,6 +167,7 @@ def redeem_courses_ui(
     """
     Wrapper of _redeem_courses so we always close browser on completion
 
+    :param WebDriver driver: WebDriver to use to complete enrolment
     :param Settings settings: Core settings used for Udemy
     :param bool freebiesglobal_enabled: Boolean signifying if freebiesglobal scraper should run
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
