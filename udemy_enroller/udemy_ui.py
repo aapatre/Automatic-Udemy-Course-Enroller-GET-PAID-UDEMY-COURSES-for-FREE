@@ -1,5 +1,6 @@
 import time
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
 from typing import List
 
@@ -26,28 +27,28 @@ class RunStatistics:
     unwanted_language: int = 0
     unwanted_category: int = 0
 
-    course_ids_start: int = 0
-    course_ids_end: int = 0
-
     start_time = None
-    end_time = None
 
-    currency_symbol = "$"
+    currency_symbol = None
 
     def savings(self):
         return sum(self.prices) or 0
 
     def table(self):
+        if self.currency_symbol is None:
+            self.currency_symbol = "¤"
+        run_time_seconds = (datetime.utcnow() - self.start_time).total_seconds()
+
         logger.info("==================Run Statistics==================")
         logger.info(f"Enrolled:                   {self.enrolled}")
         logger.info(f"Unwanted Category:          {self.unwanted_category}")
         logger.info(f"Unwanted Language:          {self.unwanted_language}")
         logger.info(f"Already Claimed:            {self.already_enrolled}")
         logger.info(f"Expired:                    {self.expired}")
-        logger.info(f"Total Enrolments:           {self.course_ids_end}")
         logger.info(
             f"Savings:                    {self.currency_symbol}{self.savings():.2f}"
         )
+        logger.info(f"Total run time (seconds):   {run_time_seconds}s")
         logger.info("==================Run Statistics==================")
 
 
@@ -75,6 +76,7 @@ class UdemyActionsUI:
         self.settings = settings
         self.logged_in = False
         self.stats = RunStatistics()
+        self.stats.start_time = datetime.utcnow()
 
     def login(self, is_retry=False) -> None:
         """
@@ -135,10 +137,10 @@ class UdemyActionsUI:
 
         course_name = self.driver.title
 
-        if not self._check_languages():
+        if not self._check_languages(course_name):
             return UdemyStatus.UNWANTED_LANGUAGE.value
 
-        if not self._check_categories():
+        if not self._check_categories(course_name):
             return UdemyStatus.UNWANTED_CATEGORY.value
 
         # TODO: Make this depend on an element.
@@ -236,7 +238,8 @@ class UdemyActionsUI:
                 EC.presence_of_element_located((By.XPATH, success_element_class))
             )
 
-            logger.info(f"Successfully enrolled in: {course_name}")
+            logger.info(f"Successfully enrolled in: '{course_name}'")
+            self.stats.enrolled += 1
             return UdemyStatus.ENROLLED.value
         else:
             return UdemyStatus.ALREADY_ENROLLED.value
@@ -247,12 +250,13 @@ class UdemyActionsUI:
         if not add_to_cart_elements or (
             add_to_cart_elements and not add_to_cart_elements[0].is_displayed()
         ):
-            logger.debug(f"Already enrolled in {course_name}")
+            logger.debug(f"Already enrolled in '{course_name}'")
             self.stats.already_enrolled += 1
             return True
         return False
 
-    def _check_languages(self):
+    def _check_languages(self, course_identifier):
+        is_valid_language = True
         if self.settings.languages:
             locale_xpath = "//div[@data-purpose='lead-course-locale']"
             element_text = (
@@ -263,11 +267,15 @@ class UdemyActionsUI:
 
             if element_text not in self.settings.languages:
                 logger.debug(f"Course language not wanted: {element_text}")
+                logger.debug(
+                    f"Course '{course_identifier}' language not wanted: {element_text}"
+                )
                 self.stats.unwanted_language += 1
-                return False
-        return True
+                is_valid_language = False
+        return is_valid_language
 
-    def _check_categories(self):
+    def _check_categories(self, course_identifier):
+        is_valid_category = True
         if self.settings.categories:
             # If the wanted categories are specified, get all the categories of the course by
             # scraping the breadcrumbs on the top
@@ -278,36 +286,55 @@ class UdemyActionsUI:
                 breadcrumbs_path
             )
             breadcrumbs = breadcrumbs.find_elements_by_class_name(breadcrumbs_text_path)
-            breadcrumbs = [bc.text for bc in breadcrumbs]  # Get only the text
+            breadcrumb_text = [bc.text for bc in breadcrumbs]  # Get only the text
 
             for category in self.settings.categories:
-                if category in breadcrumbs:
-                    return True
+                if category in breadcrumb_text:
+                    is_valid_category = True
+                    break
             else:
-                logger.debug("Skipping course as it does not have a wanted category")
+                logger.debug(
+                    f"Skipping course '{course_identifier}' as it does not have a wanted category"
+                )
                 self.stats.unwanted_category += 1
-                return False
-        return True
+                is_valid_category = False
+        return is_valid_category
 
     def _check_price(self, course_name):
-        price_xpath = "//span[@data-purpose='total-price']//span"
-        price_elements = self.driver.find_elements_by_xpath(price_xpath)
-        # We get elements here as one of there are 2 matches for this xpath
+        course_is_free = True
+        price_xpath = "//div[contains(@class, 'styles--checkout-pane-outer')]//span[@data-purpose='total-price']//span"
+        price_element = self.driver.find_element_by_xpath(price_xpath)
 
-        for price_element in price_elements:
-            # We are only interested in the element which is displaying the price details
-            if price_element.is_displayed():
-                _price = price_element.text
-                # Extract the numbers from the price text
-                # This logic should work for different locales and currencies
-                _numbers = "".join(filter(lambda x: x if x.isdigit() else None, _price))
-                if _numbers.isdigit() and int(_numbers) > 0:
-                    logger.debug(
-                        f"Skipping course as it now costs {_price}: {course_name}"
-                    )
-                    self.stats.expired += 1
-                    return False
-        return True
+        # We are only interested in the element which is displaying the price details
+        if price_element.is_displayed():
+            _price = price_element.text
+            # This logic should work for different locales and currencies
+            checkout_price = self._format_price(_price)
+            if None or checkout_price > 0:
+                logger.debug(
+                    f"Skipping course '{course_name}' as it now costs {_price}"
+                )
+                self.stats.expired += 1
+                course_is_free = False
+
+        # Get the listed price of the course for stats
+        if course_is_free:
+            list_price_xpath = "//div[contains(@class, 'styles--checkout-pane-outer')]//td[@data-purpose='list-price']//span"
+            list_price_element = self.driver.find_element_by_xpath(list_price_xpath)
+            list_price = self._format_price(list_price_element.text)
+            if list_price is not None:
+                self.stats.prices.append(list_price)
+        return course_is_free
+
+    def _format_price(self, raw_price: str):
+        formatted_price = None
+        try:
+            formatted_price = float(raw_price[1:])
+            if not self.stats.currency_symbol:
+                self.stats.currency_symbol = raw_price[0]
+        except ValueError:
+            pass
+        return formatted_price
 
     def _check_if_robot(self) -> bool:
         """
