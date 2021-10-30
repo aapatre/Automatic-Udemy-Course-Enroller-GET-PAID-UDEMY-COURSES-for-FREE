@@ -340,16 +340,6 @@ class UdemyActionsUI:
                 self.stats.prices.append(list_price.amount)
         return course_is_free
 
-    def _format_price(self, raw_price: str):
-        formatted_price = None
-        try:
-            formatted_price = float(raw_price[1:])
-            if not self.stats.currency_symbol:
-                self.stats.currency_symbol = raw_price[0]
-        except ValueError:
-            pass
-        return formatted_price
-
     def _check_if_robot(self) -> bool:
         """
         Simply checks if the captcha element is present on login if email/password elements are not
