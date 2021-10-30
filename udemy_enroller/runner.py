@@ -137,6 +137,7 @@ def _redeem_courses_ui(
                 except WebDriverException:
                     logger.error(f"Webdriver exception on link: {course_link}")
                 except KeyboardInterrupt:
+                    udemy_actions.stats.table()
                     logger.warning("Exiting the script")
                     return
                 except exceptions.RobotException as e:

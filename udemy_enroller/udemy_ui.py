@@ -1,9 +1,11 @@
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
+from decimal import Decimal
 from enum import Enum
 from typing import List
 
+from price_parser import Price
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver, WebElement
@@ -19,7 +21,7 @@ logger = get_logger()
 
 @dataclass(unsafe_hash=True)
 class RunStatistics:
-    prices: List[float] = field(default_factory=list)
+    prices: List[Decimal] = field(default_factory=list)
 
     expired: int = 0
     enrolled: int = 0
@@ -35,21 +37,25 @@ class RunStatistics:
         return sum(self.prices) or 0
 
     def table(self):
-        if self.currency_symbol is None:
-            self.currency_symbol = "¤"
-        run_time_seconds = (datetime.utcnow() - self.start_time).total_seconds()
+        # Only show the table if we have something to show
+        if self.prices:
+            if self.currency_symbol is None:
+                self.currency_symbol = "¤"
+            run_time_seconds = int(
+                (datetime.utcnow() - self.start_time).total_seconds()
+            )
 
-        logger.info("==================Run Statistics==================")
-        logger.info(f"Enrolled:                   {self.enrolled}")
-        logger.info(f"Unwanted Category:          {self.unwanted_category}")
-        logger.info(f"Unwanted Language:          {self.unwanted_language}")
-        logger.info(f"Already Claimed:            {self.already_enrolled}")
-        logger.info(f"Expired:                    {self.expired}")
-        logger.info(
-            f"Savings:                    {self.currency_symbol}{self.savings():.2f}"
-        )
-        logger.info(f"Total run time (seconds):   {run_time_seconds}s")
-        logger.info("==================Run Statistics==================")
+            logger.info("==================Run Statistics==================")
+            logger.info(f"Enrolled:                   {self.enrolled}")
+            logger.info(f"Unwanted Category:          {self.unwanted_category}")
+            logger.info(f"Unwanted Language:          {self.unwanted_language}")
+            logger.info(f"Already Claimed:            {self.already_enrolled}")
+            logger.info(f"Expired:                    {self.expired}")
+            logger.info(
+                f"Savings:                    {self.currency_symbol}{self.savings():.2f}"
+            )
+            logger.info(f"Total run time (seconds):   {run_time_seconds}s")
+            logger.info("==================Run Statistics==================")
 
 
 class UdemyStatus(Enum):
@@ -309,8 +315,16 @@ class UdemyActionsUI:
         if price_element.is_displayed():
             _price = price_element.text
             # This logic should work for different locales and currencies
-            checkout_price = self._format_price(_price)
-            if None or checkout_price > 0:
+            checkout_price = Price.fromstring(_price)
+
+            # Set the currency for stats
+            if (
+                self.stats.currency_symbol is None
+                and checkout_price.currency is not None
+            ):
+                self.stats.currency_symbol = checkout_price.currency
+
+            if checkout_price.amount is None or checkout_price.amount > 0:
                 logger.debug(
                     f"Skipping course '{course_name}' as it now costs {_price}"
                 )
@@ -321,20 +335,10 @@ class UdemyActionsUI:
         if course_is_free:
             list_price_xpath = "//div[contains(@class, 'styles--checkout-pane-outer')]//td[@data-purpose='list-price']//span"
             list_price_element = self.driver.find_element_by_xpath(list_price_xpath)
-            list_price = self._format_price(list_price_element.text)
-            if list_price is not None:
-                self.stats.prices.append(list_price)
+            list_price = Price.fromstring(list_price_element.text)
+            if list_price.amount is not None:
+                self.stats.prices.append(list_price.amount)
         return course_is_free
-
-    def _format_price(self, raw_price: str):
-        formatted_price = None
-        try:
-            formatted_price = float(raw_price[1:])
-            if not self.stats.currency_symbol:
-                self.stats.currency_symbol = raw_price[0]
-        except ValueError:
-            pass
-        return formatted_price
 
     def _check_if_robot(self) -> bool:
         """
