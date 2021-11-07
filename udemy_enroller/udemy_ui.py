@@ -248,7 +248,31 @@ class UdemyActionsUI:
             self.stats.enrolled += 1
             return UdemyStatus.ENROLLED.value
         else:
-            return UdemyStatus.ALREADY_ENROLLED.value
+            # Enroll Now 3 
+            # for Free course page without add-to-cart button
+            buy_course_button_xpath = "//button[@data-purpose='buy-this-course-button']//*[contains(., 'Enroll now')]/.."
+
+            enroll_now_elements = self.driver.find_elements_by_xpath(buy_course_button_xpath)
+            if not enroll_now_elements:
+                return UdemyStatus.ALREADY_ENROLLED.value
+            else:
+                # Hit the Enroll button 
+                buy_course_button_xpath = "//button[@data-purpose='buy-this-course-button']"             
+                element_present = EC.presence_of_element_located(
+                    (By.XPATH, buy_course_button_xpath)
+                )
+                WebDriverWait(self.driver, 10).until(element_present).click()
+
+                # Wait for success page to load
+                success_element_class = (
+                    "//div[contains(@class, 'success-alert-banner-container')]"
+                )
+                WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, success_element_class))
+                )
+
+                logger.info(f"Successfully enrolled in: {course_name}")
+                return UdemyStatus.ENROLLED.value 
 
     def _check_enrolled(self, course_name):
         add_to_cart_xpath = "//div[@data-purpose='add-to-cart']"
