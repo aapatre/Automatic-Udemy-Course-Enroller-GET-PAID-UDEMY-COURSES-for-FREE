@@ -82,6 +82,7 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
 2 . The script can be passed arguments:
 
 - `--help`: View full list of arguments available
+- `--browser=<BROWSER_NAME>`: Run with a specific browser 
 - `--discudemy`: Run the discudemy scraper only
 - `--coursevania`: Run the coursevania scraper only
 - `--tutorialbar`: Run the tutorialbar scraper only
@@ -92,9 +93,11 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
 - `--debug`: Enable debug logging
 
 
-3 . Run the script in terminal like so:
+3 . Run the script in terminal with your target browser:
 
--   `udemy_enroller`
+- `udemy_enroller --browser=firefox`
+- `udemy_enroller --browser=chrome`
+- `udemy_enroller --browser=chromium`
 
 4 . The bot starts scraping the course links from the first **All Courses** page
 on [Tutorial Bar](https://www.tutorialbar.com/all-courses/page/1), [DiscUdemy](https://www.discudemy.com/all), [Coursevania](https://coursevania.com) and [FreebiesGlobal](https://freebiesglobal.com) and starts

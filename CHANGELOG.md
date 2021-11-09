@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 2021-11-09
+
+### Added
+- Added support for browser enrolment
+- New coupon source from freebiesglobal
+
+### Removed
+- Remove REST based enrolment since it is no longer working
+
 ## [3.2.0] - 2021-09-13
 
 ### Added
@@ -89,7 +98,9 @@ can continue as normal
   zip, extract, install the requirement and get a working version of this
   project running locally. Suitable for users who are not looking forward to
   contribute.
-  
+
+[4.0.0]:
+  https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v4.0.0
 [3.2.0]:
   https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v3.2.0
 [3.1.0]:
