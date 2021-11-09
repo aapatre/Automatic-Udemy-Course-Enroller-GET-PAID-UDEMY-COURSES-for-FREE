@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "automatic-udemy-course-enroller-get-paid-udemy-courses-for-free"
-version = "3.2.0"
+version = "4.0.0"
 description = ""
 authors = [""]
 
@@ -28,7 +28,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.bumpver]
-current_version = "3.2.0"
+current_version = "4.0.0"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message = "Bump version {old_version} -> {new_version}"
 commit = true
