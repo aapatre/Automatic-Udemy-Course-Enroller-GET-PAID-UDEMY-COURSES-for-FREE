@@ -34,7 +34,7 @@ setup(
         "cloudscraper",
         "webdriver-manager",
         "selenium",
-        "price-parser"
+        "price-parser",
     ],
     setup_requires=["pytest-runner"],
     extras_require={
