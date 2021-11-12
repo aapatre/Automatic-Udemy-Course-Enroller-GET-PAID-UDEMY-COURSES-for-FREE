@@ -32,6 +32,9 @@ setup(
         "ruamel.yaml",
         "requests",
         "cloudscraper",
+        "webdriver-manager",
+        "selenium",
+        "price-parser"
     ],
     setup_requires=["pytest-runner"],
     extras_require={
