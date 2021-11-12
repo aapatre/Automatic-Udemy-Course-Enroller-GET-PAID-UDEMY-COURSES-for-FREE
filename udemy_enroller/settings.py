@@ -16,7 +16,9 @@ class Settings:
     Contains all logic related to the scripts settings
     """
 
-    def __init__(self, delete_settings, settings_path="settings.yaml"):
+    def __init__(
+        self, delete_settings=False, delete_cookie=False, settings_path="settings.yaml"
+    ):
         self.email = None
         self.password = None
         self.zip_code = None
@@ -24,11 +26,14 @@ class Settings:
         self.categories = []
 
         self._settings_path = os.path.join(get_app_dir(), settings_path)
+        self._cookies_path = os.path.join(get_app_dir(), ".cookie")
         self._should_store_email = False
         self._should_store_password = False
         self.is_ci_build = strtobool(os.environ.get("CI_TEST", "False"))
         if delete_settings:
-            self.delete()
+            self.delete_settings()
+        if delete_cookie:
+            self.delete_cookie()
         self._init_settings()
 
     def _init_settings(self) -> None:
@@ -193,7 +198,7 @@ class Settings:
                 "You will be prompted to enter your email/password again when the cookie expires"
             )
 
-    def delete(self) -> None:
+    def delete_settings(self) -> None:
         """
         Delete the settings file
 
@@ -208,6 +213,18 @@ class Settings:
                 logger.info(f"Settings file deleted: {self._settings_path}")
         else:
             logger.info("No settings to delete")
+
+    def delete_cookie(self) -> None:
+        """
+        Delete the cookie file
+
+        :return: None
+        """
+        if os.path.isfile(self._cookies_path):
+            os.remove(self._cookies_path)
+            logger.info(f"Cookie file deleted: {self._cookies_path}")
+        else:
+            logger.info("No cookie file to delete")
 
     def prompt_email(self) -> None:
         """

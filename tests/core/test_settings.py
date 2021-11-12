@@ -82,7 +82,7 @@ def test_settings(
     ):
         with mock.patch("getpass.getpass", return_value=password):
             settings_path = os.path.join(get_app_dir(), f"test_tmp/{file_name}")
-            settings = Settings(False, settings_path)
+            settings = Settings(settings_path=settings_path)
             assert settings.email == email
             assert settings.password == password
             assert settings.zip_code == zip_code
@@ -114,7 +114,7 @@ def test_settings(
                     else categories
                 )
             # Load settings just created
-            Settings(False, settings_path)
+            Settings(settings_path=settings_path)
 
 
 @pytest.mark.parametrize(
@@ -224,10 +224,10 @@ def test_load_existing_settings(
     ):
         with mock.patch("getpass.getpass", return_value=password):
             settings_path = f"test_tmp/{file_name}"
-            Settings(False, settings_path)
+            Settings(settings_path=settings_path)
 
     # Load existing settings
-    settings = Settings(False, settings_path)
+    settings = Settings(settings_path=settings_path)
     if should_save_email.upper() == "Y":
         assert settings.email == email
     else:
