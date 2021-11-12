@@ -3,9 +3,9 @@ import logging
 from argparse import Namespace
 from typing import Tuple, Union
 
-from udemy_enroller import Settings
+from udemy_enroller import ALL_VALID_BROWSER_STRINGS, DriverManager, Settings
 from udemy_enroller.logging import get_logger
-from udemy_enroller.runner import redeem_courses
+from udemy_enroller.runner import redeem_courses_ui
 
 logger = get_logger()
 
@@ -56,6 +56,7 @@ def determine_if_scraper_enabled(
 
 
 def run(
+    browser: str,
     freebiesglobal_enabled: bool,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
@@ -66,6 +67,8 @@ def run(
 ):
     """
     Run the udemy enroller script
+
+    :param str browser: Name of the browser we want to create a driver for
     :param bool freebiesglobal_enabled:
     :param bool tutorialbar_enabled:
     :param bool discudemy_enabled:
@@ -76,7 +79,10 @@ def run(
     :return:
     """
     settings = Settings(delete_settings, delete_cookie)
-    redeem_courses(
+
+    dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
+    redeem_courses_ui(
+        dm.driver,
         settings,
         freebiesglobal_enabled,
         tutorialbar_enabled,
@@ -95,12 +101,18 @@ def parse_args() -> Namespace:
     parser = argparse.ArgumentParser(description="Udemy Enroller")
 
     parser.add_argument(
+        "--browser",
+        required=True,
+        type=str,
+        choices=ALL_VALID_BROWSER_STRINGS,
+        help="Browser to use for Udemy Enroller",
+    )
+    parser.add_argument(
         "--freebiesglobal",
         action="store_true",
         default=False,
         help="Run freebiesglobal scraper",
     )
-
     parser.add_argument(
         "--tutorialbar",
         action="store_true",
@@ -168,6 +180,7 @@ def main():
             args.freebiesglobal, args.tutorialbar, args.discudemy, args.coursevania
         )
         run(
+            args.browser,
             freebiesglobal_enabled,
             tutorialbar_enabled,
             discudemy_enabled,
