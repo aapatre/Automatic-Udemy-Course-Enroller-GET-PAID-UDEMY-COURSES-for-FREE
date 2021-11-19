@@ -8,7 +8,7 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="udemy-enroller",
-    version="4.0.0",
+    version="4.0.2",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="aapatre",
@@ -32,6 +32,9 @@ setup(
         "ruamel.yaml",
         "requests",
         "cloudscraper",
+        "webdriver-manager",
+        "selenium",
+        "price-parser",
     ],
     setup_requires=["pytest-runner"],
     extras_require={
