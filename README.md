@@ -120,7 +120,6 @@ Total Enrolments:           1705
 Savings:                    €2674.44
 ================== Run Statistics ==================
 ```
-	
 
 ---
 
