@@ -168,7 +168,7 @@ class UdemyActionsUI:
 
             # Enroll Now 2
             enroll_button_xpath = (
-                "//div[contains(@class, 'styles--checkout-pane-outer')]//button"
+                "//span[contains(text(),'Free Purchase')]/.."
             )
             element_present = EC.presence_of_element_located(
                 (
@@ -308,7 +308,7 @@ class UdemyActionsUI:
 
     def _check_price(self, course_name):
         course_is_free = True
-        price_xpath = "//div[contains(@class, 'styles--checkout-pane-outer')]//span[@data-purpose='total-price']//span"
+        price_xpath = "//div[contains(@data-purpose, 'total-amount-summary')]//span[2]"
         price_element = self.driver.find_element_by_xpath(price_xpath)
 
         # We are only interested in the element which is displaying the price details
@@ -333,7 +333,7 @@ class UdemyActionsUI:
 
         # Get the listed price of the course for stats
         if course_is_free:
-            list_price_xpath = "//div[contains(@class, 'styles--checkout-pane-outer')]//td[@data-purpose='list-price']//span"
+            list_price_xpath = "//div[contains(@class, 'order-summary--purchase-price-text')]//span"
             list_price_element = self.driver.find_element_by_xpath(list_price_xpath)
             list_price = Price.fromstring(list_price_element.text)
             if list_price.amount is not None:
