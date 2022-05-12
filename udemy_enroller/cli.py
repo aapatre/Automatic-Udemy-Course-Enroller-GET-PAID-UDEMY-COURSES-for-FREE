@@ -5,7 +5,7 @@ from typing import Tuple, Union
 
 from udemy_enroller import ALL_VALID_BROWSER_STRINGS, DriverManager, Settings
 from udemy_enroller.logging import get_logger
-from udemy_enroller.runner import redeem_courses_ui, redeem_courses
+from udemy_enroller.runner import redeem_courses, redeem_courses_ui
 
 logger = get_logger()
 
