@@ -5,7 +5,7 @@ from typing import Tuple, Union
 
 from udemy_enroller import ALL_VALID_BROWSER_STRINGS, DriverManager, Settings
 from udemy_enroller.logging import get_logger
-from udemy_enroller.runner import redeem_courses_ui
+from udemy_enroller.runner import redeem_courses, redeem_courses_ui
 
 logger = get_logger()
 
@@ -79,17 +79,26 @@ def run(
     :return:
     """
     settings = Settings(delete_settings, delete_cookie)
-
-    dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
-    redeem_courses_ui(
-        dm.driver,
-        settings,
-        freebiesglobal_enabled,
-        tutorialbar_enabled,
-        discudemy_enabled,
-        coursevania_enabled,
-        max_pages,
-    )
+    if browser:
+        dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
+        redeem_courses_ui(
+            dm.driver,
+            settings,
+            freebiesglobal_enabled,
+            tutorialbar_enabled,
+            discudemy_enabled,
+            coursevania_enabled,
+            max_pages,
+        )
+    else:
+        redeem_courses(
+            settings,
+            freebiesglobal_enabled,
+            tutorialbar_enabled,
+            discudemy_enabled,
+            coursevania_enabled,
+            max_pages,
+        )
 
 
 def parse_args() -> Namespace:
@@ -102,7 +111,7 @@ def parse_args() -> Namespace:
 
     parser.add_argument(
         "--browser",
-        required=True,
+        required=False,
         type=str,
         choices=ALL_VALID_BROWSER_STRINGS,
         help="Browser to use for Udemy Enroller",

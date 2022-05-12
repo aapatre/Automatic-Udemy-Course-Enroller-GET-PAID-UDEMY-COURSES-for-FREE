@@ -86,16 +86,16 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
 - `--discudemy`: Run the discudemy scraper only
 - `--coursevania`: Run the coursevania scraper only
 - `--tutorialbar`: Run the tutorialbar scraper only
-- `--freebiesglobal`: Run the freebiesglobal scraper only _[New]_ 
+- `--freebiesglobal`: Run the freebiesglobal scraper only
 - `--max-pages=<NUMBER>`: Max number of pages to scrape from sites before exiting the script (default is 5)
 - `--delete-settings`: Delete existing settings file
-- `--delete-cookie`: Delete the cookie file if it exists _[New]_
+- `--delete-cookie`: Delete the cookie file if it exists
 - `--debug`: Enable debug logging
 
 
-3 . Run the script in terminal with your target browser:
+3 . Run the script in terminal with your target runner:
 
-- `udemy_enroller --browser=firefox`
+- `udemy_enroller`
 - `udemy_enroller --browser=chrome`
 - `udemy_enroller --browser=chromium`
 
