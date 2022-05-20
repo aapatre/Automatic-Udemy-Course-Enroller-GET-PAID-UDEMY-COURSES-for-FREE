@@ -10,7 +10,6 @@ and this project adheres to
 
 ### Added
 - Re-added REST based enrolment
-- 
 
 ## [4.0.0] - 2021-11-12
 
@@ -105,6 +104,8 @@ can continue as normal
   project running locally. Suitable for users who are not looking forward to
   contribute.
 
+[4.1.0]:
+  https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v4.1.0
 [4.0.0]:
   https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v4.0.0
 [3.2.0]:
