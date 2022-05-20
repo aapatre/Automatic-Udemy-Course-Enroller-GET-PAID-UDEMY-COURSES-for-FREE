@@ -94,6 +94,13 @@ class UdemyActionsUI:
         """
         if not self.logged_in:
             self.driver.get(f"{self.DOMAIN}/join/login-popup/")
+
+            # Prompt for email/password if we don't have them saved in settings
+            if self.settings.email is None:
+                self.settings.prompt_email()
+            if self.settings.password is None:
+                self.settings.prompt_password()
+
             try:
                 email_element = self.driver.find_element_by_name("email")
                 email_element.send_keys(self.settings.email)
