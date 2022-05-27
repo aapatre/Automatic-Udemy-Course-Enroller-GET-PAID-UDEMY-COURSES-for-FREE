@@ -50,6 +50,7 @@ def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
                         )
                         time.sleep(sleep_time)
                 except KeyboardInterrupt:
+                    udemy_actions.stats.table()
                     logger.error("Exiting the script")
                     return
                 except Exception as e:
