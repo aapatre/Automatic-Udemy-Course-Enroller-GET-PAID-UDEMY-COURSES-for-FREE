@@ -1,8 +1,8 @@
-aiohttp[speedups]
-beautifulsoup4
-ruamel.yaml
-requests
-cloudscraper
-webdriver-manager
-selenium
-price-parser
+aiohttp[speedups]==3.8.1
+beautifulsoup4==4.11.1
+ruamel.yaml==0.16.13
+requests==2.27.1
+cloudscraper==1.2.60
+webdriver-manager==3.7.0
+selenium==3.141.0
+price-parser==0.3.4

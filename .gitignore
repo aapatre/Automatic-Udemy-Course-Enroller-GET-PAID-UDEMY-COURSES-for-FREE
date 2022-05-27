@@ -240,3 +240,6 @@ test_tmp/
 #ignore deepsource.toml
 
 .deepsource.toml
+
+# ignore pypi config
+ .pypirc

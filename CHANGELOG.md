@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.1] - 2022-05-27
+
+### Added
+- Resolved issue with REST based enrolment
+- Generate enrolment report even on ctrl-c of run
+- Tied external dependencies to known working versions
+
 ## [4.1.0] - 2022-05-20
 
 ### Added
@@ -104,6 +111,8 @@ can continue as normal
   project running locally. Suitable for users who are not looking forward to
   contribute.
 
+[4.1.1]:
+  https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v4.1.1
 [4.1.0]:
   https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v4.1.0
 [4.0.0]:
