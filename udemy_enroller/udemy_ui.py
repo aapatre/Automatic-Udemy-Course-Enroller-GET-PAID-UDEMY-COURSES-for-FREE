@@ -174,9 +174,7 @@ class UdemyActionsUI:
             WebDriverWait(self.driver, 10).until(element_present).click()
 
             # Enroll Now 2
-            enroll_button_xpath = (
-                "//div[contains(@class, 'styles--checkout-pane-outer')]//button"
-            )
+            enroll_button_xpath = "//div[starts-with(@class, 'checkout-button--checkout-button--container')]//button"
             element_present = EC.presence_of_element_located(
                 (
                     By.XPATH,
@@ -258,7 +256,9 @@ class UdemyActionsUI:
             return UdemyStatus.ALREADY_ENROLLED.value
 
     def _check_enrolled(self, course_name):
-        add_to_cart_xpath = "//div[@data-purpose='add-to-cart']"
+        add_to_cart_xpath = (
+            "//div[starts-with(@class, 'buy-box')]//div[@data-purpose='add-to-cart']"
+        )
         add_to_cart_elements = self.driver.find_elements_by_xpath(add_to_cart_xpath)
         if not add_to_cart_elements or (
             add_to_cart_elements and not add_to_cart_elements[0].is_displayed()
@@ -315,7 +315,7 @@ class UdemyActionsUI:
 
     def _check_price(self, course_name):
         course_is_free = True
-        price_xpath = "//div[contains(@class, 'styles--checkout-pane-outer')]//span[@data-purpose='total-price']//span"
+        price_xpath = "//div[contains(@data-purpose, 'total-amount-summary')]//span[2]"
         price_element = self.driver.find_element_by_xpath(price_xpath)
 
         # We are only interested in the element which is displaying the price details
@@ -340,7 +340,9 @@ class UdemyActionsUI:
 
         # Get the listed price of the course for stats
         if course_is_free:
-            list_price_xpath = "//div[contains(@class, 'styles--checkout-pane-outer')]//td[@data-purpose='list-price']//span"
+            list_price_xpath = (
+                "//div[starts-with(@class, 'order-summary--original-price-text')]//span"
+            )
             list_price_element = self.driver.find_element_by_xpath(list_price_xpath)
             list_price = Price.fromstring(list_price_element.text)
             if list_price.amount is not None:
