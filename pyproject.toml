@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "automatic-udemy-course-enroller-get-paid-udemy-courses-for-free"
-version = "4.1.1"
+version = "4.1.2"
 description = ""
 authors = [""]
 
@@ -24,7 +24,7 @@ pytest-asyncio = "^0.18.3"
 bumpver = "^2022.1116"
 
 [tool.bumpver]
-current_version = "4.1.1"
+current_version = "4.1.2"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message = "Bump version {old_version} -> {new_version}"
 commit = true
