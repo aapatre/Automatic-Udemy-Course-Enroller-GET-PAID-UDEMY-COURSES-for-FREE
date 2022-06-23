@@ -1,9 +1,6 @@
 [![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/it-works-why.svg)](https://forthebadge.com)
 
-* ALPHA IS A PRE DEVELOPMENT BRANCH, DO NOT EXPECT USER FACING ISSUES TO BE ADDRESSED IN THIS BRANCH!
-
-
 * Udemy Coupon Grabber & Course Enroller: Grab FREE Coupons!
 
 Do you want to LEARN NEW STUFF for FREE? Don't worry, with the power of
@@ -19,7 +16,7 @@ The code scrapes course links and coupons from:
  - [tutorialbar.com](https://tutorialbar.com)
  - [discudemy.com](https://discudemy.com)
  - [coursevania.com](https://coursevania.com)
- - [freebiesglobal.com](https://freebiesglobal.com) -> _New_
+ - [freebiesglobal.com](https://freebiesglobal.com)
 
 
 In case of any bugs or issues, please open an issue in github.

@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "automatic-udemy-course-enroller-get-paid-udemy-courses-for-free"
+name = "udemy-enroller"
 version = "4.1.2"
 description = ""
-authors = [""]
+authors = ["aapatre <udemyenroller@gmail.com>", "fakeid <udemyenroller@gmail.com>", "cullzie <udemyenroller@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"

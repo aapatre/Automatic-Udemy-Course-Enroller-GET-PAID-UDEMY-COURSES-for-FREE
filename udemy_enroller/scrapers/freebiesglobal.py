@@ -1,13 +1,13 @@
 import asyncio
-import logging
 from typing import List
 
 from bs4 import BeautifulSoup
 
-from udemy_enroller.http import get
+from udemy_enroller.http_utils import http_get
+from udemy_enroller.logger import get_logger
 from udemy_enroller.scrapers.base_scraper import BaseScraper
 
-logger = logging.getLogger("udemy_enroller")
+logger = get_logger()
 
 
 class FreebiesglobalScraper(BaseScraper):
@@ -46,7 +46,7 @@ class FreebiesglobalScraper(BaseScraper):
         """
         freebiesglobal_links = []
         self.current_page += 1
-        coupons_data = await get(
+        coupons_data = await http_get(
             f"{self.DOMAIN}/dealstore/udemy/page/{self.current_page}"
         )
         soup = BeautifulSoup(coupons_data.decode("utf-8"), "html.parser")
@@ -75,7 +75,7 @@ class FreebiesglobalScraper(BaseScraper):
         :return: Coupon link of the udemy course
         """
 
-        data = await get(url)
+        data = await http_get(url)
         soup = BeautifulSoup(data.decode("utf-8"), "html.parser")
         for link in soup.find_all("a", class_="re_track_btn"):
             udemy_link = cls.validate_coupon_url(link["href"])

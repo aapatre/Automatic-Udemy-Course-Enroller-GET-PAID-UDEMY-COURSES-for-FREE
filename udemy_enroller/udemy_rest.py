@@ -10,7 +10,7 @@ import requests
 from bs4 import BeautifulSoup
 from cloudscraper import create_scraper
 
-from udemy_enroller.logging import get_logger
+from udemy_enroller.logger import get_logger
 from udemy_enroller.settings import Settings
 from udemy_enroller.utils import get_app_dir
 

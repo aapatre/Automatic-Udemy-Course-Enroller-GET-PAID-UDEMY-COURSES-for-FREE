@@ -17,7 +17,7 @@ from udemy_enroller import (
     UdemyStatus,
     exceptions,
 )
-from udemy_enroller.logging import get_logger
+from udemy_enroller.logger import get_logger
 
 logger = get_logger()
 

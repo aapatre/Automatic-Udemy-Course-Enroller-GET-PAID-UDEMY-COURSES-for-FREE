@@ -5,7 +5,7 @@ from typing import Dict, List, Tuple
 
 from ruamel.yaml import YAML, dump
 
-from udemy_enroller.logging import get_logger
+from udemy_enroller.logger import get_logger
 from udemy_enroller.utils import get_app_dir
 
 logger = get_logger()

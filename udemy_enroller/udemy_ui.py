@@ -13,7 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from udemy_enroller.exceptions import LoginException, RobotException
-from udemy_enroller.logging import get_logger
+from udemy_enroller.logger import get_logger
 from udemy_enroller.settings import Settings
 
 logger = get_logger()
@@ -298,8 +298,12 @@ class UdemyActionsUI:
             breadcrumbs: WebElement = self.driver.find_element_by_class_name(
                 breadcrumbs_path
             )
-            breadcrumbs = breadcrumbs.find_elements_by_class_name(breadcrumbs_text_path)
-            breadcrumb_text = [bc.text for bc in breadcrumbs]  # Get only the text
+            breadcrumb_elements = breadcrumbs.find_elements_by_class_name(
+                breadcrumbs_text_path
+            )
+            breadcrumb_text = [
+                bc.text for bc in breadcrumb_elements
+            ]  # Get only the text
 
             for category in self.settings.categories:
                 if category in breadcrumb_text:
