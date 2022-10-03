@@ -1,3 +1,4 @@
+"""Webdriver manager."""
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from webdriver_manager.chrome import ChromeDriverManager
@@ -21,7 +22,10 @@ ALL_VALID_BROWSER_STRINGS = VALID_CHROME_STRINGS.union(VALID_CHROMIUM_STRINGS)
 
 
 class DriverManager:
+    """Webdriver manager."""
+
     def __init__(self, browser: str, is_ci_build: bool = False):
+        """Initialize."""
         self.driver = None
         self.options = None
         self.browser = browser
@@ -30,11 +34,10 @@ class DriverManager:
 
     def _init_driver(self):
         """
-        Initialize the correct web driver based on the users requested browser
+        Initialize the correct web driver based on the users requested browser.
 
         :return: None
         """
-
         if self.browser.lower() in VALID_CHROME_STRINGS:
             if self.is_ci_build:
                 self.options = self._build_ci_options_chrome()
@@ -76,7 +79,7 @@ class DriverManager:
     @staticmethod
     def _build_ci_options_chrome():
         """
-        Build chrome options required to run in CI
+        Build chrome options required to run in CI.
 
         :return:
         """
