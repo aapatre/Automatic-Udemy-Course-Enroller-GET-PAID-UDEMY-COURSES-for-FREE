@@ -30,13 +30,21 @@ In case of any bugs or issues, please open an issue in github. Also, don't forge
 **We are also on _[GitLab](https://gitlab.com/the-automators/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE)_**
 <br/><br/>
 
+<<<<<<< HEAD
 ## Video Proof:
+=======
+### **Video Proof:**
+>>>>>>> develop
 
 [![Udemy Auto-Course-Enroller](https://img.youtube.com/vi/tdLsVoraMxw/0.jpg)](https://www.youtube.com/watch?v=tdLsVoraMxw "GET Udemy Courses for FREE with Python | 2 Minute Tuesday")
 
 ---
 
+<<<<<<< HEAD
 ## Disclaimer & WARNINGS:
+=======
+### **Disclaimer & WARNINGS:**
+>>>>>>> develop
 
 &emsp; 1. Use this ONLY for **Educational Purposes!** By using this code you agree that 
    **I'm not responsible for any kind of trouble** caused by the code. **THIS PROJECT IS NOT AFFILIATED WITH UDEMY.** 
@@ -53,6 +61,7 @@ In case of any bugs or issues, please open an issue in github. Also, don't forge
 
 ### How to Install the Requirements?
 
+<<<<<<< HEAD
 &emsp; __Required Python version:__ [Python 3.8+](https://www.python.org/downloads/)
 
 &emsp; __(Windows users only) Required Microsoft Visual C++ 14.0+ version:__ [Microsoft Visual C++ 14.0+](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
@@ -60,6 +69,15 @@ In case of any bugs or issues, please open an issue in github. Also, don't forge
 ![alt text](https://docs.microsoft.com/answers/storage/attachments/34873-10262.png)
 
 &emsp; __You must have pip or poetry installed. Please look up how to install them in your OS.__
+=======
+__** Required Python version:__ [Python 3.8+](https://www.python.org/downloads/)
+
+__** (Windows users only) Required Microsoft Visual C++ 14.0+ version:__ [Microsoft Visual C++ 14.0+](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+
+![alt text](https://docs.microsoft.com/answers/storage/attachments/34873-10262.png)
+
+__** You must have pip or poetry installed. Please look up how to install them in your OS.__
+>>>>>>> develop
 
 Download a release of this project or clone the repository then navigate to the
 folder where you placed the files on. Type `pip install -r requirements.txt` to
@@ -115,9 +133,15 @@ enrolling you to Udemy courses. After it has enrolled you to courses from the
 first page, it then moves to the next site page and the cycle continues.
 
 -   Stop the script by pressing `ctrl+c` in terminal to stop the enrollment process. 
+<<<<<<< HEAD
 
 <br/>
 
+=======
+
+<br/>
+
+>>>>>>> develop
 5 . *[New]* At the end of process a detailed result is shown:
 
 ```
@@ -156,10 +180,17 @@ then uses REST requests to authenticate and enroll to the
 courses. Think of it this way: Epic Games & other clients like Steam provide you
 a handful of games each week, for free; Only in this case, we need a coupon code
 to make those courses free. <br/><br/>
+<<<<<<< HEAD
 
 
 __3. How frequently should you run the script?__
 
+=======
+
+
+__3. How frequently should you run the script?__
+
+>>>>>>> develop
 &emsp; Daily, at least once! I've painstakingly amassed over 4000
 courses in the last four years! And out of those 4000, I've only paid for 4 of
 these courses.
@@ -167,18 +198,32 @@ these courses.
 So, a mere **0.001%** of courses are **actually paid** in my collection!
 Thankfully, you can get more than what I gathered in 4 years, in a matter of
 weeks! 🙌🏻 <br/><br/>
+<<<<<<< HEAD
 
 
 __4. Why did I create this?__
 
+=======
+
+
+__4. Why did I create this?__
+
+>>>>>>> develop
 &emsp; It used to be my daily habit to redeem courses and it was an extremely tedious
 task that took around 15 minutes, for 10 courses. And then I suddenly got the
 idea to automate it, after I found the automation course mentioned above. I bet,
 it will save your precious time too! :) <br/><br/>
+<<<<<<< HEAD
 
 
 __5. The code compiles successfully, but it's taking too long to work! IS there any way to fix that?__
 
+=======
+
+
+__5. The code compiles successfully, but it's taking too long to work! IS there any way to fix that?__
+
+>>>>>>> develop
 &emsp; Since we are heavily dependent on a third-party site to retrieve coupons links,
 there may be issues when the site is down. Needless to mention the connectivity
 issues too. If everything is working fine, you can see the courses being
@@ -208,21 +253,35 @@ By using this repo/script, you agree that the authors and contributors are under
 
 ---
 
+<<<<<<< HEAD
 ## Supporters
 
 ### Jetbrains
+=======
+## ** Supporters
+
+### *** Jetbrains
+>>>>>>> develop
 
 [![JetBrains](https://i.imgur.com/h2R018M.jpg)](https://jetbrains.com/?from=udemy-free-course-enroller)
 
 Thanks to [JetBrains](https://jetbrains.com/?from=udemy-free-course-enroller) for supporting us. They are the maker of world class IDE and developer tooling. If you think their product might help you, please support them.
 
+<<<<<<< HEAD
 ### GitBook
+=======
+### *** GitBook
+>>>>>>> develop
 
 [![GitBook](https://i.imgur.com/OkuB14I.jpg)](https://gitbook.com)
 
 Thanks to [GitBook](https://gitbook.com) for supporting us. GitBook is the best place to track personal notes and ideas for teams. If you think their product might help you, please support them.
 
+<<<<<<< HEAD
 ### GitLab
+=======
+### *** GitLab
+>>>>>>> develop
 
 [![GitLab](https://i.imgur.com/aUWtSn4.png)](https://gitlab.com)
 
