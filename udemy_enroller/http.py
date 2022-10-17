@@ -1,3 +1,4 @@
+"""HTTP helpers."""
 import aiohttp
 
 from udemy_enroller.logging import get_logger
@@ -7,7 +8,7 @@ logger = get_logger()
 
 async def get(url, headers=None):
     """
-    Send REST get request to the url passed in
+    Send REST get request to the url passed in.
 
     :param url: The Url to get call get request on
     :param headers: The headers to pass with the get request
