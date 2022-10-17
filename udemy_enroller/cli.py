@@ -1,8 +1,12 @@
 """CLI entrypoint for this script."""
 import argparse
 import logging
+import platform
+import sys
 from argparse import Namespace
 from typing import Tuple, Union
+
+from pkg_resources import DistributionNotFound, get_distribution
 
 from udemy_enroller import ALL_VALID_BROWSER_STRINGS, DriverManager, Settings
 from udemy_enroller.logging import get_logger
@@ -21,6 +25,40 @@ def enable_debug_logging() -> None:
     for handler in logger.handlers:
         handler.setLevel(logging.DEBUG)
     logger.info("Enabled debug logging")
+
+
+def log_package_details() -> None:
+    """
+    Log details of the package.
+
+    :return: None
+    """
+    try:
+        distribution = get_distribution("udemy_enroller")
+        if distribution:
+            logger.debug(f"Name: {distribution.project_name}")
+            logger.debug(f"Version: {distribution.version}")
+            logger.debug(f"Location: {distribution.location}")
+    except DistributionNotFound:
+        logger.debug("Not installed on python env.")
+
+
+def log_python_version():
+    """
+    Log version of python in use.
+
+    :return: None
+    """
+    logger.debug(f"Python: {sys.version}")
+
+
+def log_os_version():
+    """
+    Log version of the OS.
+
+    :return: None
+    """
+    logger.debug(f"OS: {platform.platform()}")
 
 
 def determine_if_scraper_enabled(
@@ -182,6 +220,9 @@ def main():
     if args:
         if args.debug:
             enable_debug_logging()
+            log_package_details()
+            log_python_version()
+            log_os_version()
         (
             freebiesglobal_enabled,
             tutorialbar_enabled,
