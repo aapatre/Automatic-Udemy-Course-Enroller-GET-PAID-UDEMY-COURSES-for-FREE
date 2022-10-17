@@ -1,7 +1,12 @@
+"""CLI entrypoint for this script."""
 import argparse
 import logging
+import platform
+import sys
 from argparse import Namespace
 from typing import Tuple, Union
+
+from pkg_resources import DistributionNotFound, get_distribution
 
 from udemy_enroller import ALL_VALID_BROWSER_STRINGS, DriverManager, Settings
 from udemy_enroller.logger import get_logger
@@ -12,14 +17,48 @@ logger = get_logger()
 
 def enable_debug_logging() -> None:
     """
-    Enable debug logging for the scripts
+    Enable debug logging for the scripts.
 
     :return: None
     """
     logger.setLevel(logging.DEBUG)
     for handler in logger.handlers:
         handler.setLevel(logging.DEBUG)
-    logger.info(f"Enabled debug logging")
+    logger.info("Enabled debug logging")
+
+
+def log_package_details() -> None:
+    """
+    Log details of the package.
+
+    :return: None
+    """
+    try:
+        distribution = get_distribution("udemy_enroller")
+        if distribution:
+            logger.debug(f"Name: {distribution.project_name}")
+            logger.debug(f"Version: {distribution.version}")
+            logger.debug(f"Location: {distribution.location}")
+    except DistributionNotFound:
+        logger.debug("Not installed on python env.")
+
+
+def log_python_version():
+    """
+    Log version of python in use.
+
+    :return: None
+    """
+    logger.debug(f"Python: {sys.version}")
+
+
+def log_os_version():
+    """
+    Log version of the OS.
+
+    :return: None
+    """
+    logger.debug(f"OS: {platform.platform()}")
 
 
 def determine_if_scraper_enabled(
@@ -29,7 +68,7 @@ def determine_if_scraper_enabled(
     coursevania_enabled: bool,
 ) -> Tuple[bool, bool, bool, bool]:
     """
-    Determine what scrapers should be enabled and disabled
+    Determine what scrapers should be enabled and disabled.
 
     :return: tuple containing boolean of what scrapers should run
     """
@@ -66,7 +105,7 @@ def run(
     delete_cookie: bool,
 ):
     """
-    Run the udemy enroller script
+    Run the udemy enroller script.
 
     :param str browser: Name of the browser we want to create a driver for
     :param bool freebiesglobal_enabled:
@@ -103,7 +142,7 @@ def run(
 
 def parse_args() -> Namespace:
     """
-    Parse args from the CLI or use the args passed in
+    Parse args from the CLI or use the args passed in.
 
     :return: Args to be used in the script
     """
@@ -147,7 +186,7 @@ def parse_args() -> Namespace:
         "--max-pages",
         type=int,
         default=5,
-        help=f"Max pages to scrape from sites (if pagination exists) (Default is 5)",
+        help="Max pages to scrape from sites (if pagination exists) (Default is 5)",
     )
 
     parser.add_argument(
@@ -174,10 +213,14 @@ def parse_args() -> Namespace:
 
 
 def main():
+    """Entrypoint for scripts."""
     args = parse_args()
     if args:
         if args.debug:
             enable_debug_logging()
+            log_package_details()
+            log_python_version()
+            log_os_version()
         (
             freebiesglobal_enabled,
             tutorialbar_enabled,

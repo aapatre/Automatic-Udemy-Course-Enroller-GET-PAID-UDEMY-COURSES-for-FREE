@@ -1,3 +1,4 @@
+"""Runner."""
 import asyncio
 import random
 import time
@@ -24,7 +25,7 @@ logger = get_logger()
 
 def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
     """
-    Method to scrape courses from the supported sites and enroll in them on udemy
+    Scrape courses from the supported sites and enroll in them on udemy.
 
     :param Settings settings: Core settings used for Udemy
     :param ScraperManager scrapers:
@@ -59,7 +60,7 @@ def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
                     if settings.is_ci_build:
                         logger.info("We have attempted to subscribe to 1 udemy course")
                         logger.info("Ending test")
-                        return
+                        return  # noqa: B012
         else:
             udemy_actions.stats.table()
             logger.info("All scrapers complete")
@@ -75,7 +76,7 @@ def redeem_courses(
     max_pages: Union[int, None],
 ) -> None:
     """
-    Wrapper of _redeem_courses which catches unhandled exceptions
+    Wrap _redeem_courses to catch unhandled exceptions.
 
     :param Settings settings: Core settings used for Udemy
     :param bool freebiesglobal_enabled: Boolean signifying if freebiesglobal scraper should run
@@ -104,7 +105,7 @@ def _redeem_courses_ui(
     scrapers: ScraperManager,
 ) -> None:
     """
-    Method to scrape courses from the supported sites and enroll in them on udemy.
+    Scrape courses from the supported sites and enroll in them on udemy.
 
     :param WebDriver driver: WebDriver to use to complete enrolment
     :param Settings settings: Core settings used for Udemy
@@ -150,7 +151,7 @@ def _redeem_courses_ui(
                     if settings.is_ci_build:
                         logger.info("We have attempted to subscribe to 1 udemy course")
                         logger.info("Ending test")
-                        return
+                        return  # noqa: B012
         else:
             udemy_actions.stats.table()
             logger.info("All scrapers complete")
@@ -167,7 +168,7 @@ def redeem_courses_ui(
     max_pages: Union[int, None],
 ) -> None:
     """
-    Wrapper of _redeem_courses so we always close browser on completion
+    Wrap _redeem_courses so we always close browser on completion.
 
     :param WebDriver driver: WebDriver to use to complete enrolment
     :param Settings settings: Core settings used for Udemy
@@ -178,7 +179,6 @@ def redeem_courses_ui(
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :return:
     """
-
     try:
         scrapers = ScraperManager(
             freebiesglobal_enabled,

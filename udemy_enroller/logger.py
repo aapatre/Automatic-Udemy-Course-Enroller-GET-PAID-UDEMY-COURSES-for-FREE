@@ -1,3 +1,4 @@
+"""Logger utilities."""
 import logging
 import logging.config
 import os
@@ -6,22 +7,20 @@ from udemy_enroller.utils import get_app_dir
 
 
 class CustomFileHandler(logging.FileHandler):
-    """
-    Allows us to log to the app directory
-    """
+    """Allows us to log to the app directory."""
 
     def __init__(self, file_name="app.log", mode="a"):
+        """Initialize."""
         log_file_path = os.path.join(get_app_dir(), file_name)
         super(CustomFileHandler, self).__init__(log_file_path, mode)
 
 
 def load_logging_config() -> None:
     """
-    Load logging configuration
+    Load logging configuration.
 
     :return: None
     """
-
     my_logger = logging.getLogger("udemy_enroller")
     my_logger.setLevel(logging.INFO)
 
@@ -41,7 +40,7 @@ def load_logging_config() -> None:
 
 def get_logger() -> logging.Logger:
     """
-    Convenience method to load the app logger
+    Get the app logger.
 
     :return: An instance of the app logger
     """

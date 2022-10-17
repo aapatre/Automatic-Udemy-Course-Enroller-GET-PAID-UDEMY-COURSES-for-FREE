@@ -1,3 +1,4 @@
+"""Tutorialbar scraper."""
 import asyncio
 from typing import List
 
@@ -11,14 +12,13 @@ logger = get_logger()
 
 
 class TutorialBarScraper(BaseScraper):
-    """
-    Contains any logic related to scraping of data from tutorialbar.com
-    """
+    """Contains any logic related to scraping of data from tutorialbar.com."""
 
     DOMAIN = "https://www.tutorialbar.com"
     AD_DOMAINS = ("https://amzn", "https://bit.ly")
 
     def __init__(self, enabled, max_pages=None):
+        """Initialize."""
         super().__init__()
         self.scraper_name = "tutorialbar"
         if not enabled:
@@ -29,7 +29,7 @@ class TutorialBarScraper(BaseScraper):
     @BaseScraper.time_run
     async def run(self) -> List:
         """
-        Runs the steps to scrape links from tutorialbar.com
+        Run the steps to scrape links from tutorialbar.com.
 
         :return: list of udemy coupon links
         """
@@ -39,7 +39,7 @@ class TutorialBarScraper(BaseScraper):
 
     async def get_links(self):
         """
-        Scrape udemy links from tutorialbar.com
+        Scrape udemy links from tutorialbar.com.
 
         :return: List of udemy course urls
         """
@@ -61,7 +61,7 @@ class TutorialBarScraper(BaseScraper):
 
     def _filter_ad_domains(self, udemy_links) -> List:
         """
-        Filter out any known ad domains from the links scraped
+        Filter out any known ad domains from the links scraped.
 
         :param list udemy_links: List of urls to filter ad domains from
         :return: A list of filtered urls
@@ -77,7 +77,7 @@ class TutorialBarScraper(BaseScraper):
 
     async def get_course_links(self, url: str) -> List:
         """
-        Gets the url of pages which contain the udemy link we want to get
+        Get the url of pages which contain the udemy link we want to get.
 
         :param str url: The url to scrape data from
         :return: list of pages on tutorialbar.com that contain Udemy coupons
@@ -100,12 +100,11 @@ class TutorialBarScraper(BaseScraper):
     @staticmethod
     async def get_udemy_course_link(url: str) -> str:
         """
-        Gets the udemy course link
+        Get the udemy course link.
 
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
         """
-
         text = await http_get(url)
         if text is not None:
             soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
@@ -116,7 +115,7 @@ class TutorialBarScraper(BaseScraper):
 
     async def gather_udemy_course_links(self, courses: List[str]):
         """
-        Async fetching of the udemy course links from tutorialbar.com
+        Async fetching of the udemy course links from tutorialbar.com.
 
         :param list courses: A list of tutorialbar.com course links we want to fetch the udemy links for
         :return: list of udemy links

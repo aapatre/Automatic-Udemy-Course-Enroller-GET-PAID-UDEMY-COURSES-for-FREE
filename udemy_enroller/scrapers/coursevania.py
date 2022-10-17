@@ -1,3 +1,4 @@
+"""Coursevania Scraper."""
 import asyncio
 import json
 from typing import List
@@ -13,13 +14,12 @@ logger = get_logger()
 
 
 class CoursevaniaScraper(BaseScraper):
-    """
-    Contains any logic related to scraping of data from coursevania.com
-    """
+    """Contains any logic related to scraping of data from coursevania.com."""
 
     DOMAIN = "https://coursevania.com"
 
     def __init__(self, enabled, max_pages=None):
+        """Initialize."""
         super().__init__()
         self.scraper_name = "coursevania"
         if not enabled:
@@ -31,7 +31,7 @@ class CoursevaniaScraper(BaseScraper):
     @BaseScraper.time_run
     async def run(self) -> List:
         """
-        Called to gather the udemy links
+        Gather the udemy links.
 
         :return: List of udemy course links
         """
@@ -44,7 +44,7 @@ class CoursevaniaScraper(BaseScraper):
 
     async def get_links(self):
         """
-        Scrape udemy links from coursevania.com
+        Scrape udemy links from coursevania.com.
 
         :return: List of udemy course urls
         """
@@ -61,7 +61,7 @@ class CoursevaniaScraper(BaseScraper):
 
     async def load_nonce(self) -> None:
         """
-        Load the nonce value needed to load the correct page data
+        Load the nonce value needed to load the correct page data.
 
         :return: None
         """
@@ -78,7 +78,7 @@ class CoursevaniaScraper(BaseScraper):
 
     async def get_course_links(self) -> List:
         """
-        Gets the url of pages which contain the udemy link we want to get
+        Get the url of pages which contain the udemy link we want to get.
 
         :return: list of pages on coursevania.com that contain Udemy coupons
         """
@@ -119,7 +119,7 @@ class CoursevaniaScraper(BaseScraper):
     @staticmethod
     async def get_udemy_course_link(url: str) -> str:
         """
-        Gets the udemy course link
+        Get the udemy course link.
 
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
@@ -134,7 +134,7 @@ class CoursevaniaScraper(BaseScraper):
 
     async def gather_udemy_course_links(self, courses: List[str]):
         """
-        Async fetching of the udemy course links from coursevania.com
+        Async fetching of the udemy course links from coursevania.com.
 
         :param list courses: A list of coursevania.com course links we want to fetch the udemy links for
         :return: list of udemy links

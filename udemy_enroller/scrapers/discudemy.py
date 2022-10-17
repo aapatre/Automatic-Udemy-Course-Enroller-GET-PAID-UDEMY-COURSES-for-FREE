@@ -1,3 +1,4 @@
+"""Discudemy scraper."""
 import asyncio
 from typing import List
 
@@ -11,13 +12,12 @@ logger = get_logger()
 
 
 class DiscUdemyScraper(BaseScraper):
-    """
-    Contains any logic related to scraping of data from discudemy.com
-    """
+    """Contains any logic related to scraping of data from discudemy.com."""
 
     DOMAIN = "https://discudemy.com"
 
     def __init__(self, enabled, max_pages=None):
+        """Initialize."""
         super().__init__()
         self.scraper_name = "discudemy"
         if not enabled:
@@ -27,7 +27,7 @@ class DiscUdemyScraper(BaseScraper):
     @BaseScraper.time_run
     async def run(self) -> List:
         """
-        Called to gather the udemy links
+        Gathers the udemy links.
 
         :return: List of udemy course links
         """
@@ -40,7 +40,7 @@ class DiscUdemyScraper(BaseScraper):
 
     async def get_links(self) -> List:
         """
-        Scrape udemy links from discudemy.com
+        Scrape udemy links from discudemy.com.
 
         :return: List of udemy course urls
         """
@@ -64,12 +64,11 @@ class DiscUdemyScraper(BaseScraper):
     @classmethod
     async def get_udemy_course_link(cls, url: str) -> str:
         """
-        Gets the udemy course link
+        Get the udemy course link.
 
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
         """
-
         data = await http_get(url)
         soup = BeautifulSoup(data.decode("utf-8"), "html.parser")
         for link in soup.find_all("a", href=True):
@@ -79,7 +78,7 @@ class DiscUdemyScraper(BaseScraper):
 
     async def gather_udemy_course_links(self, courses: List[str]):
         """
-        Async fetching of the udemy course links from discudemy.com
+        Async fetching of the udemy course links from discudemy.com.
 
         :param list courses: A list of discudemy.com course links we want to fetch the udemy links for
         :return: list of udemy links
@@ -93,12 +92,11 @@ class DiscUdemyScraper(BaseScraper):
     @staticmethod
     def _get_last_page(soup: BeautifulSoup) -> int:
         """
-        Extract the last page number to scrape
+        Extract the last page number to scrape.
 
         :param soup:
         :return: The last page number to scrape
         """
-
         return max(
             [
                 int(i.text)

@@ -1,3 +1,4 @@
+"""Udemy UI."""
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -21,6 +22,8 @@ logger = get_logger()
 
 @dataclass(unsafe_hash=True)
 class RunStatistics:
+    """Gather statistics on courses enrolled in."""
+
     prices: List[Decimal] = field(default_factory=list)
 
     expired: int = 0
@@ -33,10 +36,12 @@ class RunStatistics:
 
     currency_symbol = None
 
-    def savings(self):
+    def savings(self) -> int:
+        """Calculate the savings made from enrolling to these courses."""
         return sum(self.prices) or 0
 
     def table(self):
+        """Log table of statistics to output."""
         # Only show the table if we have something to show
         if self.prices:
             if self.currency_symbol is None:
@@ -59,9 +64,7 @@ class RunStatistics:
 
 
 class UdemyStatus(Enum):
-    """
-    Possible statuses of udemy course
-    """
+    """Possible statuses of udemy course."""
 
     ALREADY_ENROLLED = "ALREADY_ENROLLED"
     ENROLLED = "ENROLLED"
@@ -71,13 +74,12 @@ class UdemyStatus(Enum):
 
 
 class UdemyActionsUI:
-    """
-    Contains any logic related to interacting with udemy website
-    """
+    """Contains any logic related to interacting with udemy website."""
 
     DOMAIN = "https://www.udemy.com"
 
     def __init__(self, driver: WebDriver, settings: Settings):
+        """Initialize."""
         self.driver = driver
         self.settings = settings
         self.logged_in = False
@@ -86,7 +88,7 @@ class UdemyActionsUI:
 
     def login(self, is_retry=False) -> None:
         """
-        Login to your udemy account
+        Login to your udemy account.
 
         :param bool is_retry: Is this is a login retry and we still have captcha raise RobotException
 
@@ -141,7 +143,7 @@ class UdemyActionsUI:
 
     def enroll(self, url: str) -> str:
         """
-        Redeems the course url passed in
+        Redeems the course url passed in.
 
         :param str url: URL of the course to redeem
         :return: A string detailing course status
@@ -197,8 +199,8 @@ class UdemyActionsUI:
                         self.settings.zip_code
                     )
 
-                    # After you put the zip code in, the page refreshes itself and disables the enroll button for a split
-                    # second.
+                    # After you put the zip code in, the page refreshes itself and disables
+                    # the enroll button for a split second.
                     enroll_button_is_clickable = EC.element_to_be_clickable(
                         (By.XPATH, enroll_button_xpath)
                     )
@@ -355,7 +357,7 @@ class UdemyActionsUI:
 
     def _check_if_robot(self) -> bool:
         """
-        Simply checks if the captcha element is present on login if email/password elements are not
+        Simply checks if the captcha element is present on login if email/password elements are not.
 
         :return: Bool
         """

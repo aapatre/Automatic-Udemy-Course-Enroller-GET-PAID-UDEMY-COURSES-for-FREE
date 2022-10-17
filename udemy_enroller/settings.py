@@ -1,3 +1,4 @@
+"""Settings."""
 import getpass
 import os.path
 from distutils.util import strtobool
@@ -12,13 +13,12 @@ logger = get_logger()
 
 
 class Settings:
-    """
-    Contains all logic related to the scripts settings
-    """
+    """Contains all logic related to the scripts settings."""
 
     def __init__(
         self, delete_settings=False, delete_cookie=False, settings_path="settings.yaml"
     ):
+        """Initialize."""
         self.email = None
         self.password = None
         self.zip_code = None
@@ -38,7 +38,7 @@ class Settings:
 
     def _init_settings(self) -> None:
         """
-        Initialize the settings to be used in the script
+        Initialize the settings to be used in the script.
 
         :return:
         """
@@ -52,7 +52,7 @@ class Settings:
 
     def _load_ci_settings(self):
         """
-        Load environment variables for CI run
+        Load environment variables for CI run.
 
         :return:
         """
@@ -62,7 +62,7 @@ class Settings:
 
     def _load_user_settings(self) -> Dict:
         """
-        Loads the settings from the yaml file if it exists
+        Load the settings from the yaml file if it exists.
 
         :return: dictionary containing the script settings
         """
@@ -84,7 +84,7 @@ class Settings:
 
     def _generate_settings(self) -> None:
         """
-        Generate the settings for the script
+        Generate the settings for the script.
 
         :return:
         """
@@ -96,7 +96,7 @@ class Settings:
 
     def _get_email(self, prompt_save=True) -> Tuple[str, bool]:
         """
-        Get input from user on the email to use for udemy
+        Get input from user on the email to use for udemy.
 
         :return: The users udemy email and if it should be saved
         """
@@ -113,7 +113,7 @@ class Settings:
 
     def _get_password(self, prompt_save=True) -> Tuple[str, bool]:
         """
-        Get input from user on the password to use for udemy
+        Get input from user on the password to use for udemy.
 
         :return: The users udemy password and if it should be saved
         """
@@ -133,7 +133,7 @@ class Settings:
     @staticmethod
     def _get_zip_code() -> str:
         """
-        Get input from user on the zip code to use for udemy
+        Get input from user on the zip code to use for udemy.
 
         :return: The users udemy zip code
         """
@@ -143,7 +143,7 @@ class Settings:
     @staticmethod
     def _get_languages() -> List[str]:
         """
-        Get input from user on the languages they want to get courses in
+        Get input from user on the languages they want to get courses in.
 
         :return: list of languages the user wants to redeem udemy courses in
         """
@@ -154,9 +154,11 @@ class Settings:
 
     @staticmethod
     def _get_categories() -> List[str]:
-        """Gets the categories the user wants.
+        """
+        Get the categories the user wants.
 
-        :return: list of categories the user wants."""
+        :return: list of categories the user wants.
+        """
         categories = input(
             "Please enter in a list of comma separated values of"
             " the course categories you like, for example:\n"
@@ -170,7 +172,7 @@ class Settings:
 
     def _save_settings(self) -> None:
         """
-        Confirm if the user wants to save settings to file
+        Confirm if the user wants to save settings to file.
 
         :return:
         """
@@ -190,7 +192,7 @@ class Settings:
 
         # Log some details for the user
         if not self._should_store_email:
-            logger.info(f"Your email has not been saved to settings.")
+            logger.info("Your email has not been saved to settings.")
         if not self._should_store_password:
             logger.info("Your password has not been saved to settings.")
         if not self._should_store_email or not self._should_store_password:
@@ -200,7 +202,7 @@ class Settings:
 
     def delete_settings(self) -> None:
         """
-        Delete the settings file
+        Delete the settings file.
 
         :return: None
         """
@@ -216,7 +218,7 @@ class Settings:
 
     def delete_cookie(self) -> None:
         """
-        Delete the cookie file
+        Delete the cookie file.
 
         :return: None
         """
@@ -228,7 +230,7 @@ class Settings:
 
     def prompt_email(self) -> None:
         """
-        Prompt for Udemy email only. Does not prompt for saving
+        Prompt for Udemy email only. Does not prompt for saving.
 
         :return: None
         """
@@ -236,7 +238,7 @@ class Settings:
 
     def prompt_password(self) -> None:
         """
-        Prompt for Udemy password only. Does not prompt for saving
+        Prompt for Udemy password only. Does not prompt for saving.
 
         :return: None
         """
