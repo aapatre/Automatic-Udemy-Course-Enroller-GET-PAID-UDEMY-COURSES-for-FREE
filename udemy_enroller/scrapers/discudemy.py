@@ -1,14 +1,14 @@
 """Discudemy scraper."""
 import asyncio
-import logging
 from typing import List
 
 from bs4 import BeautifulSoup
 
-from udemy_enroller.http import get
+from udemy_enroller.http_utils import http_get
+from udemy_enroller.logger import get_logger
 from udemy_enroller.scrapers.base_scraper import BaseScraper
 
-logger = logging.getLogger("udemy_enroller")
+logger = get_logger()
 
 
 class DiscUdemyScraper(BaseScraper):
@@ -46,7 +46,7 @@ class DiscUdemyScraper(BaseScraper):
         """
         discudemy_links = []
         self.current_page += 1
-        coupons_data = await get(f"{self.DOMAIN}/all/{self.current_page}")
+        coupons_data = await http_get(f"{self.DOMAIN}/all/{self.current_page}")
         soup = BeautifulSoup(coupons_data.decode("utf-8"), "html.parser")
         for course_card in soup.find_all("a", class_="card-header"):
             url_end = course_card["href"].split("/")[-1]
@@ -69,7 +69,7 @@ class DiscUdemyScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
         """
-        data = await get(url)
+        data = await http_get(url)
         soup = BeautifulSoup(data.decode("utf-8"), "html.parser")
         for link in soup.find_all("a", href=True):
             udemy_link = cls.validate_coupon_url(link["href"])

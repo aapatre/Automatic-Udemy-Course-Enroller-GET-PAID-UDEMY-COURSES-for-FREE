@@ -1,14 +1,14 @@
 """Tutorialbar scraper."""
 import asyncio
-import logging
 from typing import List
 
 from bs4 import BeautifulSoup
 
-from udemy_enroller.http import get
+from udemy_enroller.http_utils import http_get
+from udemy_enroller.logger import get_logger
 from udemy_enroller.scrapers.base_scraper import BaseScraper
 
-logger = logging.getLogger("udemy_enroller")
+logger = get_logger()
 
 
 class TutorialBarScraper(BaseScraper):
@@ -82,7 +82,7 @@ class TutorialBarScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: list of pages on tutorialbar.com that contain Udemy coupons
         """
-        text = await get(url)
+        text = await http_get(url)
         if text is not None:
             soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
 
@@ -105,7 +105,7 @@ class TutorialBarScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
         """
-        text = await get(url)
+        text = await http_get(url)
         if text is not None:
             soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
             udemy_link = (
