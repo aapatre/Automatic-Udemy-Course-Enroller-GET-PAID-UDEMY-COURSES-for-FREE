@@ -120,7 +120,32 @@ Total Enrolments:           1705
 Savings:                    €2674.44
 ================== Run Statistics ==================
 ```
-	
+
+### Docker
+
+Alternatively you can run the script in docker.
+
+To build the image run:
+
+```
+docker build -t udemy_enroller .
+```
+
+After the build is finished you can run your container with one of the commands below (you can pass arguments as you would in the cli):
+
+```
+docker run -it udemy_enroller 
+```
+
+After you entered your login credentials and settings detach from the interactive mode by pressing the `Ctrl-P` followed by `Ctrl-Q`.
+
+You can also create a `settings.yaml` file from the `sample_settings.yaml` and mount to the container with the command:
+
+```
+docker run -v $(pwd)/settings.yaml:/home/enroller/.udemy_enroller/settings.yaml udemy_enroller 
+```
+
+
 
 ---
 
