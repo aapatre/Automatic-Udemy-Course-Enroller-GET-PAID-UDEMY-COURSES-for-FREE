@@ -69,6 +69,7 @@ def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
 
 def redeem_courses(
     settings: Settings,
+    idownloadcoupon_enabled: bool,
     freebiesglobal_enabled: bool,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
@@ -79,6 +80,7 @@ def redeem_courses(
     Wrap _redeem_courses to catch unhandled exceptions.
 
     :param Settings settings: Core settings used for Udemy
+    :param bool idownloadcoupon_enabled: Boolean signifying if idownloadcoupon scraper should run
     :param bool freebiesglobal_enabled: Boolean signifying if freebiesglobal scraper should run
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
     :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
@@ -88,6 +90,7 @@ def redeem_courses(
     """
     try:
         scrapers = ScraperManager(
+            idownloadcoupon_enabled,
             freebiesglobal_enabled,
             tutorialbar_enabled,
             discudemy_enabled,
@@ -161,6 +164,7 @@ def _redeem_courses_ui(
 def redeem_courses_ui(
     driver,
     settings: Settings,
+    idownloadcoupon_enabled: bool,
     freebiesglobal_enabled: bool,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
@@ -172,6 +176,7 @@ def redeem_courses_ui(
 
     :param WebDriver driver: WebDriver to use to complete enrolment
     :param Settings settings: Core settings used for Udemy
+    :param bool idownloadcoupon_enabled: Boolean signifying if idownloadcoupon scraper should run
     :param bool freebiesglobal_enabled: Boolean signifying if freebiesglobal scraper should run
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
     :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
@@ -181,6 +186,7 @@ def redeem_courses_ui(
     """
     try:
         scrapers = ScraperManager(
+            idownloadcoupon_enabled,
             freebiesglobal_enabled,
             tutorialbar_enabled,
             discudemy_enabled,

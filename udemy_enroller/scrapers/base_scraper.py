@@ -89,7 +89,9 @@ class BaseScraper(ABC):
             try:
                 response = await func(self)
             except Exception as e:
-                logger.error(f"Error while running {self.scraper_name} scraper: {e}")
+                logger.exception(
+                    f"Error while running {self.scraper_name} scraper: {e}"
+                )
                 self.is_complete()
                 return []
             end_time = datetime.datetime.utcnow()
@@ -126,7 +128,7 @@ class BaseScraper(ABC):
         return should_run
 
     @staticmethod
-    def validate_coupon_url(url) -> Optional[str]:
+    def validate_coupon_url(url: str) -> Optional[str]:
         """
         Validate the udemy coupon url passed in.
 

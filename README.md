@@ -20,6 +20,7 @@ The code scrapes course links and coupons from:
  - [discudemy.com](https://discudemy.com)
  - [coursevania.com](https://coursevania.com)
  - [freebiesglobal.com](https://freebiesglobal.com)
+ - [idownloadcoupon.com](https://idownloadcoupon.com) -> _New_
 
 
 In case of any bugs or issues, please open an issue in github. Also, don't forget to **Fork & Star the repository if you like it!**
@@ -90,6 +91,7 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
 - `--coursevania`: Run the coursevania scraper only
 - `--tutorialbar`: Run the tutorialbar scraper only
 - `--freebiesglobal`: Run the freebiesglobal scraper only
+- `--idownloadcoupon`: Run the idownloadcoupon scraper only
 - `--max-pages=<NUMBER>`: Max number of pages to scrape from sites before exiting the script (default is 5)
 - `--delete-settings`: Delete existing settings file
 - `--delete-cookie`: Delete the cookie file if it exists
