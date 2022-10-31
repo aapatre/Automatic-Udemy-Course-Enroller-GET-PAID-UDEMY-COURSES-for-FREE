@@ -6,6 +6,7 @@ from functools import reduce
 from udemy_enroller.scrapers.coursevania import CoursevaniaScraper
 from udemy_enroller.scrapers.discudemy import DiscUdemyScraper
 from udemy_enroller.scrapers.freebiesglobal import FreebiesglobalScraper
+from udemy_enroller.scrapers.idownloadcoupon import IDownloadCouponScraper
 from udemy_enroller.scrapers.tutorialbar import TutorialBarScraper
 
 
@@ -14,6 +15,7 @@ class ScraperManager:
 
     def __init__(
         self,
+        idownloadcoupon_enabled,
         freebiesglobal_enabled,
         tutorialbar_enabled,
         discudemy_enabled,
@@ -21,6 +23,10 @@ class ScraperManager:
         max_pages,
     ):
         """Initialize."""
+        self.idownloadcoupons_scraper = IDownloadCouponScraper(
+            idownloadcoupon_enabled, max_pages=max_pages
+        )
+
         self.freebiesglobal_scraper = FreebiesglobalScraper(
             freebiesglobal_enabled, max_pages=max_pages
         )
@@ -34,6 +40,7 @@ class ScraperManager:
             coursevania_enabled, max_pages=max_pages
         )
         self._scrapers = (
+            self.idownloadcoupons_scraper,
             self.freebiesglobal_scraper,
             self.tutorialbar_scraper,
             self.discudemy_scraper,

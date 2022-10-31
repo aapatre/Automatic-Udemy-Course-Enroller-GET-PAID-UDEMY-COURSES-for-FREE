@@ -62,31 +62,35 @@ def log_os_version():
 
 
 def determine_if_scraper_enabled(
+    idownloadcoupon_enabled: bool,
     freebiesglobal_enabled: bool,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
     coursevania_enabled: bool,
-) -> Tuple[bool, bool, bool, bool]:
+) -> Tuple[bool, bool, bool, bool, bool]:
     """
     Determine what scrapers should be enabled and disabled.
 
     :return: tuple containing boolean of what scrapers should run
     """
     if (
-        not freebiesglobal_enabled
+        not idownloadcoupon_enabled
+        and not freebiesglobal_enabled
         and not tutorialbar_enabled
         and not discudemy_enabled
         and not coursevania_enabled
     ):
         # Set all to True
         (
+            idownloadcoupon_enabled,
             freebiesglobal_enabled,
             tutorialbar_enabled,
             discudemy_enabled,
             coursevania_enabled,
-        ) = (True, True, True, True)
+        ) = (True, True, True, True, True)
 
     return (
+        idownloadcoupon_enabled,
         freebiesglobal_enabled,
         tutorialbar_enabled,
         discudemy_enabled,
@@ -96,6 +100,7 @@ def determine_if_scraper_enabled(
 
 def run(
     browser: str,
+    idownloadcoupon_enabled: bool,
     freebiesglobal_enabled: bool,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
@@ -108,6 +113,7 @@ def run(
     Run the udemy enroller script.
 
     :param str browser: Name of the browser we want to create a driver for
+    :param bool idownloadcoupon_enabled:
     :param bool freebiesglobal_enabled:
     :param bool tutorialbar_enabled:
     :param bool discudemy_enabled:
@@ -123,6 +129,7 @@ def run(
         redeem_courses_ui(
             dm.driver,
             settings,
+            idownloadcoupon_enabled,
             freebiesglobal_enabled,
             tutorialbar_enabled,
             discudemy_enabled,
@@ -132,6 +139,7 @@ def run(
     else:
         redeem_courses(
             settings,
+            idownloadcoupon_enabled,
             freebiesglobal_enabled,
             tutorialbar_enabled,
             discudemy_enabled,
@@ -156,6 +164,12 @@ def parse_args() -> Namespace:
         help="Browser to use for Udemy Enroller",
     )
     parser.add_argument(
+        "--idownloadcoupon",
+        action="store_true",
+        default=False,
+        help="Run idownloadcoupon scraper",
+    )
+    parser.add_argument(
         "--freebiesglobal",
         action="store_true",
         default=False,
@@ -167,28 +181,24 @@ def parse_args() -> Namespace:
         default=False,
         help="Run tutorialbar scraper",
     )
-
     parser.add_argument(
         "--discudemy",
         action="store_true",
         default=False,
         help="Run discudemy scraper",
     )
-
     parser.add_argument(
         "--coursevania",
         action="store_true",
         default=False,
         help="Run coursevania scraper",
     )
-
     parser.add_argument(
         "--max-pages",
         type=int,
         default=5,
         help="Max pages to scrape from sites (if pagination exists) (Default is 5)",
     )
-
     parser.add_argument(
         "--delete-settings",
         action="store_true",
@@ -222,15 +232,21 @@ def main():
             log_python_version()
             log_os_version()
         (
+            idownloadcoupon_enabled,
             freebiesglobal_enabled,
             tutorialbar_enabled,
             discudemy_enabled,
             coursevania_enabled,
         ) = determine_if_scraper_enabled(
-            args.freebiesglobal, args.tutorialbar, args.discudemy, args.coursevania
+            args.idownloadcoupon,
+            args.freebiesglobal,
+            args.tutorialbar,
+            args.discudemy,
+            args.coursevania,
         )
         run(
             args.browser,
+            idownloadcoupon_enabled,
             freebiesglobal_enabled,
             tutorialbar_enabled,
             discudemy_enabled,
