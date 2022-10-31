@@ -25,6 +25,10 @@ bumpver = "^2022.1116"
 flake8 = "^5.0.4"
 flake8-bugbear = "^22.9.23"
 flake8-docstrings = "^1.6.0"
+flake8-isort = "^5.0.0"
+
+[tool.isort]
+profile = "black"
 
 [tool.bumpver]
 current_version = "4.1.2"
