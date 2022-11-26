@@ -224,7 +224,7 @@ class UdemyActions:
         my_courses = self.my_courses(page, page_size)
         all_courses.extend(my_courses["results"])
         
-        while ("next" in my_courses and my_courses["next"] != None):
+        while "next" in my_courses and my_courses["next"] is not None:
             page += 1
             my_courses = self.my_courses(page, page_size)
             if "results" in my_courses:
