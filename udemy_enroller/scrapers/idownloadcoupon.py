@@ -75,7 +75,7 @@ class IDownloadCouponScraper(BaseScraper):
             self.last_page = int(
                 soup.find("ul", class_="page-numbers")
                 .find_all("a", class_="page-numbers")[-2]
-                .text
+                .text.replace(",", "")
             )
 
             return course_links
