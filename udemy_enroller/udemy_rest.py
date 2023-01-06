@@ -220,10 +220,12 @@ class UdemyActions:
         all_courses = list()
         page_size = 100
 
-        my_courses = self.my_courses(1, page_size)
+        page = 1
+        my_courses = self.my_courses(page, page_size)
         all_courses.extend(my_courses["results"])
-        total_pages = my_courses["count"] // page_size
-        for page in range(2, total_pages + 2):
+        
+        while "next" in my_courses and my_courses["next"] is not None:
+            page += 1
             my_courses = self.my_courses(page, page_size)
             if "results" in my_courses:
                 all_courses.extend(my_courses["results"])
