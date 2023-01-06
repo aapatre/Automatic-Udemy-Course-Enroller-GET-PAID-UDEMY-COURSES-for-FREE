@@ -22,8 +22,8 @@ class CoursevaniaScraper(BaseScraper):
         """Initialize."""
         super().__init__()
         self.scraper_name = "coursevania"
-        if not enabled:
-            self.set_state_disabled()
+        # TODO: Always set disabled as it is not longer online.
+        self.set_state_disabled()
         self.last_page = None
         self.max_pages = max_pages
         self._nonce = None
