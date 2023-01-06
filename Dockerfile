@@ -12,4 +12,4 @@ COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENTRYPOINT [ "python", "udemy_enroller.py" ]
+ENTRYPOINT [ "python", "run_enroller.py" ]
