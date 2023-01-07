@@ -134,8 +134,7 @@ class UdemyActions:
         if cookie_details is None:
             response = self.udemy_scraper.get(self.LOGIN_URL)
             soup = BeautifulSoup(response.content, "html.parser")
-            csrf_element = soup.find("input", {"name": "csrfmiddlewaretoken"}) or {}
-            csrf_token = csrf_element.get("value")
+            csrf_token = response.cookies.get("csrftoken")
             if csrf_token is None:
                 raise Exception("Unable to get csrf_token")
 
