@@ -27,7 +27,7 @@ setup(
     ),
     python_requires=">=3.8, <4",
     install_requires=[
-        "aiohttp[speedups]==3.8.1",
+        "aiohttp[speedups]==3.8.3",
         "beautifulsoup4==4.11.1",
         "ruamel.yaml==0.16.13",
         "requests==2.27.1",
