@@ -12,7 +12,7 @@ beautifulsoup4 = "^4.11.1"
 cloudscraper = "^1.2.60"
 requests = "^2.27.1"
 webdriver-manager = "^3.7.0"
-aiohttp = {extras = ["speedups"], version = "^3.8.3"}
+aiohttp = {extras = ["speedups"], version = "^3.8.1"}
 price-parser = "^0.3.4"
 
 [tool.poetry.dev-dependencies]
