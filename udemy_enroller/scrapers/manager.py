@@ -1,22 +1,32 @@
+"""Manager for scapers."""
 import asyncio
+import typing
 from functools import reduce
-from typing import List
 
 from udemy_enroller.scrapers.coursevania import CoursevaniaScraper
 from udemy_enroller.scrapers.discudemy import DiscUdemyScraper
 from udemy_enroller.scrapers.freebiesglobal import FreebiesglobalScraper
+from udemy_enroller.scrapers.idownloadcoupon import IDownloadCouponScraper
 from udemy_enroller.scrapers.tutorialbar import TutorialBarScraper
 
 
 class ScraperManager:
+    """Manages the scrapers."""
+
     def __init__(
         self,
+        idownloadcoupon_enabled,
         freebiesglobal_enabled,
         tutorialbar_enabled,
         discudemy_enabled,
         coursevania_enabled,
         max_pages,
     ):
+        """Initialize."""
+        self.idownloadcoupons_scraper = IDownloadCouponScraper(
+            idownloadcoupon_enabled, max_pages=max_pages
+        )
+
         self.freebiesglobal_scraper = FreebiesglobalScraper(
             freebiesglobal_enabled, max_pages=max_pages
         )
@@ -30,15 +40,16 @@ class ScraperManager:
             coursevania_enabled, max_pages=max_pages
         )
         self._scrapers = (
+            self.idownloadcoupons_scraper,
             self.freebiesglobal_scraper,
             self.tutorialbar_scraper,
             self.discudemy_scraper,
             self.coursevania_scraper,
         )
 
-    async def run(self) -> List:
+    async def run(self) -> typing.List[str]:
         """
-        Runs any enabled scrapers and returns a list of links
+        Run any enabled scrapers and returns a list of links.
 
         :return: list
         """
@@ -51,9 +62,9 @@ class ScraperManager:
             )
         return urls
 
-    def _enabled_scrapers(self) -> List:
+    def _enabled_scrapers(self) -> typing.List:
         """
-        Returns a list of scrapers that should run
+        Return a list of scrapers that should run.
 
         :return:
         """

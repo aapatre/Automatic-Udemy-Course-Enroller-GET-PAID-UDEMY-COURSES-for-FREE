@@ -1,3 +1,4 @@
+"""Runner."""
 import asyncio
 import random
 import time
@@ -17,14 +18,14 @@ from udemy_enroller import (
     UdemyStatus,
     exceptions,
 )
-from udemy_enroller.logging import get_logger
+from udemy_enroller.logger import get_logger
 
 logger = get_logger()
 
 
 def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
     """
-    Method to scrape courses from the supported sites and enroll in them on udemy
+    Scrape courses from the supported sites and enroll in them on udemy.
 
     :param Settings settings: Core settings used for Udemy
     :param ScraperManager scrapers:
@@ -59,7 +60,7 @@ def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
                     if settings.is_ci_build:
                         logger.info("We have attempted to subscribe to 1 udemy course")
                         logger.info("Ending test")
-                        return
+                        return  # noqa: B012
         else:
             udemy_actions.stats.table()
             logger.info("All scrapers complete")
@@ -68,6 +69,7 @@ def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
 
 def redeem_courses(
     settings: Settings,
+    idownloadcoupon_enabled: bool,
     freebiesglobal_enabled: bool,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
@@ -75,9 +77,10 @@ def redeem_courses(
     max_pages: Union[int, None],
 ) -> None:
     """
-    Wrapper of _redeem_courses which catches unhandled exceptions
+    Wrap _redeem_courses to catch unhandled exceptions.
 
     :param Settings settings: Core settings used for Udemy
+    :param bool idownloadcoupon_enabled: Boolean signifying if idownloadcoupon scraper should run
     :param bool freebiesglobal_enabled: Boolean signifying if freebiesglobal scraper should run
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
     :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
@@ -87,6 +90,7 @@ def redeem_courses(
     """
     try:
         scrapers = ScraperManager(
+            idownloadcoupon_enabled,
             freebiesglobal_enabled,
             tutorialbar_enabled,
             discudemy_enabled,
@@ -104,7 +108,7 @@ def _redeem_courses_ui(
     scrapers: ScraperManager,
 ) -> None:
     """
-    Method to scrape courses from the supported sites and enroll in them on udemy.
+    Scrape courses from the supported sites and enroll in them on udemy.
 
     :param WebDriver driver: WebDriver to use to complete enrolment
     :param Settings settings: Core settings used for Udemy
@@ -150,7 +154,7 @@ def _redeem_courses_ui(
                     if settings.is_ci_build:
                         logger.info("We have attempted to subscribe to 1 udemy course")
                         logger.info("Ending test")
-                        return
+                        return  # noqa: B012
         else:
             udemy_actions.stats.table()
             logger.info("All scrapers complete")
@@ -160,6 +164,7 @@ def _redeem_courses_ui(
 def redeem_courses_ui(
     driver,
     settings: Settings,
+    idownloadcoupon_enabled: bool,
     freebiesglobal_enabled: bool,
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
@@ -167,10 +172,11 @@ def redeem_courses_ui(
     max_pages: Union[int, None],
 ) -> None:
     """
-    Wrapper of _redeem_courses so we always close browser on completion
+    Wrap _redeem_courses so we always close browser on completion.
 
     :param WebDriver driver: WebDriver to use to complete enrolment
     :param Settings settings: Core settings used for Udemy
+    :param bool idownloadcoupon_enabled: Boolean signifying if idownloadcoupon scraper should run
     :param bool freebiesglobal_enabled: Boolean signifying if freebiesglobal scraper should run
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
     :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
@@ -178,9 +184,9 @@ def redeem_courses_ui(
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :return:
     """
-
     try:
         scrapers = ScraperManager(
+            idownloadcoupon_enabled,
             freebiesglobal_enabled,
             tutorialbar_enabled,
             discudemy_enabled,

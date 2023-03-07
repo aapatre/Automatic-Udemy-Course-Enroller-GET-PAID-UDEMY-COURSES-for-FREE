@@ -1,9 +1,10 @@
+"""Utility functions."""
 import os
 
 
 def get_app_dir() -> str:
     """
-    Gets the app directory where all data related to the script is stored
+    Get the app directory where all data related to the script is stored.
 
     :return:
     """
