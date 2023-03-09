@@ -102,9 +102,9 @@ Props to Davidd Sargent for making a super simple video tutorial. If you prefer 
 
 3 . Run the script in terminal with your target runner:
 
-- `udemy_enroller`
-- `udemy_enroller --browser=chrome`
-- `udemy_enroller --browser=chromium` 
+- `run_enroller`
+- `run_enroller --browser=chrome`
+- `run_enroller --browser=chromium` 
 
 <br/>
 
