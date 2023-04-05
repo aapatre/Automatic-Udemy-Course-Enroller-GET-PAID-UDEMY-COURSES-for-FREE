@@ -15,7 +15,7 @@ logger = get_logger()
 class IDownloadCouponScraper(BaseScraper):
     """Contains any logic related to scraping of site data."""
 
-    DOMAIN = "https://www.idownloadcoupon.com"
+    DOMAIN = "https://idownloadcoupon.com"
 
     def __init__(self, enabled, max_pages=None):
         """Initialize."""
