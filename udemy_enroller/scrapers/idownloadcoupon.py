@@ -1,11 +1,11 @@
-"""IDownloadCoupon scraper."""
+"""IDownloadCoupon scraper.""" 
 import asyncio
 import urllib.parse
 from typing import List
 
 from bs4 import BeautifulSoup
 
-from udemy_enroller.http_utils import http_get
+from udemy_enroller.http_utils import http_get, http_get_no_redirect
 from udemy_enroller.logger import get_logger
 from udemy_enroller.scrapers.base_scraper import BaseScraper
 
@@ -52,7 +52,6 @@ class IDownloadCouponScraper(BaseScraper):
             f"Page: {self.current_page} of {self.last_page} scraped from {self.scraper_name}"
         )
         udemy_links = await self.gather_udemy_course_links(course_links)
-
         for counter, course in enumerate(udemy_links):
             logger.debug(f"Received Link {counter + 1} : {course}")
 
@@ -88,9 +87,12 @@ class IDownloadCouponScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
         """
-        urls = url.split("murl=")
-        if urls:
+        response = await http_get_no_redirect(url)
+        link = urllib.parse.unquote(response.headers["location"])
+        urls = link.split("murl=")
+        if urls and link.startswith("https://click.linksynergy.com"):
             return cls.validate_coupon_url(urllib.parse.unquote(urls[1]))
+
 
     async def gather_udemy_course_links(self, courses: List[str]):
         """
@@ -100,7 +102,5 @@ class IDownloadCouponScraper(BaseScraper):
         :return: list of udemy links
         """
         return [
-            link
-            for link in await asyncio.gather(*map(self.get_udemy_course_link, courses))
-            if link is not None
+            link for link in await asyncio.gather(*map(self.get_udemy_course_link, courses)) if link is not None
         ]
