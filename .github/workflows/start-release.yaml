@@ -1,0 +1,58 @@
+name: Start Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Semver type of new version (major / minor / patch)'
+        required: true
+        type: choice
+        options: 
+        - patch
+        - minor
+        - major
+      environment:
+        description: 'The environment to deploy for'
+        required: true
+        type: choice
+        default: master
+        options:
+          - master
+          - develop
+
+jobs:
+  bump-version:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Check out the content (source branch).  Use a deploy key so that
+    # when we push changes, it will trigger the release workflow
+    # run that runs on: tag. (Using the GitHub token would
+    # not run the workflow to prevent infinite recursion.)
+    - name: Check out source
+      uses: actions/checkout@v2
+      with:
+        ssh-key: ${{ secrets.DEPLOY_KEY }}
+        env_vars: |
+          DEPLOYMENT_ENVIRONMENT=${{ github.event.inputs.environment }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Set up cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pypoetry/virtualenvs
+        key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry
+        poetry install --only dev
+    - name: Setup Git
+      run: |
+        git config user.name 'octocat'
+        git config user.email '20401034+cullzie@users.noreply.github.com'
+    - name: Bump version
+      run: poetry run bumpver update --push --${{ github.event.inputs.version }}

@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.4] - 2023-07-26
+
+### Fixed
+- Fixing issues with enrollment
+- Updating libraries
+
 ## [4.1.3] - 2023-03-07
 
 ### Added
@@ -122,6 +128,8 @@ can continue as normal
   project running locally. Suitable for users who are not looking forward to
   contribute.
 
+[4.1.4]:
+  https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v4.1.4
 [4.1.3]:
   https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE/releases/tag/v4.1.3
 [4.1.2]:
