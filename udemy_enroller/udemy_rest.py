@@ -14,13 +14,14 @@ from cloudscraper import create_scraper
 from udemy_enroller.logger import get_logger
 from udemy_enroller.settings import Settings
 from udemy_enroller.utils import get_app_dir
-
+from functools import wraps
 logger = get_logger()
 
 
 def format_requests(func):
     """Handle requests response."""
 
+    @wraps(func)
     def formatting(*args, **kwargs):
         result = func(*args, **kwargs)
         result.raise_for_status()
@@ -81,38 +82,34 @@ class UdemyStatus(Enum):
 class UdemyActions:
     """Udemy Actions."""
 
-    LOGIN_URL = "https://www.udemy.com/join/login-popup/?locale=en_US"
+    BASE_URL = "https://www.udemy.com"
+
+    LOGIN_URL = f"{BASE_URL}/join/login-popup/?locale=en_US&next=https%3A%2F%2Fwww.udemy.com%2F&response_type=html&response_type=json"
     MY_COURSES = (
-        "https://www.udemy.com/api-2.0/users/me/subscribed-courses/?ordering=-last_accessed&fields["
+        f"{BASE_URL}/api-2.0/users/me/subscribed-courses/?ordering=-last_accessed&fields["
         "course]=@min,enrollment_time,published_title,&fields[user]=@min"
     )
-    CHECKOUT_URL = "https://www.udemy.com/payment/checkout-submit/"
+    CHECKOUT_URL = f"{BASE_URL}/payment/checkout-submit/"
     CHECK_PRICE = (
-        "https://www.udemy.com/api-2.0/course-landing-components/{}/me/?couponCode={"
+        BASE_URL + "/api-2.0/course-landing-components/{}/me/?couponCode={"
         "}&components=price_text,deal_badge,discount_expiration"
     )
     COURSE_DETAILS = (
-        "https://www.udemy.com/api-2.0/courses/{}/?fields[course]=title,context_info,primary_category,"
+        BASE_URL + "/api-2.0/courses/{}/?fields[course]=title,context_info,primary_category,"
         "primary_subcategory,avg_rating_recent,visible_instructors,locale,estimated_content_length,"
         "num_subscribers"
     )
-    USER_DETAILS = "https://www.udemy.com/api-2.0/contexts/me/?me=True&Config=True"
+    USER_DETAILS = f"{BASE_URL}/api-2.0/contexts/me/?me=True&Config=True"
 
-    HEADERS = {
-        "origin": "https://www.udemy.com",
-        "accept": "application/json, text/plain, */*",
-        "accept-encoding": "gzip, deflate, br",
-        "content-type": "application/json;charset=UTF-8",
-        "x-requested-with": "XMLHttpRequest",
-        "x-checkout-version": "2",
-        "referer": "https://www.udemy.com/",
+    _headers = {
+        "host": "www.udemy.com"
     }
 
     def __init__(self, settings: Settings, cookie_file_name: str = ".cookie"):
         """Initialize."""
+        self._cookies = None
         self.settings = settings
         self.user_has_preferences = self.settings.categories or self.settings.languages
-        self.session = requests.Session()
         self.udemy_scraper = create_scraper(ecdhCurve="secp384r1")
         self._cookie_file = os.path.join(get_app_dir(), cookie_file_name)
         self._enrolled_course_info = []
@@ -133,7 +130,6 @@ class UdemyActions:
         cookie_details = self._load_cookies()
         if cookie_details is None:
             response = self.udemy_scraper.get(self.LOGIN_URL)
-            soup = BeautifulSoup(response.content, "html.parser")
             csrf_token = response.cookies.get("csrftoken")
             if csrf_token is None:
                 raise Exception("Unable to get csrf_token")
@@ -153,31 +149,25 @@ class UdemyActions:
             auth_response = self.udemy_scraper.post(
                 self.LOGIN_URL, data=_form_data, allow_redirects=False
             )
-            if auth_response.status_code != 302:
-                logger.debug(
-                    f"Error while trying to login: {auth_response.status_code}"
-                )
-                logger.debug(f"Failed login response: {auth_response.text}")
-                raise Exception(f"Could not login. Code: {auth_response.status_code}")
-            else:
-                cookie_details = {
-                    "csrf_token": csrf_token,
-                    "access_token": auth_response.cookies["access_token"],
-                    "client_id": auth_response.cookies["client_id"],
-                }
-                self._cache_cookies(cookie_details)
 
-        bearer_token = f"Bearer {cookie_details['access_token']}"
-        self.session.headers = self.HEADERS
-        self.session.headers.update(
-            {
-                "authorization": bearer_token,
-                "x-udemy-authorization": bearer_token,
-                "x-csrftoken": cookie_details["csrf_token"],
+            if auth_response.status_code == 200:
+                the_json = auth_response.json()
+                has_error = the_json.get("error")
+                if has_error is not None:
+                    for error in has_error.get("data", {}).get(
+                        "formErrors", ["unhandled error on login"]
+                    ):
+                        logger.error(f"Issue on login: {error}")
+                    raise Exception("Error detected on login.")
+                cookie_details = dict(auth_response.cookies)
+                self._cache_cookies(cookie_details)
+            else:
+                raise Exception(f"Could not login. Code: {auth_response.status_code}")
+        self._cookies = {
+                "access_token": cookie_details["access_token"],
+                "client_id": cookie_details["client_id"],
+                "csrftoken": cookie_details["csrftoken"],
             }
-        )
-        self.session.cookies.update({"access_token": cookie_details["access_token"]})
-        self.session.cookies.update({"client_id": cookie_details["client_id"]})
 
         try:
             self._enrolled_course_info = self.load_my_courses()
@@ -239,7 +229,7 @@ class UdemyActions:
 
         :return: Dict containing the users details
         """
-        return self.session.get(self.USER_DETAILS)
+        return requests.get(self.USER_DETAILS, cookies=self._cookies, headers=self._headers)
 
     def is_enrolled(self, course_id: int) -> bool:
         """
@@ -348,7 +338,7 @@ class UdemyActions:
         :param int page_size: number of courses to load per page
         :return: dict containing the current users courses
         """
-        return self.session.get(self.MY_COURSES + f"&page={page}&page_size={page_size}")
+        return requests.get(self.MY_COURSES + f"&page={page}&page_size={page_size}", cookies=self._cookies, headers=self._headers)
 
     @format_requests
     def coupon_details(self, course_id: int, coupon_code: str) -> Dict:
@@ -420,7 +410,7 @@ class UdemyActions:
         :param str url: Udemy url to fetch the course from
         :return: int representing the course id
         """
-        response = self.session.get(url)
+        response = requests.get(url)
         response.raise_for_status()
         soup = BeautifulSoup(response.content, "html.parser")
 
@@ -443,7 +433,7 @@ class UdemyActions:
         :return:
         """
         payload = self._build_checkout_payload(course_id, coupon_code)
-        checkout_result = self.session.post(self.CHECKOUT_URL, json=payload)
+        checkout_result = requests.post(self.CHECKOUT_URL, json=payload, cookies=self._cookies, headers=self._headers)
         if not checkout_result.ok:
             if not retry:
                 seconds = int(re.search("\\d+", checkout_result.text).group()) + 1
@@ -454,7 +444,7 @@ class UdemyActions:
                 self._checkout(course_id, coupon_code, course_identifier, retry=True)
             else:
                 raise Exception(
-                    f"Checkout failed: Code: {checkout_result.status_code} Text: {checkout_result.text}"
+                    f"Checkout failed: Code: {checkout_result.status_code}"
                 )
         else:
             result = checkout_result.json()
@@ -484,13 +474,17 @@ class UdemyActions:
                 "items": [
                     {
                         "discountInfo": {"code": coupon_code},
-                        "buyable": {"type": "course", "id": course_id, "context": {}},
+                        "buyable": {"type": "course", "id": course_id},
                         "price": {"amount": 0, "currency": self._currency},
                     }
                 ],
-                "is_cart": True,
+                "is_cart": False,
             },
-            "payment_info": {"payment_vendor": "Free", "payment_method": "free-method"},
+            "payment_info": {
+                "method_id": "0",
+                "payment_vendor": "Free",
+                "payment_method": "free-method",
+            },
         }
 
     def _cache_cookies(self, cookies: Dict) -> None:

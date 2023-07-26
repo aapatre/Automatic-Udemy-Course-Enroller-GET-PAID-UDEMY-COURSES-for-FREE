@@ -35,17 +35,25 @@ from udemy_enroller.driver_manager import (
 )
 @mock.patch("udemy_enroller.driver_manager.webdriver")
 @mock.patch("udemy_enroller.driver_manager.ChromeDriverManager")
+@mock.patch("udemy_enroller.driver_manager.ChromeService")
 @mock.patch("udemy_enroller.driver_manager.GeckoDriverManager")
+@mock.patch("udemy_enroller.driver_manager.FirefoxService")
 @mock.patch("udemy_enroller.driver_manager.EdgeChromiumDriverManager")
+@mock.patch("udemy_enroller.driver_manager.EdgeService")
 @mock.patch("udemy_enroller.driver_manager.IEDriverManager")
+@mock.patch("udemy_enroller.driver_manager.IEService")
 @mock.patch("udemy_enroller.driver_manager.OperaDriverManager")
 @mock.patch("udemy_enroller.driver_manager.ChromeType")
 def test_driver_manager_init(
     _,
     mock_opera_driver_manager,
+    mock_internet_explorer_service,
     mock_internet_explorer_driver_manager,
+    mock_edge_service,
     mock_edge_driver_manager,
+    mock_firefox_service,
     mock_firefox_driver_manager,
+    mock_chrome_service,
     mock_chrome_driver_manager,
     mock_selenium_web_driver,
     browser_name,
@@ -57,32 +65,35 @@ def test_driver_manager_init(
     else:
         if browser_name in ("chrome",):
             mock_selenium_web_driver.Chrome.assert_called_once_with(
-                mock_chrome_driver_manager().install(), options=None
+                service=mock_chrome_service(mock_chrome_driver_manager().install()),
+                options=None,
             )
             assert dm.driver == mock_selenium_web_driver.Chrome()
         elif browser_name in ("chromium",):
             mock_selenium_web_driver.Chrome.assert_called_once_with(
-                mock_chrome_driver_manager().install()
+                service=mock_chrome_service(mock_chrome_driver_manager().install())
             )
             assert dm.driver == mock_selenium_web_driver.Chrome()
         elif browser_name in VALID_FIREFOX_STRINGS:
             mock_selenium_web_driver.Firefox.assert_called_once_with(
-                executable_path=mock_firefox_driver_manager().install()
+                service=mock_firefox_service(mock_firefox_driver_manager().install())
             )
             assert dm.driver == mock_selenium_web_driver.Firefox()
         elif browser_name in VALID_OPERA_STRINGS:
-            mock_selenium_web_driver.Opera.assert_called_once_with(
-                executable_path=mock_opera_driver_manager().install()
+            mock_chrome_service.assert_called_once_with(
+                mock_opera_driver_manager().install()
             )
-            assert dm.driver == mock_selenium_web_driver.Opera()
+            assert dm.driver == mock_selenium_web_driver.Remote()
         elif browser_name in VALID_EDGE_STRINGS:
             mock_selenium_web_driver.Edge.assert_called_once_with(
-                mock_edge_driver_manager().install()
+                service=mock_edge_service(mock_edge_driver_manager().install())
             )
             assert dm.driver == mock_selenium_web_driver.Edge()
         elif browser_name in VALID_INTERNET_EXPLORER_STRINGS:
             mock_selenium_web_driver.Ie.assert_called_once_with(
-                mock_internet_explorer_driver_manager().install()
+                service=mock_internet_explorer_service(
+                    mock_internet_explorer_driver_manager().install()
+                )
             )
             assert dm.driver == mock_selenium_web_driver.Ie()
 
@@ -96,6 +107,7 @@ def test_driver_manager_init(
     ids=("chrome is ci build", "chrome is not ci build"),
 )
 @mock.patch("udemy_enroller.driver_manager.webdriver")
+@mock.patch("udemy_enroller.driver_manager.ChromeService")
 @mock.patch("udemy_enroller.driver_manager.ChromeOptions")
 @mock.patch("udemy_enroller.driver_manager.ChromeDriverManager")
 @mock.patch("udemy_enroller.driver_manager.ChromeType")
@@ -103,6 +115,7 @@ def test_driver_manager_ci_build(
     _,
     mock_chrome_driver_manager,
     mock_chrome_options,
+    mock_chrome_service,
     mock_selenium_web_driver,
     browser_name,
     is_ci_build,
@@ -115,6 +128,7 @@ def test_driver_manager_ci_build(
     else:
         options = None
     mock_selenium_web_driver.Chrome.assert_called_once_with(
-        mock_chrome_driver_manager().install(), options=options
+        service=mock_chrome_service(mock_chrome_driver_manager().install()),
+        options=options,
     )
     assert dm.driver == mock_selenium_web_driver.Chrome()

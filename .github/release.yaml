@@ -1,0 +1,20 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+    authors:
+      - octocat
+      - restyled-commits
+  categories:
+    - title: "Breaking Changes :hammer_and_wrench:"
+      labels:
+        - breaking-change
+    - title: "New Features :tada:"
+      labels:
+        - enhancement
+    - title: "Bug Fixes :bug:"
+      labels:
+        - bug
+    - title: Other Changes
+      labels:
+        - "*"
