@@ -5,6 +5,7 @@ import re
 import time
 from dataclasses import dataclass, field
 from enum import Enum
+from functools import wraps
 from typing import Dict, List
 
 import requests
@@ -14,7 +15,7 @@ from cloudscraper import create_scraper
 from udemy_enroller.logger import get_logger
 from udemy_enroller.settings import Settings
 from udemy_enroller.utils import get_app_dir
-from functools import wraps
+
 logger = get_logger()
 
 
@@ -95,15 +96,14 @@ class UdemyActions:
         "}&components=price_text,deal_badge,discount_expiration"
     )
     COURSE_DETAILS = (
-        BASE_URL + "/api-2.0/courses/{}/?fields[course]=title,context_info,primary_category,"
+        BASE_URL
+        + "/api-2.0/courses/{}/?fields[course]=title,context_info,primary_category,"
         "primary_subcategory,avg_rating_recent,visible_instructors,locale,estimated_content_length,"
         "num_subscribers"
     )
     USER_DETAILS = f"{BASE_URL}/api-2.0/contexts/me/?me=True&Config=True"
 
-    _headers = {
-        "host": "www.udemy.com"
-    }
+    _headers = {"host": "www.udemy.com"}
 
     def __init__(self, settings: Settings, cookie_file_name: str = ".cookie"):
         """Initialize."""
@@ -164,10 +164,10 @@ class UdemyActions:
             else:
                 raise Exception(f"Could not login. Code: {auth_response.status_code}")
         self._cookies = {
-                "access_token": cookie_details["access_token"],
-                "client_id": cookie_details["client_id"],
-                "csrftoken": cookie_details["csrftoken"],
-            }
+            "access_token": cookie_details["access_token"],
+            "client_id": cookie_details["client_id"],
+            "csrftoken": cookie_details["csrftoken"],
+        }
 
         try:
             self._enrolled_course_info = self.load_my_courses()
@@ -229,7 +229,9 @@ class UdemyActions:
 
         :return: Dict containing the users details
         """
-        return requests.get(self.USER_DETAILS, cookies=self._cookies, headers=self._headers)
+        return requests.get(
+            self.USER_DETAILS, cookies=self._cookies, headers=self._headers
+        )
 
     def is_enrolled(self, course_id: int) -> bool:
         """
@@ -338,7 +340,11 @@ class UdemyActions:
         :param int page_size: number of courses to load per page
         :return: dict containing the current users courses
         """
-        return requests.get(self.MY_COURSES + f"&page={page}&page_size={page_size}", cookies=self._cookies, headers=self._headers)
+        return requests.get(
+            self.MY_COURSES + f"&page={page}&page_size={page_size}",
+            cookies=self._cookies,
+            headers=self._headers,
+        )
 
     @format_requests
     def coupon_details(self, course_id: int, coupon_code: str) -> Dict:
@@ -433,7 +439,12 @@ class UdemyActions:
         :return:
         """
         payload = self._build_checkout_payload(course_id, coupon_code)
-        checkout_result = requests.post(self.CHECKOUT_URL, json=payload, cookies=self._cookies, headers=self._headers)
+        checkout_result = requests.post(
+            self.CHECKOUT_URL,
+            json=payload,
+            cookies=self._cookies,
+            headers=self._headers,
+        )
         if not checkout_result.ok:
             if not retry:
                 seconds = int(re.search("\\d+", checkout_result.text).group()) + 1
@@ -443,9 +454,7 @@ class UdemyActions:
                 time.sleep(seconds)
                 self._checkout(course_id, coupon_code, course_identifier, retry=True)
             else:
-                raise Exception(
-                    f"Checkout failed: Code: {checkout_result.status_code}"
-                )
+                raise Exception(f"Checkout failed: Code: {checkout_result.status_code}")
         else:
             result = checkout_result.json()
             if result["status"] == "succeeded":

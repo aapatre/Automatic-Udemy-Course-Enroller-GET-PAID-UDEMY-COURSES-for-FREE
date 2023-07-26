@@ -120,7 +120,6 @@ def test_driver_manager_ci_build(
     browser_name,
     is_ci_build,
 ):
-
     dm = DriverManager(browser_name, is_ci_build=is_ci_build)
 
     if is_ci_build:
