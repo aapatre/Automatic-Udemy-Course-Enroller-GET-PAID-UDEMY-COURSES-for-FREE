@@ -31,6 +31,7 @@ class RunStatistics:
     already_enrolled: int = 0
     unwanted_language: int = 0
     unwanted_category: int = 0
+    unwanted_author: int = 0
 
     start_time = None
 
@@ -54,6 +55,7 @@ class RunStatistics:
             logger.info(f"Enrolled:                   {self.enrolled}")
             logger.info(f"Unwanted Category:          {self.unwanted_category}")
             logger.info(f"Unwanted Language:          {self.unwanted_language}")
+            logger.info(f"Unwanted Author:            {self.unwanted_author}")
             logger.info(f"Already Claimed:            {self.already_enrolled}")
             logger.info(f"Expired:                    {self.expired}")
             logger.info(
@@ -71,6 +73,7 @@ class UdemyStatus(Enum):
     EXPIRED = "EXPIRED"
     UNWANTED_LANGUAGE = "UNWANTED_LANGUAGE"
     UNWANTED_CATEGORY = "UNWANTED_CATEGORY"
+    UNWANTED_AUTHOR = "UNWANTED_AUTHOR"
 
 
 class UdemyActionsUI:
@@ -159,6 +162,9 @@ class UdemyActionsUI:
 
         if not self._check_categories(course_name):
             return UdemyStatus.UNWANTED_CATEGORY.value
+
+        if not self._check_authors(course_name):
+            return UdemyStatus.UNWANTED_AUTHOR.value
 
         # TODO: Make this depend on an element.
         time.sleep(2)
@@ -320,6 +326,23 @@ class UdemyActionsUI:
                 self.stats.unwanted_category += 1
                 is_valid_category = False
         return is_valid_category
+
+    def _check_authors(self, course_identifier):
+        is_valid_author = True
+        if self.settings.authors:
+            # If the wanted authors are specified, get the author of the course by scraping the
+            # author name on the top
+            author_xpath = "//div[@data-purpose='instructor-name-top']"
+            author_element = self.driver.find_element(By.XPATH, author_xpath)
+            author_name = author_element.text
+
+            if author_name in self.settings.authors:
+                logger.debug(
+                    f"Skipping course '{course_identifier}' as it does not have a wanted author"
+                )
+                self.stats.unwanted_author += 1
+                is_valid_author = False
+        return is_valid_authors
 
     def _check_price(self, course_name):
         course_is_free = True

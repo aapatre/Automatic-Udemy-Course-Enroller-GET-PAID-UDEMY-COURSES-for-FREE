@@ -1,4 +1,7 @@
 udemy:
+  authors:  # If you want to exclude the authors of courses to claim
+    - Author 1
+    - Author 2
   categories:   # If you want to limit the categories of courses to claim
     - Category 1
     - Category 2

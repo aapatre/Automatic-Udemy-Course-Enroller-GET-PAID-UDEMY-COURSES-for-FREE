@@ -24,6 +24,7 @@ class Settings:
         self.zip_code = None
         self.languages = []
         self.categories = []
+        self.authors = []
 
         self._settings_path = os.path.join(get_app_dir(), settings_path)
         self._cookies_path = os.path.join(get_app_dir(), ".cookie")
@@ -79,6 +80,7 @@ class Settings:
             self.zip_code = udemy_settings.get("zipcode")
             self.languages = udemy_settings.get("languages")
             self.categories = udemy_settings.get("categories")
+            self.authors = udemy_settings.get("authors")
 
         return settings
 
@@ -93,6 +95,7 @@ class Settings:
         self.zip_code = self._get_zip_code()
         self.languages = self._get_languages()
         self.categories = self._get_categories()
+        self.authors = self._get_authors()
 
     def _get_email(self, prompt_save=True) -> Tuple[str, bool]:
         """
@@ -170,6 +173,20 @@ class Settings:
             else []
         )
 
+    @staticmethod
+    def _get_authors() -> List[str]:
+        """
+        Get the authors the user wants.
+
+        :return: list of authors the user wants.
+        """
+        authors = input(
+            "Please enter in a list of semicolon separated values of"
+            " the authors you like, for example:\n"
+            "John Doe; Jane Doe\n> "
+        )
+        return [author.strip() for author in authors.split(";")] if authors else []
+
     def _save_settings(self) -> None:
         """
         Confirm if the user wants to save settings to file.
@@ -183,6 +200,7 @@ class Settings:
                 "zipcode": str(self.zip_code),
                 "languages": self.languages,
                 "categories": self.categories,
+                "authors": self.authors,
             }
         }
 

@@ -42,6 +42,7 @@ class RunStatistics:
     already_enrolled: int = 0
     unwanted_language: int = 0
     unwanted_category: int = 0
+    unwanted_author: int = 0
 
     course_ids_start: int = 0
     course_ids_end: int = 0
@@ -61,6 +62,7 @@ class RunStatistics:
         logger.info(f"Enrolled:                   {self.enrolled}")
         logger.info(f"Unwanted Category:          {self.unwanted_category}")
         logger.info(f"Unwanted Language:          {self.unwanted_language}")
+        logger.info(f"Unwanted Author:            {self.unwanted_author}")
         logger.info(f"Already Claimed:            {self.already_enrolled}")
         logger.info(f"Expired:                    {self.expired}")
         logger.info(f"Total Enrolments:           {self.course_ids_end}")
@@ -78,6 +80,8 @@ class UdemyStatus(Enum):
     EXPIRED = "EXPIRED"
     UNWANTED_LANGUAGE = "UNWANTED_LANGUAGE"
     UNWANTED_CATEGORY = "UNWANTED_CATEGORY"
+    UNWANTED_AUTHOR = "UNWANTED_AUTHOR"
+    UNWANTED_YEAR = "UNWANTED_YEAR"
 
 
 class UdemyActions:
@@ -109,7 +113,7 @@ class UdemyActions:
         """Initialize."""
         self._cookies = None
         self.settings = settings
-        self.user_has_preferences = self.settings.categories or self.settings.languages
+        self.user_has_preferences = self.settings.categories or self.settings.languages or self.settings.authors
         self.udemy_scraper = create_scraper(ecdhCurve="secp384r1")
         self._cookie_file = os.path.join(get_app_dir(), cookie_file_name)
         self._enrolled_course_info = []
@@ -331,6 +335,27 @@ class UdemyActions:
             is_preferred_category = False
         return is_preferred_category
 
+    def is_exclude_author(
+        self, course_details: Dict, course_identifier: str
+    ) -> bool:
+        """
+        Check if the course is in one of the authors exclude by the user.
+
+        :param dict course_details: Dictionary containing course details from Udemy
+        :param str course_identifier: Name of the course used for logging
+        :return: boolean
+        """
+        is_exclude_author = False
+        course_authors = [
+            authors["title"] for authors in course_details["visible_instructors"]
+        ]
+        if any(authors in self.settings.authors for authors in course_authors):
+            logger.debug(
+                f"Skipping course '{course_identifier}' as it is not by a wanted author"
+            )
+            is_exclude_author = True
+        return is_exclude_author
+
     @format_requests
     def my_courses(self, page: int, page_size: int) -> Dict:
         """
@@ -399,6 +424,10 @@ class UdemyActions:
                     ):
                         self.stats.unwanted_category += 1
                         return UdemyStatus.UNWANTED_CATEGORY.value
+                if self.settings.authors:
+                    if self.is_exclude_author(course_details, course_identifier):
+                        self.stats.unwanted_author += 1
+                        return UdemyStatus.UNWANTED_AUTHOR.value
 
             if not self.is_coupon_valid(course_id, coupon_code, course_identifier):
                 self.stats.expired += 1
