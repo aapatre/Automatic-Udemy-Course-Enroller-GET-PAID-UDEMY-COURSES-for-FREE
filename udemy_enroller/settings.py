@@ -187,7 +187,7 @@ class Settings:
         }
 
         with open(self._settings_path, "w+") as f:
-            dump(yaml_structure, stream=f)
+            dump(yaml_structure, stream=f, default_flow_style=False)
         logger.info(f"Saved your settings in {self._settings_path}")
 
         # Log some details for the user
