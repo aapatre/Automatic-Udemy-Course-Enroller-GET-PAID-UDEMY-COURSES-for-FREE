@@ -355,7 +355,6 @@ class UdemyActions:
         course_last_update_date_str = course_units["units"][0]["items"][0]["last_update_date"]
         course_last_update_year = course_last_update_date_str.split("-")[0]
 
-        # course_year = course_details["context_info"]["course"]["published_time"]
         if course_last_update_year not in self.settings.years:
             logger.debug(
                 f"Skipping course '{course_identifier}' as it does not have a wanted year"
