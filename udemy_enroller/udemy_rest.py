@@ -43,6 +43,7 @@ class RunStatistics:
     unwanted_language: int = 0
     unwanted_category: int = 0
     unwanted_author: int = 0
+    unwanted_year: int = 0
 
     course_ids_start: int = 0
     course_ids_end: int = 0
@@ -63,6 +64,7 @@ class RunStatistics:
         logger.info(f"Unwanted Category:          {self.unwanted_category}")
         logger.info(f"Unwanted Language:          {self.unwanted_language}")
         logger.info(f"Unwanted Author:            {self.unwanted_author}")
+        logger.info(f"Unwanted Year:              {self.unwanted_year}")
         logger.info(f"Already Claimed:            {self.already_enrolled}")
         logger.info(f"Expired:                    {self.expired}")
         logger.info(f"Total Enrolments:           {self.course_ids_end}")
@@ -105,6 +107,10 @@ class UdemyActions:
         "primary_subcategory,avg_rating_recent,visible_instructors,locale,estimated_content_length,"
         "num_subscribers"
     )
+    COURSE_UNITS = (
+        BASE_URL
+        + "/api-2.0/discovery-units/?context=landing-page&course_id={}&source_page=course_landing_page"
+    )
     USER_DETAILS = f"{BASE_URL}/api-2.0/contexts/me/?me=True&Config=True"
 
     _headers = {"host": "www.udemy.com"}
@@ -113,7 +119,7 @@ class UdemyActions:
         """Initialize."""
         self._cookies = None
         self.settings = settings
-        self.user_has_preferences = self.settings.categories or self.settings.languages or self.settings.authors
+        self.user_has_preferences = self.settings.categories or self.settings.languages or self.settings.authors or self.settings.years
         self.udemy_scraper = create_scraper(ecdhCurve="secp384r1")
         self._cookie_file = os.path.join(get_app_dir(), cookie_file_name)
         self._enrolled_course_info = []
@@ -335,6 +341,28 @@ class UdemyActions:
             is_preferred_category = False
         return is_preferred_category
 
+    def is_preferred_year(
+        self, course_units: Dict, course_identifier: str
+    ) -> bool:
+        """
+        Check if the course is in one of the years preferred by the user.
+
+        :param dict course_details: Dictionary containing course details from Udemy
+        :param str course_identifier: Name of the course used for logging
+        :return: boolean
+        """
+        is_preferred_year = True
+        course_last_update_date_str = course_units["units"][0]["items"][0]["last_update_date"]
+        course_last_update_year = course_last_update_date_str.split("-")[0]
+
+        # course_year = course_details["context_info"]["course"]["published_time"]
+        if course_last_update_year not in self.settings.years:
+            logger.debug(
+                f"Skipping course '{course_identifier}' as it does not have a wanted year"
+            )
+            is_preferred_year = False
+        return is_preferred_year
+
     def is_exclude_author(
         self, course_details: Dict, course_identifier: str
     ) -> bool:
@@ -392,6 +420,16 @@ class UdemyActions:
         """
         return requests.get(self.COURSE_DETAILS.format(course_id))
 
+    @format_requests
+    def course_units(self, course_id: int) -> Dict:
+        """
+        Retrieve details relating to the course passed in.
+
+        :param int course_id: Id of the course to get the details of
+        :return: dictionary containing the course details
+        """
+        return requests.get(self.COURSE_UNITS.format(course_id))
+
     def enroll(self, course_link: str) -> str:
         """
         Enroll the current user in the course provided.
@@ -404,6 +442,7 @@ class UdemyActions:
             url, coupon_code = course_link.split(str_check)
             course_id = self._get_course_id(url)
             course_details = self.course_details(course_id)
+            course_units = self.course_units(course_id)
             course_identifier = course_details.get("title", url)
 
             if self.is_enrolled(course_id):
@@ -428,6 +467,10 @@ class UdemyActions:
                     if self.is_exclude_author(course_details, course_identifier):
                         self.stats.unwanted_author += 1
                         return UdemyStatus.UNWANTED_AUTHOR.value
+                if self.settings.years:
+                    if not self.is_preferred_year(course_units, course_identifier):
+                        self.stats.unwanted_year += 1
+                        return UdemyStatus.UNWANTED_YEAR.value
 
             if not self.is_coupon_valid(course_id, coupon_code, course_identifier):
                 self.stats.expired += 1

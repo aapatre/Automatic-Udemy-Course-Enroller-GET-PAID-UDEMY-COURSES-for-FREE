@@ -25,6 +25,7 @@ class Settings:
         self.languages = []
         self.categories = []
         self.authors = []
+        self.years = []
 
         self._settings_path = os.path.join(get_app_dir(), settings_path)
         self._cookies_path = os.path.join(get_app_dir(), ".cookie")
@@ -81,6 +82,7 @@ class Settings:
             self.languages = udemy_settings.get("languages")
             self.categories = udemy_settings.get("categories")
             self.authors = udemy_settings.get("authors")
+            self.years = udemy_settings.get("years")
 
         return settings
 
@@ -96,6 +98,7 @@ class Settings:
         self.languages = self._get_languages()
         self.categories = self._get_categories()
         self.authors = self._get_authors()
+        self.years = self._get_years()
 
     def _get_email(self, prompt_save=True) -> Tuple[str, bool]:
         """
@@ -187,6 +190,20 @@ class Settings:
         )
         return [author.strip() for author in authors.split(";")] if authors else []
 
+    @staticmethod
+    def _get_years() -> List[str]:
+        """
+        Get the years the user wants.
+
+        :return: list of years the user wants.
+        """
+        years = input(
+            "Please enter in a list of comma separated values of"
+            " the years you like, for example:\n"
+            "2018, 2019\n> "
+        )
+        return [year.strip() for year in years.split(",")] if years else []
+
     def _save_settings(self) -> None:
         """
         Confirm if the user wants to save settings to file.
@@ -201,6 +218,7 @@ class Settings:
                 "languages": self.languages,
                 "categories": self.categories,
                 "authors": self.authors,
+                "years": str(self.years),
             }
         }
 

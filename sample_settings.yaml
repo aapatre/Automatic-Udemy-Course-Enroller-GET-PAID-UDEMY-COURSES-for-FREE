@@ -10,4 +10,7 @@ udemy:
     - French
   email: Example@gmail.com # Enter your Udemy registered email here
   password: ExamplePa$$w0rd # Enter your Udemy password here
+  years: # If you want to limit the years of courses to claim
+    - '2024'
+    - '2023'
   zipcode: 12345 # If Udemy requires a zipcode for your country, enter it here.

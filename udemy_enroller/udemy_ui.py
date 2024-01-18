@@ -32,6 +32,7 @@ class RunStatistics:
     unwanted_language: int = 0
     unwanted_category: int = 0
     unwanted_author: int = 0
+    unwanted_year: int = 0
 
     start_time = None
 
@@ -56,6 +57,7 @@ class RunStatistics:
             logger.info(f"Unwanted Category:          {self.unwanted_category}")
             logger.info(f"Unwanted Language:          {self.unwanted_language}")
             logger.info(f"Unwanted Author:            {self.unwanted_author}")
+            logger.info(f"Unwanted Year:              {self.unwanted_year}")
             logger.info(f"Already Claimed:            {self.already_enrolled}")
             logger.info(f"Expired:                    {self.expired}")
             logger.info(
@@ -74,6 +76,7 @@ class UdemyStatus(Enum):
     UNWANTED_LANGUAGE = "UNWANTED_LANGUAGE"
     UNWANTED_CATEGORY = "UNWANTED_CATEGORY"
     UNWANTED_AUTHOR = "UNWANTED_AUTHOR"
+    UNWANTED_YEAR = "UNWANTED_YEAR"
 
 
 class UdemyActionsUI:
@@ -165,6 +168,9 @@ class UdemyActionsUI:
 
         if not self._check_authors(course_name):
             return UdemyStatus.UNWANTED_AUTHOR.value
+
+        if not self._check_years(course_name):
+            return UdemyStatus.UNWANTED_YEAR.value
 
         # TODO: Make this depend on an element.
         time.sleep(2)
@@ -343,6 +349,23 @@ class UdemyActionsUI:
                 self.stats.unwanted_author += 1
                 is_valid_author = False
         return is_valid_authors
+
+    def _check_years(self, course_identifier):
+        is_valid_year = True
+        if self.settings.years:
+            # If the wanted years are specified, get the year of the course by scraping the
+            # year on the top
+            year_xpath = "//div[@data-purpose='last-update-date']"
+            year_element = self.driver.find_element(By.XPATH, year_xpath)
+            year = year_element.text
+
+            if year not in self.settings.years:
+                logger.debug(
+                    f"Skipping course '{course_identifier}' as it does not have a wanted year"
+                )
+                self.stats.unwanted_year += 1
+                is_valid_year = False
+        return is_valid_year
 
     def _check_price(self, course_name):
         course_is_free = True
