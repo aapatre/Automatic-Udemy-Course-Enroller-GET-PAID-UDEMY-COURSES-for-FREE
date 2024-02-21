@@ -24,6 +24,8 @@ class Settings:
         self.zip_code = None
         self.languages = []
         self.categories = []
+        self.authors = []
+        self.years = []
 
         self._settings_path = os.path.join(get_app_dir(), settings_path)
         self._cookies_path = os.path.join(get_app_dir(), ".cookie")
@@ -79,6 +81,8 @@ class Settings:
             self.zip_code = udemy_settings.get("zipcode")
             self.languages = udemy_settings.get("languages")
             self.categories = udemy_settings.get("categories")
+            self.authors = udemy_settings.get("authors")
+            self.years = udemy_settings.get("years")
 
         return settings
 
@@ -93,6 +97,8 @@ class Settings:
         self.zip_code = self._get_zip_code()
         self.languages = self._get_languages()
         self.categories = self._get_categories()
+        self.authors = self._get_authors()
+        self.years = self._get_years()
 
     def _get_email(self, prompt_save=True) -> Tuple[str, bool]:
         """
@@ -170,6 +176,34 @@ class Settings:
             else []
         )
 
+    @staticmethod
+    def _get_authors() -> List[str]:
+        """
+        Get the authors the user wants.
+
+        :return: list of authors the user wants.
+        """
+        authors = input(
+            "Please enter in a list of semicolon separated values of"
+            " the authors you like, for example:\n"
+            "John Doe; Jane Doe\n> "
+        )
+        return [author.strip() for author in authors.split(";")] if authors else []
+
+    @staticmethod
+    def _get_years() -> List[str]:
+        """
+        Get the years the user wants.
+
+        :return: list of years the user wants.
+        """
+        years = input(
+            "Please enter in a list of comma separated values of"
+            " the years you like, for example:\n"
+            "2018, 2019\n> "
+        )
+        return [year.strip() for year in years.split(",")] if years else []
+
     def _save_settings(self) -> None:
         """
         Confirm if the user wants to save settings to file.
@@ -183,11 +217,13 @@ class Settings:
                 "zipcode": str(self.zip_code),
                 "languages": self.languages,
                 "categories": self.categories,
+                "authors": self.authors,
+                "years": str(self.years),
             }
         }
 
         with open(self._settings_path, "w+") as f:
-            dump(yaml_structure, stream=f)
+            dump(yaml_structure, stream=f, default_flow_style=False)
         logger.info(f"Saved your settings in {self._settings_path}")
 
         # Log some details for the user

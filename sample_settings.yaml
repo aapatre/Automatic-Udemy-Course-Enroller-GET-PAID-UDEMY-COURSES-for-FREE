@@ -1,6 +1,16 @@
 udemy:
-  email: "Example@gmail.com" # Enter your Udemy registered email here
-  password: "ExamplePa$$w0rd" # Enter your Udemy password here
-  zipcode: "12345" # If Udemy requires a zipcode for your country, enter it here.
-  languages: [] # If you want to limit the languages of courses to claim e.g ["French", "Spanish"]
-  categories: []  # If you want to limit the categories of courses to claim
+  authors:  # If you want to exclude the authors of courses to claim
+    - Author 1
+    - Author 2
+  categories:   # If you want to limit the categories of courses to claim
+    - Category 1
+    - Category 2
+  languages: # If you want to limit the languages of courses to claim
+    - English
+    - French
+  email: Example@gmail.com # Enter your Udemy registered email here
+  password: ExamplePa$$w0rd # Enter your Udemy password here
+  years: # If you want to limit the years of courses to claim
+    - '2024'
+    - '2023'
+  zipcode: 12345 # If Udemy requires a zipcode for your country, enter it here.
