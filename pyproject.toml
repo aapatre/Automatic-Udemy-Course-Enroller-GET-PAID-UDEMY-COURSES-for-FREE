@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "udemy-enroller"
-version = "4.1.3"
+version = "4.1.4"
 description = ""
 homepage = "https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE"
 authors = ["aapatre <udemyenroller@gmail.com>", "fakeid <udemyenroller@gmail.com>", "cullzie <udemyenroller@gmail.com>"]
@@ -42,7 +42,7 @@ flake8-isort = "^5.0.3"
 profile = "black"
 
 [tool.bumpver]
-current_version = "v4.1.3"
+current_version = "v4.1.4"
 version_pattern = "vMAJOR.MINOR.PATCH"
 commit_message = "Bump version {old_version} -> {new_version}"
 commit = true
