@@ -104,13 +104,15 @@ class UdemyActionsUI:
                 self.settings.prompt_password()
 
             try:
-                email_element = self.driver.find_element_by_name("email")
+                email_element = self.driver.find_element(By.NAME, "email")
                 email_element.send_keys(self.settings.email)
 
-                password_element = self.driver.find_element_by_name("password")
+                password_element = self.driver.find_element(By.NAME, "password")
                 password_element.send_keys(self.settings.password)
 
-                self.driver.find_element_by_name("submit").click()
+                self.driver.find_element(
+                    By.CSS_SELECTOR, "button[class*='auth-submit-button']"
+                ).click()
             except NoSuchElementException as e:
                 is_robot = self._check_if_robot()
                 if is_robot and not is_retry:
@@ -220,8 +222,8 @@ class UdemyActionsUI:
 
             # Check if state/province element exists
             billing_state_element_id = "billingAddressSecondarySelect"
-            billing_state_elements = self.driver.find_elements_by_id(
-                billing_state_element_id
+            billing_state_elements = self.driver.find_elements(
+                By.ID, billing_state_element_id
             )
             if billing_state_elements:
                 # If we are here it means a state/province element exists and needs to be filled
@@ -261,7 +263,7 @@ class UdemyActionsUI:
         add_to_cart_xpath = (
             "//div[starts-with(@class, 'buy-box')]//div[@data-purpose='add-to-cart']"
         )
-        add_to_cart_elements = self.driver.find_elements_by_xpath(add_to_cart_xpath)
+        add_to_cart_elements = self.driver.find_elements(By.XPATH, add_to_cart_xpath)
         if not add_to_cart_elements or (
             add_to_cart_elements and not add_to_cart_elements[0].is_displayed()
         ):
@@ -297,11 +299,11 @@ class UdemyActionsUI:
 
             breadcrumbs_path = "udlite-breadcrumb"
             breadcrumbs_text_path = "udlite-heading-sm"
-            breadcrumbs: WebElement = self.driver.find_element_by_class_name(
-                breadcrumbs_path
+            breadcrumbs: WebElement = self.driver.find_element(
+                By.CLASS_NAME, breadcrumbs_path
             )
-            breadcrumb_elements = breadcrumbs.find_elements_by_class_name(
-                breadcrumbs_text_path
+            breadcrumb_elements = breadcrumbs.find_elements(
+                By.CLASS_NAME, breadcrumbs_text_path
             )
             breadcrumb_text = [
                 bc.text for bc in breadcrumb_elements
@@ -322,7 +324,7 @@ class UdemyActionsUI:
     def _check_price(self, course_name):
         course_is_free = True
         price_xpath = "//div[contains(@data-purpose, 'total-amount-summary')]//span[2]"
-        price_element = self.driver.find_element_by_xpath(price_xpath)
+        price_element = self.driver.find_element(By.XPATH, price_xpath)
 
         # We are only interested in the element which is displaying the price details
         if price_element.is_displayed():
@@ -349,7 +351,7 @@ class UdemyActionsUI:
             list_price_xpath = (
                 "//div[starts-with(@class, 'order-summary--original-price-text')]//span"
             )
-            list_price_element = self.driver.find_element_by_xpath(list_price_xpath)
+            list_price_element = self.driver.find_element(By.XPATH, list_price_xpath)
             list_price = Price.fromstring(list_price_element.text)
             if list_price.amount is not None:
                 self.stats.prices.append(list_price.amount)
@@ -363,7 +365,7 @@ class UdemyActionsUI:
         """
         is_robot = True
         try:
-            self.driver.find_element_by_id("px-captcha")
+            self.driver.find_element(By.ID, "px-captcha")
         except NoSuchElementException:
             is_robot = False
         return is_robot

@@ -1,0 +1,61 @@
+on:
+  workflow_dispatch:
+    inputs:
+      pypi_token:
+        description: 'The pypi token to publish with'
+        required: true
+      pypi_url:
+        description: 'The pypi url to publish to'
+        required: true
+      pypi_variable:
+        description: 'The pypi variable'
+        required: true
+#  push:
+#    tags:
+#      - '[0-9]+.[0-9]+.[0-9]+'
+
+name: Publish Release
+
+jobs:
+  publish-to-pypi:
+    name: Publish to pypi
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ 3.11 ]
+        poetry-version: [ 1.3.2 ]
+        os: [ ubuntu-latest ]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run image
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Publish
+        env:
+          PYPI_TOKEN: ${{ inputs.pypi_token }}
+          PYPI_URL: ${{ inputs.pypi_url }}
+          PYPI_VARIABLE: ${{ inputs.pypi_variable }}
+        run: |
+          poetry config repositories.$PYPI_VARIABLE $PYPI_URL
+          poetry config pypi-token.$PYPI_VARIABLE $PYPI_TOKEN
+          poetry publish --build -r $PYPI_VARIABLE
+
+#  create-github-release:
+#    name: Create GitHub Release
+#    runs-on: ubuntu-latest
+#    needs: publish-to-pypi
+#    permissions:
+#      contents: write
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#      - name: Create Release
+#        run: gh release create ${{ github.ref }} --generate-notes
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

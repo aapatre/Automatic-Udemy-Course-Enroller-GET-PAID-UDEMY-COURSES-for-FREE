@@ -1,6 +1,10 @@
 """Webdriver manager."""
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.edge.service import Service as EdgeService
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.ie.service import Service as IEService
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.utils import ChromeType
 from webdriver_manager.firefox import GeckoDriverManager
@@ -43,24 +47,33 @@ class DriverManager:
                 self.options = self._build_ci_options_chrome()
 
             self.driver = webdriver.Chrome(
-                ChromeDriverManager().install(), options=self.options
+                service=ChromeService(ChromeDriverManager().install()),
+                options=self.options,
             )
         elif self.browser.lower() in VALID_CHROMIUM_STRINGS:
             self.driver = webdriver.Chrome(
-                ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+                service=ChromeService(
+                    ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+                )
             )
         elif self.browser.lower() in VALID_EDGE_STRINGS:
-            self.driver = webdriver.Edge(EdgeChromiumDriverManager().install())
+            self.driver = webdriver.Edge(
+                service=EdgeService(EdgeChromiumDriverManager().install())
+            )
         elif self.browser.lower() in VALID_FIREFOX_STRINGS:
             self.driver = webdriver.Firefox(
-                executable_path=GeckoDriverManager().install()
+                service=FirefoxService(GeckoDriverManager().install())
             )
         elif self.browser.lower() in VALID_OPERA_STRINGS:
-            self.driver = webdriver.Opera(
-                executable_path=OperaDriverManager().install()
+            webdriver_service = ChromeService(OperaDriverManager().install())
+            webdriver_service.start()
+            options = webdriver.ChromeOptions()
+            options.add_experimental_option("w3c", True)
+            self.driver = webdriver.Remote(
+                webdriver_service.service_url, options=options
             )
         elif self.browser.lower() in VALID_INTERNET_EXPLORER_STRINGS:
-            self.driver = webdriver.Ie(IEDriverManager().install())
+            self.driver = webdriver.Ie(service=IEService(IEDriverManager().install()))
         else:
             raise ValueError("No matching browser found")
 
