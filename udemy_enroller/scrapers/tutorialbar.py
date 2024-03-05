@@ -1,4 +1,5 @@
 """Tutorialbar scraper."""
+
 import asyncio
 from typing import List
 

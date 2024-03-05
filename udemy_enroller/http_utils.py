@@ -1,4 +1,5 @@
 """HTTP helpers."""
+
 import aiohttp
 
 from udemy_enroller.logger import get_logger
@@ -37,7 +38,9 @@ async def http_get_no_redirect(url, headers=None):
         headers = {}
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, headers=headers, allow_redirects=False) as response:
+            async with session.get(
+                url, headers=headers, allow_redirects=False
+            ) as response:
                 return response
     except Exception as e:
         logger.error(f"Error in get request: {e}")

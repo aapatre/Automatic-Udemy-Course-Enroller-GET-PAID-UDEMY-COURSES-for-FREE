@@ -1,4 +1,5 @@
-"""IDownloadCoupon scraper.""" 
+"""IDownloadCoupon scraper."""
+
 import asyncio
 import urllib.parse
 from typing import List
@@ -93,7 +94,6 @@ class IDownloadCouponScraper(BaseScraper):
         if urls and link.startswith("https://click.linksynergy.com"):
             return cls.validate_coupon_url(urllib.parse.unquote(urls[1]))
 
-
     async def gather_udemy_course_links(self, courses: List[str]):
         """
         Async fetching of the udemy course links.
@@ -102,5 +102,7 @@ class IDownloadCouponScraper(BaseScraper):
         :return: list of udemy links
         """
         return [
-            link for link in await asyncio.gather(*map(self.get_udemy_course_link, courses)) if link is not None
+            link
+            for link in await asyncio.gather(*map(self.get_udemy_course_link, courses))
+            if link is not None
         ]

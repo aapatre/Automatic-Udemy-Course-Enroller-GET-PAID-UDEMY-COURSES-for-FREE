@@ -1,4 +1,5 @@
 """Manager for scapers."""
+
 import asyncio
 import typing
 from functools import reduce
