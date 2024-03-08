@@ -1,4 +1,5 @@
 """Base Scraper."""
+
 import datetime
 import logging
 import re

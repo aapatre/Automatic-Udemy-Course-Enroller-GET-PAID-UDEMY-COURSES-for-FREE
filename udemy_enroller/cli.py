@@ -1,4 +1,5 @@
 """CLI entrypoint for this script."""
+
 import argparse
 import logging
 import platform

@@ -1,4 +1,5 @@
 """Logger utilities."""
+
 import logging
 import logging.config
 import os

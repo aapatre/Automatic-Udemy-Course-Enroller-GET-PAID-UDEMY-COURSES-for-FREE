@@ -1,4 +1,5 @@
 """."""
+
 from .driver_manager import ALL_VALID_BROWSER_STRINGS, DriverManager  # noqa: F401
 from .logger import load_logging_config
 from .scrapers.manager import ScraperManager  # noqa: F401

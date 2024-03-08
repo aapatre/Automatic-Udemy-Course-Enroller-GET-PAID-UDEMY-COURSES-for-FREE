@@ -1,4 +1,5 @@
 """Udemy REST."""
+
 import json
 import os
 import re

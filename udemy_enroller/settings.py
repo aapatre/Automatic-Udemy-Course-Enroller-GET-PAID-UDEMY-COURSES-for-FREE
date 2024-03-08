@@ -1,4 +1,5 @@
 """Settings."""
+
 import getpass
 import os.path
 from distutils.util import strtobool

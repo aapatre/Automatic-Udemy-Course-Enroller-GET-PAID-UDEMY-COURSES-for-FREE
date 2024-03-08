@@ -1,4 +1,5 @@
 """Freebiesglobal Scraper."""
+
 import asyncio
 from typing import List
 
