@@ -13,11 +13,11 @@ ARG gid=1000
 RUN groupadd -g ${gid} ${group} && useradd -u ${uid} -g ${group} -s /bin/sh ${user}
 RUN mkdir -p ~/.udemy_enroller && chown ${user} ~/.udemy_enroller
 
-USER ${user}
 WORKDIR /src
-
 COPY . . 
 
 RUN pip install --no-cache-dir -r requirements.txt
+
+USER ${user}
 
 ENTRYPOINT [ "python", "run_enroller.py" ]
