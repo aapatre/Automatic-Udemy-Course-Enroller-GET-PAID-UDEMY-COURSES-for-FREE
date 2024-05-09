@@ -1,10 +1,13 @@
 FROM python:3.12-slim
 
-RUN apt-get install --no-cache build-base 
+#apt-get update && apt-get install -y \
+#    build-base \
+#    && rm -rf /var/lib/apt/lists/*  
 # libffi-dev
 
 RUN addgroup -S enroller && adduser -S enroller -G enroller
 USER enroller
+
 RUN mkdir -p ~/.udemy_enroller
 
 WORKDIR /src
