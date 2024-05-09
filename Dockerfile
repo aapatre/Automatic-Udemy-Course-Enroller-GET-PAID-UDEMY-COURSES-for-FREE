@@ -4,8 +4,13 @@ FROM python:3.12-slim
 #    build-base \
 #    && rm -rf /var/lib/apt/lists/*  
 # libffi-dev
+ARG user=enroller
+ARG group=enroller
+ARG uid=1000
+ARG gid=1000
 
-RUN addgroup --gid 1000 enroller && adduser -uid 1000 enroller enroller
+# RUN addgroup --gid 1000 enroller && adduser -uid 1000 enroller enroller
+RUN groupadd -g ${gid} ${group} && useradd -u ${uid} -g ${group} -s /bin/sh ${user}
 
 USER enroller
 
