@@ -1,4 +1,4 @@
-aiohttp[speedups]==3.8.4
+aiohttp[speedups]==3.9.5
 beautifulsoup4==4.11.1
 ruamel.yaml==0.17.32
 requests==2.31.0
