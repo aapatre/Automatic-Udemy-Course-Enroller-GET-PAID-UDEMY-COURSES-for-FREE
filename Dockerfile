@@ -11,7 +11,7 @@ ARG gid=1000
 
 # RUN addgroup --gid 1000 enroller && adduser -uid 1000 enroller enroller
 RUN groupadd -g ${gid} ${group} && useradd -u ${uid} -g ${group} -s /bin/sh ${user}
-RUN mkdir -p ~/.udemy_enroller /src  && chown ${user} ~/.udemy_enroller /src /home/${user}
+RUN mkdir -p ~/.udemy_enroller /src  && chown ${user} ~/.udemy_enroller /src 
 
 USER ${user}
 WORKDIR /src
