@@ -5,7 +5,8 @@ FROM python:3.12-slim
 #    && rm -rf /var/lib/apt/lists/*  
 # libffi-dev
 
-RUN addgroup -S enroller && adduser -S enroller -G enroller
+RUN addgroup --gid 1000 enroller && adduser -uid 1000 enroller -G enroller
+
 USER enroller
 
 RUN mkdir -p ~/.udemy_enroller
