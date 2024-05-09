@@ -1,6 +1,6 @@
 FROM python:3.12-alpine
 
-RUN apk add --no-cache build-base
+RUN apk add --no-cache build-base libffi-dev
 
 RUN addgroup -S enroller && adduser -S enroller -G enroller
 USER enroller
