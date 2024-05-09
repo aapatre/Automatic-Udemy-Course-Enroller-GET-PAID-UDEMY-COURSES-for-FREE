@@ -5,7 +5,7 @@ FROM python:3.12-slim
 #    && rm -rf /var/lib/apt/lists/*  
 # libffi-dev
 
-RUN addgroup --gid 1000 enroller && adduser -uid 1000 enroller -G enroller
+RUN addgroup --gid 1000 enroller && adduser -uid 1000 enroller enroller
 
 USER enroller
 
