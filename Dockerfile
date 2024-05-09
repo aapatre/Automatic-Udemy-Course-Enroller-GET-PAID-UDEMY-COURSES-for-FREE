@@ -11,13 +11,13 @@ ARG gid=1000
 
 # RUN addgroup --gid 1000 enroller && adduser -uid 1000 enroller enroller
 RUN groupadd -g ${gid} ${group} && useradd -u ${uid} -g ${group} -s /bin/sh ${user}
-RUN mkdir -p ~/.udemy_enroller && chown ${user} ~/.udemy_enroller
-
-WORKDIR /src
-COPY . . 
-
-RUN pip install --no-cache-dir -r requirements.txt
+RUN mkdir -p ~/.udemy_enroller /src  && chown ${user} ~/.udemy_enroller /src
 
 USER ${user}
+WORKDIR /src
+
+COPY . . 
+RUN pip install --no-cache-dir -r requirements.txt
+
 
 ENTRYPOINT [ "python", "run_enroller.py" ]
