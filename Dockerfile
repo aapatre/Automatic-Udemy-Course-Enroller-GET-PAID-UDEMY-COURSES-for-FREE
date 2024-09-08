@@ -12,6 +12,7 @@ RUN mkdir -p /home/${user}/.udemy_enroller  && chown ${user} /home/${user}/.udem
 WORKDIR /src
 COPY . . 
 RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get install python-setuptools
 
 USER ${user}
 ENTRYPOINT [ "python", "run_enroller.py" ]
