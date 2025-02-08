@@ -1,4 +1,4 @@
-aiohttp[speedups]==3.8.4
+aiohttp[speedups]==3.9.5
 beautifulsoup4==4.11.1
 ruamel.yaml==0.17.32
 requests==2.31.0
@@ -6,3 +6,4 @@ cloudscraper==1.2.71
 price-parser==0.3.4
 webdriver-manager==3.8.6
 selenium==4.10.0
+setuptools==74.1.2

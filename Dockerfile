@@ -1,15 +1,17 @@
-FROM python:3.10-alpine
+FROM python:3.12-slim
 
-RUN apk add --no-cache build-base
+ARG user=enroller
+ARG group=enroller
 
-RUN addgroup -S enroller && adduser -S enroller -G enroller
-USER enroller
-RUN mkdir -p ~/.udemy_enroller
+ENV uid=1000
+ENV gid=1000
+
+RUN groupadd -g ${gid} ${group} && useradd -u ${uid} -g ${group} -s /bin/sh ${user}
+RUN mkdir -p /home/${user}/.udemy_enroller  && chown ${user} /home/${user} /home/${user}/.udemy_enroller 
 
 WORKDIR /src
-
 COPY . . 
-
 RUN pip install --no-cache-dir -r requirements.txt
 
+USER ${user}
 ENTRYPOINT [ "python", "run_enroller.py" ]
