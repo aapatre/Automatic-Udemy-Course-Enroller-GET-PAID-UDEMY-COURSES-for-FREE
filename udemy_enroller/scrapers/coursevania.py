@@ -127,10 +127,34 @@ class CoursevaniaScraper(BaseScraper):
         text = await http_get(url)
         if text is not None:
             soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
-            udemy_link = (
-                soup.find("div", class_="stm-lms-buy-buttons").find("a").get("href")
-            )
-            return udemy_link
+            
+            # Try multiple selectors and use validate_coupon_url to check
+            # First try the old selector
+            buy_buttons_div = soup.find("div", class_="stm-lms-buy-buttons")
+            if buy_buttons_div:
+                anchor = buy_buttons_div.find("a")
+                if anchor and anchor.get("href"):
+                    # validate_coupon_url will check if it's a proper Udemy URL with coupon
+                    validated = CoursevaniaScraper.validate_coupon_url(anchor.get("href"))
+                    if validated:
+                        return validated
+            
+            # Try new selector - masterstudy-button-affiliate
+            affiliate_button = soup.find("div", class_="masterstudy-button-affiliate")
+            if affiliate_button:
+                anchor = affiliate_button.find("a", href=True)
+                if anchor and anchor.get("href"):
+                    validated = CoursevaniaScraper.validate_coupon_url(anchor.get("href"))
+                    if validated:
+                        return validated
+            
+            # Try finding any link that passes validation
+            for link in soup.find_all("a", href=True):
+                href = link.get("href", "")
+                validated = CoursevaniaScraper.validate_coupon_url(href)
+                if validated:
+                    return validated
+        return None
 
     async def gather_udemy_course_links(self, courses: List[str]):
         """

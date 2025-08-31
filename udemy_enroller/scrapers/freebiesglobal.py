@@ -46,16 +46,33 @@ class FreebiesglobalScraper(BaseScraper):
         """
         freebiesglobal_links = []
         self.current_page += 1
-        coupons_data = await http_get(
-            f"{self.DOMAIN}/dealstore/udemy/page/{self.current_page}"
-        )
+        
+        # Updated URL structure - using shop/udemy instead of dealstore/udemy
+        url = f"{self.DOMAIN}/shop/udemy/"
+        if self.current_page > 1:
+            url = f"{self.DOMAIN}/shop/udemy/page/{self.current_page}/"
+            
+        coupons_data = await http_get(url)
+        
+        if coupons_data is None:
+            logger.debug(f"Failed to fetch {url}")
+            return []
+            
         soup = BeautifulSoup(coupons_data.decode("utf-8"), "html.parser")
 
-        for course_card in soup.find_all(
-            "a", class_="img-centered-flex rh-flex-center-align rh-flex-justify-center"
-        ):
-            url_end = course_card["href"].split("/")[-1]
-            freebiesglobal_links.append(f"{self.DOMAIN}/{url_end}")
+        # Find all article posts (some have class "post", others don't)
+        articles = soup.find_all("article")
+        
+        for article in articles:
+            # Find the title link which leads to the course detail page
+            title_elem = article.find("h2") or article.find("h3")
+            if title_elem:
+                title_link = title_elem.find("a")
+                if title_link and title_link.get("href"):
+                    # Make sure it's a course link, not a navigation link
+                    href = title_link.get("href")
+                    if href and "/shop/udemy/" not in href and "freebiesglobal.com" in href:
+                        freebiesglobal_links.append(href)
 
         links = await self.gather_udemy_course_links(freebiesglobal_links)
 
@@ -75,12 +92,21 @@ class FreebiesglobalScraper(BaseScraper):
         :return: Coupon link of the udemy course
         """
         data = await http_get(url)
+        if data is None:
+            return None
+            
         soup = BeautifulSoup(data.decode("utf-8"), "html.parser")
-        for link in soup.find_all("a", class_="re_track_btn"):
-            udemy_link = cls.validate_coupon_url(link["href"])
-
-            if udemy_link is not None:
-                return udemy_link
+        
+        # Find all links and check if they're valid Udemy coupon URLs
+        # FreebiesGlobal uses various classes: re_track_btn, btn_offer_block, etc.
+        for link in soup.find_all("a", href=True):
+            href = link.get("href", "")
+            # validate_coupon_url checks for udemy.com and couponCode= pattern
+            validated_url = cls.validate_coupon_url(href)
+            if validated_url:
+                return validated_url
+        
+        return None
 
     async def gather_udemy_course_links(self, courses: List[str]):
         """
@@ -103,10 +129,12 @@ class FreebiesglobalScraper(BaseScraper):
         :param soup:
         :return: The last page number to scrape
         """
-        return max(
-            [
+        page_numbers = soup.find("ul", class_="page-numbers")
+        if page_numbers:
+            page_list = [
                 int(i.text)
-                for i in soup.find("ul", class_="page-numbers").find_all("li")
+                for i in page_numbers.find_all("li")
                 if i.text.isdigit()
             ]
-        )
+            return max(page_list) if page_list else 1
+        return 1
