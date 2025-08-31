@@ -4,5 +4,5 @@ ruamel.yaml==0.17.32
 requests==2.31.0
 cloudscraper==1.2.71
 price-parser==0.3.4
-webdriver-manager==3.8.6
+webdriver-manager>=4.0.0
 selenium==4.10.0
