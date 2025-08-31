@@ -67,6 +67,12 @@ class FreebiesglobalScraper(BaseScraper):
             # Find the title link which leads to the course detail page
             title_elem = article.find("h2") or article.find("h3")
             if title_elem:
+                # Skip expired courses (FreebiesGlobal prefixes expired courses with "Expired")
+                title_text = title_elem.get_text().strip()
+                if title_text.startswith("Expired"):
+                    logger.debug(f"Skipping expired course: {title_text[:50]}...")
+                    continue
+                    
                 title_link = title_elem.find("a")
                 if title_link and title_link.get("href"):
                     # Make sure it's a course link, not a navigation link
