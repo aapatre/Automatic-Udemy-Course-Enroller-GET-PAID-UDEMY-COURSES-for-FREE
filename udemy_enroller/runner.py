@@ -74,6 +74,7 @@ def redeem_courses(
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
     coursevania_enabled: bool,
+    realdiscount_enabled: bool,
     max_pages: Union[int, None],
 ) -> None:
     """
@@ -85,6 +86,7 @@ def redeem_courses(
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
     :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
     :param bool coursevania_enabled: Boolean signifying if coursevania scraper should run
+    :param bool realdiscount_enabled: Boolean signifying if realdiscount scraper should run
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :return:
     """
@@ -95,6 +97,7 @@ def redeem_courses(
             tutorialbar_enabled,
             discudemy_enabled,
             coursevania_enabled,
+            realdiscount_enabled,
             max_pages,
         )
         _redeem_courses(settings, scrapers)
@@ -169,6 +172,7 @@ def redeem_courses_ui(
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
     coursevania_enabled: bool,
+    realdiscount_enabled: bool,
     max_pages: Union[int, None],
 ) -> None:
     """
@@ -181,6 +185,7 @@ def redeem_courses_ui(
     :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
     :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
     :param bool coursevania_enabled: Boolean signifying if coursevania scraper should run
+    :param bool realdiscount_enabled: Boolean signifying if realdiscount scraper should run
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :return:
     """
@@ -191,6 +196,7 @@ def redeem_courses_ui(
             tutorialbar_enabled,
             discudemy_enabled,
             coursevania_enabled,
+            realdiscount_enabled,
             max_pages,
         )
         _redeem_courses_ui(driver, settings, scrapers)
