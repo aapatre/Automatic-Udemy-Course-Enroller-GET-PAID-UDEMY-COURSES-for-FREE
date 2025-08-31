@@ -79,7 +79,17 @@ class FreebiesglobalScraper(BaseScraper):
         for counter, course in enumerate(links):
             logger.debug(f"Received Link {counter + 1} : {course}")
 
-        self.last_page = self._get_last_page(soup)
+        # Set last_page on first run only or when we find the actual last page
+        if self.last_page is None:
+            # FreebiesGlobal uses AJAX pagination - we can't determine exact count
+            # Set a reasonable limit for scraping
+            self.last_page = 10  # Will scrape up to 10 pages (310 courses)
+        
+        # Check if this is actually the last page (no "Show next" button)
+        ajax_btn = soup.find("span", class_="re_ajax_pagination_btn")
+        if not ajax_btn or "Show next" not in ajax_btn.text:
+            # No more pages available
+            self.last_page = self.current_page
 
         return links
 
@@ -121,20 +131,3 @@ class FreebiesglobalScraper(BaseScraper):
             if link is not None
         ]
 
-    @staticmethod
-    def _get_last_page(soup: BeautifulSoup) -> int:
-        """
-        Extract the last page number to scrape.
-
-        :param soup:
-        :return: The last page number to scrape
-        """
-        page_numbers = soup.find("ul", class_="page-numbers")
-        if page_numbers:
-            page_list = [
-                int(i.text)
-                for i in page_numbers.find_all("li")
-                if i.text.isdigit()
-            ]
-            return max(page_list) if page_list else 1
-        return 1
