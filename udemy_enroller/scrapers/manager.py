@@ -7,6 +7,7 @@ from udemy_enroller.scrapers.coursevania import CoursevaniaScraper
 from udemy_enroller.scrapers.discudemy import DiscUdemyScraper
 from udemy_enroller.scrapers.freebiesglobal import FreebiesglobalScraper
 from udemy_enroller.scrapers.idownloadcoupon import IDownloadCouponScraper
+from udemy_enroller.scrapers.realdiscount import RealDiscountScraper
 from udemy_enroller.scrapers.tutorialbar import TutorialBarScraper
 
 
@@ -20,6 +21,7 @@ class ScraperManager:
         tutorialbar_enabled,
         discudemy_enabled,
         coursevania_enabled,
+        realdiscount_enabled,
         max_pages,
     ):
         """Initialize."""
@@ -39,12 +41,16 @@ class ScraperManager:
         self.coursevania_scraper = CoursevaniaScraper(
             coursevania_enabled, max_pages=max_pages
         )
+        self.realdiscount_scraper = RealDiscountScraper(
+            realdiscount_enabled, max_pages=max_pages
+        )
         self._scrapers = (
             self.idownloadcoupons_scraper,
             self.freebiesglobal_scraper,
             self.tutorialbar_scraper,
             self.discudemy_scraper,
             self.coursevania_scraper,
+            self.realdiscount_scraper,
         )
 
     async def run(self) -> typing.List[str]:

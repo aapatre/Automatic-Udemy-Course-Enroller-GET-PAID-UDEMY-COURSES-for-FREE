@@ -24,7 +24,7 @@ aiohttp = {extras = ["speedups"], version = "3.8.4"}
 price-parser = "0.3.4"
 # UI based dependencies
 selenium = "4.10.0"
-webdriver-manager = "3.8.6"
+webdriver-manager = "^4.0.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.12.0"

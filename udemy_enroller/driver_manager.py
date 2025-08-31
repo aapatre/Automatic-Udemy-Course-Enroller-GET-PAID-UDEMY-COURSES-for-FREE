@@ -1,4 +1,5 @@
 """Webdriver manager."""
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -6,7 +7,17 @@ from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.ie.service import Service as IEService
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.utils import ChromeType
+
+try:
+    # For webdriver_manager 3.x
+    from webdriver_manager.core.utils import ChromeType
+except ImportError:
+    try:
+        # For webdriver_manager 4.x
+        from webdriver_manager.core.os_manager import ChromeType
+    except ImportError:
+        # For newer webdriver_manager 4.x versions
+        from webdriver_manager.core.driver import ChromeType
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager, IEDriverManager
 from webdriver_manager.opera import OperaDriverManager
@@ -46,10 +57,25 @@ class DriverManager:
             if self.is_ci_build:
                 self.options = self._build_ci_options_chrome()
 
-            self.driver = webdriver.Chrome(
-                service=ChromeService(ChromeDriverManager().install()),
-                options=self.options,
-            )
+            try:
+                # Try using webdriver_manager first
+                self.driver = webdriver.Chrome(
+                    service=ChromeService(ChromeDriverManager().install()),
+                    options=self.options,
+                )
+            except Exception as e:
+                logger.warning(
+                    f"Failed to initialize Chrome with webdriver_manager: {e}"
+                )
+                # Fallback: Try without explicit driver installation
+                # This will work if chromedriver is in PATH
+                try:
+                    self.driver = webdriver.Chrome(options=self.options)
+                except Exception as fallback_error:
+                    logger.error(
+                        f"Failed to initialize Chrome driver: {fallback_error}"
+                    )
+                    raise
         elif self.browser.lower() in VALID_CHROMIUM_STRINGS:
             self.driver = webdriver.Chrome(
                 service=ChromeService(
