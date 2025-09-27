@@ -14,7 +14,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 # Rest based dependencies
 beautifulsoup4 = "4.11.1"
 "ruamel.yaml" = "0.17.32"
@@ -37,6 +37,7 @@ flake8 = "^5.0.4"
 flake8-bugbear = "^22.12.6"
 flake8-docstrings = "^1.7.0"
 flake8-isort = "^5.0.3"
+typing-extensions = "^4.15"
 
 [tool.isort]
 profile = "black"
