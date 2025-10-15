@@ -1,6 +1,5 @@
 """Logger utilities."""
 import logging
-import logging.config
 import os
 
 from udemy_enroller.utils import get_app_dir
