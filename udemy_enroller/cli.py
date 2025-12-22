@@ -6,11 +6,12 @@ import sys
 from argparse import Namespace
 from typing import Tuple, Union
 
-from pkg_resources import DistributionNotFound, get_distribution
+import importlib.metadata as im
 
 from udemy_enroller import ALL_VALID_BROWSER_STRINGS, DriverManager, Settings
 from udemy_enroller.logger import get_logger
-from udemy_enroller.runner import redeem_courses, redeem_courses_ui
+from udemy_enroller.runner import redeem_courses, redeem_courses_ui, redeem_courses_config, redeem_courses_ui_config
+from udemy_enroller.run_config import RunConfig
 
 logger = get_logger()
 
@@ -34,12 +35,11 @@ def log_package_details() -> None:
     :return: None
     """
     try:
-        distribution = get_distribution("udemy_enroller")
-        if distribution:
-            logger.debug(f"Name: {distribution.project_name}")
-            logger.debug(f"Version: {distribution.version}")
-            logger.debug(f"Location: {distribution.location}")
-    except DistributionNotFound:
+        name = "udemy_enroller"
+        version = im.version(name)
+        logger.debug(f"Name: {name}")
+        logger.debug(f"Version: {version}")
+    except im.PackageNotFoundError:
         logger.debug("Not installed on python env.")
 
 
@@ -106,6 +106,9 @@ def run(
     discudemy_enabled: bool,
     coursevania_enabled: bool,
     max_pages: Union[int, None],
+    experimental_fuzz: bool,
+    fuzz_seed: Union[int, None],
+    max_concurrency: int,
     delete_settings: bool,
     delete_cookie: bool,
 ):
@@ -124,28 +127,25 @@ def run(
     :return:
     """
     settings = Settings(delete_settings, delete_cookie)
+    config = RunConfig(
+        browser,
+        idownloadcoupon_enabled,
+        freebiesglobal_enabled,
+        tutorialbar_enabled,
+        discudemy_enabled,
+        coursevania_enabled,
+        max_pages,
+        delete_settings,
+        delete_cookie,
+        experimental_fuzz,
+        fuzz_seed,
+        max_concurrency,
+    )
     if browser:
         dm = DriverManager(browser=browser, is_ci_build=settings.is_ci_build)
-        redeem_courses_ui(
-            dm.driver,
-            settings,
-            idownloadcoupon_enabled,
-            freebiesglobal_enabled,
-            tutorialbar_enabled,
-            discudemy_enabled,
-            coursevania_enabled,
-            max_pages,
-        )
+        redeem_courses_ui_config(dm.driver, settings, config)
     else:
-        redeem_courses(
-            settings,
-            idownloadcoupon_enabled,
-            freebiesglobal_enabled,
-            tutorialbar_enabled,
-            discudemy_enabled,
-            coursevania_enabled,
-            max_pages,
-        )
+        redeem_courses_config(settings, config)
 
 
 def parse_args() -> Namespace:
@@ -200,6 +200,24 @@ def parse_args() -> Namespace:
         help="Max pages to scrape from sites (if pagination exists) (Default is 5)",
     )
     parser.add_argument(
+        "--experimental-fuzz",
+        action="store_true",
+        default=False,
+        help="Enable experimental fuzz mode for scrapers",
+    )
+    parser.add_argument(
+        "--fuzz-seed",
+        type=int,
+        required=False,
+        help="Seed for experimental fuzz mode",
+    )
+    parser.add_argument(
+        "--max-concurrency",
+        type=int,
+        default=10,
+        help="Max concurrent scraper tasks (Default is 10)",
+    )
+    parser.add_argument(
         "--delete-settings",
         action="store_true",
         default=False,
@@ -217,6 +235,19 @@ def parse_args() -> Namespace:
         "--debug",
         action="store_true",
         help="Enable debug logging",
+    )
+
+    parser.add_argument(
+        "--email",
+        type=str,
+        required=False,
+        help="Udemy email (overrides settings/env if provided)",
+    )
+    parser.add_argument(
+        "--password",
+        type=str,
+        required=False,
+        help="Udemy password (overrides settings/env if provided)",
     )
 
     return parser.parse_args()
@@ -244,6 +275,13 @@ def main():
             args.discudemy,
             args.coursevania,
         )
+        # Allow passing credentials via CLI flags without changing Settings API
+        if args.email:
+            import os
+            os.environ["UDEMY_EMAIL"] = args.email
+        if args.password:
+            import os
+            os.environ["UDEMY_PASSWORD"] = args.password
         run(
             args.browser,
             idownloadcoupon_enabled,
@@ -252,6 +290,9 @@ def main():
             discudemy_enabled,
             coursevania_enabled,
             args.max_pages,
+            args.experimental_fuzz,
+            args.fuzz_seed,
+            args.max_concurrency,
             args.delete_settings,
             args.delete_cookie,
         )

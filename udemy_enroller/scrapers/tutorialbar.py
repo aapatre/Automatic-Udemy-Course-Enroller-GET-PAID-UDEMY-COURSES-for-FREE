@@ -82,9 +82,9 @@ class TutorialBarScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: list of pages on tutorialbar.com that contain Udemy coupons
         """
-        text = await http_get(url)
-        if text is not None:
-            soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
+        result = await http_get(url)
+        if result.ok and result.value is not None:
+            soup = BeautifulSoup(result.value.decode("utf-8"), "html.parser")
 
             links = soup.find_all("h3")
             course_links = [link.find("a").get("href") for link in links]
@@ -105,9 +105,9 @@ class TutorialBarScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
         """
-        text = await http_get(url)
-        if text is not None:
-            soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
+        result = await http_get(url)
+        if result.ok and result.value is not None:
+            soup = BeautifulSoup(result.value.decode("utf-8"), "html.parser")
             udemy_link = (
                 soup.find("span", class_="rh_button_wrapper").find("a").get("href")
             )

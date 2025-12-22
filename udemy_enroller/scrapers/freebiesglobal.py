@@ -46,10 +46,10 @@ class FreebiesglobalScraper(BaseScraper):
         """
         freebiesglobal_links = []
         self.current_page += 1
-        coupons_data = await http_get(
-            f"{self.DOMAIN}/dealstore/udemy/page/{self.current_page}"
-        )
-        soup = BeautifulSoup(coupons_data.decode("utf-8"), "html.parser")
+        res = await http_get(f"{self.DOMAIN}/dealstore/udemy/page/{self.current_page}")
+        if not res.ok or res.value is None:
+            return []
+        soup = BeautifulSoup(res.value.decode("utf-8"), "html.parser")
 
         for course_card in soup.find_all(
             "a", class_="img-centered-flex rh-flex-center-align rh-flex-justify-center"
@@ -74,8 +74,10 @@ class FreebiesglobalScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
         """
-        data = await http_get(url)
-        soup = BeautifulSoup(data.decode("utf-8"), "html.parser")
+        res = await http_get(url)
+        if not res.ok or res.value is None:
+            return None
+        soup = BeautifulSoup(res.value.decode("utf-8"), "html.parser")
         for link in soup.find_all("a", class_="re_track_btn"):
             udemy_link = cls.validate_coupon_url(link["href"])
 

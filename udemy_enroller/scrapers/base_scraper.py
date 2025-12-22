@@ -92,7 +92,7 @@ class BaseScraper(ABC):
                 logger.exception(
                     f"Error while running {self.scraper_name} scraper: {e}"
                 )
-                self.is_complete()
+                self.set_state_complete()
                 return []
             end_time = datetime.datetime.utcnow()
             logger.info(

@@ -1,0 +1,9 @@
+build
+pip-tools
+pytest
+pytest-cov
+pytest-asyncio
+pip-audit
+safety
+black
+isort

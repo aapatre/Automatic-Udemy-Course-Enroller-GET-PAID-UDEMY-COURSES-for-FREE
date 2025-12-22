@@ -1,7 +1,6 @@
 """Settings."""
 import getpass
 import os.path
-from distutils.util import strtobool
 from typing import Dict, List, Tuple
 
 from ruamel.yaml import YAML, dump
@@ -29,7 +28,7 @@ class Settings:
         self._cookies_path = os.path.join(get_app_dir(), ".cookie")
         self._should_store_email = False
         self._should_store_password = False
-        self.is_ci_build = strtobool(os.environ.get("CI_TEST", "False"))
+        self.is_ci_build = _strtobool(os.environ.get("CI_TEST", "False"))
         if delete_settings:
             self.delete_settings()
         if delete_cookie:
@@ -100,6 +99,9 @@ class Settings:
 
         :return: The users udemy email and if it should be saved
         """
+        env_email = os.environ.get("UDEMY_EMAIL")
+        if env_email:
+            return env_email, False
         email = input("Please enter your udemy email address: ")
         if len(email) == 0:
             logger.warning("You must provide your email")
@@ -117,7 +119,13 @@ class Settings:
 
         :return: The users udemy password and if it should be saved
         """
-        password = getpass.getpass(prompt="Please enter your udemy password: ")
+        env_password = os.environ.get("UDEMY_PASSWORD")
+        if env_password:
+            return env_password, False
+        try:
+            password = getpass.getpass(prompt="Please enter your udemy password: ")
+        except Exception:
+            password = input("Please enter your udemy password (input not hidden): ")
         if len(password) == 0:
             logger.warning("You must provide your password")
             return self._get_password()
@@ -244,3 +252,12 @@ class Settings:
         :return: None
         """
         self.password, _ = self._get_password(prompt_save=False)
+
+
+def _strtobool(val: str) -> bool:
+    v = str(val).strip().lower()
+    if v in ("y", "yes", "t", "true", "on", "1"):
+        return True
+    if v in ("n", "no", "f", "false", "off", "0"):
+        return False
+    raise ValueError(f"Invalid truth value: {val}")

@@ -504,8 +504,10 @@ class UdemyActions:
         :return:
         """
         logger.info("Caching cookie for future use")
-        with open(self._cookie_file, "a+") as f:
+        tmp_path = f"{self._cookie_file}.tmp"
+        with open(tmp_path, "w") as f:
             f.write(json.dumps(cookies))
+        os.replace(tmp_path, self._cookie_file)
 
     def _load_cookies(self) -> Dict:
         """
@@ -530,4 +532,5 @@ class UdemyActions:
         :return:
         """
         logger.info("Deleting cookie")
-        os.remove(self._cookie_file)
+        if os.path.isfile(self._cookie_file):
+            os.remove(self._cookie_file)

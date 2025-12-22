@@ -65,9 +65,9 @@ class IDownloadCouponScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: list of pages that contain Udemy coupons
         """
-        text = await http_get(url)
-        if text is not None:
-            soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
+        res = await http_get(url)
+        if res.ok and res.value is not None:
+            soup = BeautifulSoup(res.value.decode("utf-8"), "html.parser")
 
             links = soup.find_all("li", class_="product")
             course_links = [link.find_all("a")[1].get("href") for link in links]

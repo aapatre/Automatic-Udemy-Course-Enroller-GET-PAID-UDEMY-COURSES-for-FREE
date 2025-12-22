@@ -12,12 +12,14 @@ from selenium.common.exceptions import (
 
 from udemy_enroller import (
     ScraperManager,
+    FuzzManager,
     Settings,
     UdemyActions,
     UdemyActionsUI,
     UdemyStatus,
     exceptions,
 )
+from udemy_enroller.run_config import RunConfig
 from udemy_enroller.logger import get_logger
 
 logger = get_logger()
@@ -33,12 +35,17 @@ def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
     """
     udemy_actions = UdemyActions(settings)
     udemy_actions.login()
-    loop = asyncio.get_event_loop()
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
 
     while True:
         udemy_course_links = loop.run_until_complete(scrapers.run())
         logger.info(f"Total courses this time: {len(udemy_course_links)}")
         if udemy_course_links:
+            ci_exit = False
             for course_link in udemy_course_links:
                 try:
                     status = udemy_actions.enroll(course_link)
@@ -60,7 +67,9 @@ def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
                     if settings.is_ci_build:
                         logger.info("We have attempted to subscribe to 1 udemy course")
                         logger.info("Ending test")
-                        return  # noqa: B012
+                        ci_exit = True
+            if ci_exit:
+                return
         else:
             udemy_actions.stats.table()
             logger.info("All scrapers complete")
@@ -75,6 +84,9 @@ def redeem_courses(
     discudemy_enabled: bool,
     coursevania_enabled: bool,
     max_pages: Union[int, None],
+    experimental_fuzz: bool,
+    fuzz_seed: Union[int, None],
+    max_concurrency: int,
 ) -> None:
     """
     Wrap _redeem_courses to catch unhandled exceptions.
@@ -89,13 +101,27 @@ def redeem_courses(
     :return:
     """
     try:
-        scrapers = ScraperManager(
-            idownloadcoupon_enabled,
-            freebiesglobal_enabled,
-            tutorialbar_enabled,
-            discudemy_enabled,
-            coursevania_enabled,
-            max_pages,
+        scrapers = (
+            FuzzManager(
+                idownloadcoupon_enabled,
+                freebiesglobal_enabled,
+                tutorialbar_enabled,
+                discudemy_enabled,
+                coursevania_enabled,
+                max_pages,
+                fuzz_enabled=experimental_fuzz,
+                fuzz_seed=fuzz_seed,
+                max_concurrency=max_concurrency,
+            )
+            if experimental_fuzz
+            else ScraperManager(
+                idownloadcoupon_enabled,
+                freebiesglobal_enabled,
+                tutorialbar_enabled,
+                discudemy_enabled,
+                coursevania_enabled,
+                max_pages,
+            )
         )
         _redeem_courses(settings, scrapers)
     except Exception as e:
@@ -117,12 +143,17 @@ def _redeem_courses_ui(
     """
     udemy_actions = UdemyActionsUI(driver, settings)
     udemy_actions.login()
-    loop = asyncio.get_event_loop()
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
 
     while True:
         udemy_course_links = loop.run_until_complete(scrapers.run())
 
         if udemy_course_links:
+            ci_exit = False
             for course_link in set(
                 udemy_course_links
             ):  # Cast to set to remove duplicate links
@@ -154,7 +185,9 @@ def _redeem_courses_ui(
                     if settings.is_ci_build:
                         logger.info("We have attempted to subscribe to 1 udemy course")
                         logger.info("Ending test")
-                        return  # noqa: B012
+                        ci_exit = True
+            if ci_exit:
+                return
         else:
             udemy_actions.stats.table()
             logger.info("All scrapers complete")
@@ -170,6 +203,9 @@ def redeem_courses_ui(
     discudemy_enabled: bool,
     coursevania_enabled: bool,
     max_pages: Union[int, None],
+    experimental_fuzz: Union[bool, None] = False,
+    fuzz_seed: Union[int, None] = None,
+    max_concurrency: int = 10,
 ) -> None:
     """
     Wrap _redeem_courses so we always close browser on completion.
@@ -185,13 +221,89 @@ def redeem_courses_ui(
     :return:
     """
     try:
-        scrapers = ScraperManager(
-            idownloadcoupon_enabled,
-            freebiesglobal_enabled,
-            tutorialbar_enabled,
-            discudemy_enabled,
-            coursevania_enabled,
-            max_pages,
+        scrapers = (
+            FuzzManager(
+                idownloadcoupon_enabled,
+                freebiesglobal_enabled,
+                tutorialbar_enabled,
+                discudemy_enabled,
+                coursevania_enabled,
+                max_pages,
+                fuzz_enabled=bool(experimental_fuzz),
+                fuzz_seed=fuzz_seed,
+                max_concurrency=max_concurrency,
+            )
+            if experimental_fuzz
+            else ScraperManager(
+                idownloadcoupon_enabled,
+                freebiesglobal_enabled,
+                tutorialbar_enabled,
+                discudemy_enabled,
+                coursevania_enabled,
+                max_pages,
+            )
+        )
+        _redeem_courses_ui(driver, settings, scrapers)
+    except Exception as e:
+        logger.error(f"Exception in redeem courses: {e}")
+        logger.info("Falling back to REST flow due to UI failure")
+        try:
+            _redeem_courses(settings, scrapers)
+        except Exception as e2:
+            logger.error(f"REST fallback failed: {e2}")
+    finally:
+        logger.info("Closing browser")
+        driver.quit()
+def redeem_courses_config(settings: Settings, config: RunConfig) -> None:
+    try:
+        scrapers = (
+            FuzzManager(
+                config.idownloadcoupon_enabled,
+                config.freebiesglobal_enabled,
+                config.tutorialbar_enabled,
+                config.discudemy_enabled,
+                config.coursevania_enabled,
+                config.max_pages,
+                fuzz_enabled=config.experimental_fuzz,
+                fuzz_seed=config.fuzz_seed,
+                max_concurrency=config.max_concurrency,
+            )
+            if config.experimental_fuzz
+            else ScraperManager(
+                config.idownloadcoupon_enabled,
+                config.freebiesglobal_enabled,
+                config.tutorialbar_enabled,
+                config.discudemy_enabled,
+                config.coursevania_enabled,
+                config.max_pages,
+            )
+        )
+        _redeem_courses(settings, scrapers)
+    except Exception as e:
+        logger.error(f"Exception in redeem courses: {e}")
+def redeem_courses_ui_config(driver, settings: Settings, config: RunConfig) -> None:
+    try:
+        scrapers = (
+            FuzzManager(
+                config.idownloadcoupon_enabled,
+                config.freebiesglobal_enabled,
+                config.tutorialbar_enabled,
+                config.discudemy_enabled,
+                config.coursevania_enabled,
+                config.max_pages,
+                fuzz_enabled=config.experimental_fuzz,
+                fuzz_seed=config.fuzz_seed,
+                max_concurrency=config.max_concurrency,
+            )
+            if config.experimental_fuzz
+            else ScraperManager(
+                config.idownloadcoupon_enabled,
+                config.freebiesglobal_enabled,
+                config.tutorialbar_enabled,
+                config.discudemy_enabled,
+                config.coursevania_enabled,
+                config.max_pages,
+            )
         )
         _redeem_courses_ui(driver, settings, scrapers)
     except Exception as e:

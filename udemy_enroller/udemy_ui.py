@@ -1,13 +1,15 @@
 """Udemy UI."""
 import time
 from dataclasses import dataclass, field
+import os
+import json
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
 from typing import List
 
 from price_parser import Price
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.support import expected_conditions as EC
@@ -16,6 +18,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from udemy_enroller.exceptions import LoginException, RobotException
 from udemy_enroller.logger import get_logger
 from udemy_enroller.settings import Settings
+from udemy_enroller.utils import get_app_dir
 
 logger = get_logger()
 
@@ -95,7 +98,43 @@ class UdemyActionsUI:
         :return: None
         """
         if not self.logged_in:
-            self.driver.get(f"{self.DOMAIN}/join/login-popup/")
+            # Try cookie-based login first
+            try:
+                self.driver.get(self.DOMAIN)
+                cookie_path = os.path.join(get_app_dir(), ".cookie")
+                if os.path.isfile(cookie_path):
+                    with open(cookie_path) as f:
+                        cookies = json.loads(f.read())
+                    for k in ("access_token", "client_id", "csrftoken"):
+                        if k in cookies:
+                            self.driver.add_cookie({
+                                "domain": "www.udemy.com",
+                                "name": k,
+                                "value": cookies[k],
+                                "path": "/",
+                            })
+                    self.driver.get(self.DOMAIN)
+                    user_dropdown_xpath = "//a[@data-purpose='user-dropdown']"
+                    try:
+                        WebDriverWait(self.driver, 10).until(
+                            EC.presence_of_element_located((By.XPATH, user_dropdown_xpath))
+                        )
+                        self.logged_in = True
+                        return
+                    except TimeoutException:
+                        pass
+            except Exception:
+                pass
+
+            # Fallback to interactive login
+            try:
+                self.driver.get(self.DOMAIN)
+                login_link = WebDriverWait(self.driver, 10).until(
+                    EC.element_to_be_clickable((By.XPATH, "//a[contains(@href,'/join/login')]")
+                ))
+                login_link.click()
+            except Exception:
+                self.driver.get(f"{self.DOMAIN}/join/login/?locale=en_US&next=%2F")
 
             # Prompt for email/password if we don't have them saved in settings
             if self.settings.email is None:
@@ -104,15 +143,102 @@ class UdemyActionsUI:
                 self.settings.prompt_password()
 
             try:
-                email_element = self.driver.find_element(By.NAME, "email")
+                # Wait for fields; if inside iframe, try switching
+                email_element = None
+                email_selectors = [
+                    (By.NAME, "email"),
+                    (By.CSS_SELECTOR, "input[name='email']"),
+                    (By.CSS_SELECTOR, "input[id*='email']"),
+                    (By.XPATH, "//input[contains(@name,'email') or contains(@id,'email')]")
+                ]
+                # Try default content
+                for by, sel in email_selectors:
+                    try:
+                        email_element = WebDriverWait(self.driver, 8).until(
+                            EC.presence_of_element_located((by, sel))
+                        )
+                        break
+                    except TimeoutException:
+                        email_element = None
+                # Try iframes
+                if email_element is None:
+                    frames = self.driver.find_elements(By.TAG_NAME, "iframe")
+                    for fr in frames:
+                        try:
+                            self.driver.switch_to.frame(fr)
+                            for by, sel in email_selectors:
+                                try:
+                                    email_element = WebDriverWait(self.driver, 5).until(
+                                        EC.presence_of_element_located((by, sel))
+                                    )
+                                    break
+                                except TimeoutException:
+                                    email_element = None
+                            if email_element is not None:
+                                break
+                        except Exception:
+                            pass
+                        finally:
+                            if email_element is None:
+                                self.driver.switch_to.default_content()
+                if email_element is None:
+                    raise NoSuchElementException("email field not found")
+
                 email_element.send_keys(self.settings.email)
 
-                password_element = self.driver.find_element(By.NAME, "password")
+                password_element = None
+                password_selectors = [
+                    (By.NAME, "password"),
+                    (By.CSS_SELECTOR, "input[name='password']"),
+                    (By.CSS_SELECTOR, "input[type='password']"),
+                    (By.CSS_SELECTOR, "input[id*='password']"),
+                    (By.XPATH, "//input[contains(@name,'password') or contains(@id,'password')]")
+                ]
+                for by, sel in password_selectors:
+                    try:
+                        password_element = WebDriverWait(self.driver, 8).until(
+                            EC.presence_of_element_located((by, sel))
+                        )
+                        break
+                    except TimeoutException:
+                        password_element = None
+                if password_element is None:
+                    frames = self.driver.find_elements(By.TAG_NAME, "iframe")
+                    for fr in frames:
+                        try:
+                            self.driver.switch_to.frame(fr)
+                            for by, sel in password_selectors:
+                                try:
+                                    password_element = WebDriverWait(self.driver, 5).until(
+                                        EC.presence_of_element_located((by, sel))
+                                    )
+                                    break
+                                except TimeoutException:
+                                    password_element = None
+                            if password_element is not None:
+                                break
+                        except Exception:
+                            pass
+                        finally:
+                            if password_element is None:
+                                self.driver.switch_to.default_content()
+                if password_element is None:
+                    raise NoSuchElementException("password field not found")
                 password_element.send_keys(self.settings.password)
 
-                self.driver.find_element(
-                    By.CSS_SELECTOR, "button[class*='auth-submit-button']"
-                ).click()
+                try:
+                    self.driver.find_element(
+                        By.CSS_SELECTOR, "button[class*='auth-submit-button']"
+                    ).click()
+                except NoSuchElementException:
+                    WebDriverWait(self.driver, 10).until(
+                        EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']"))
+                    ).click()
+                # Return to default content before checking for user dropdown
+                try:
+                    self.driver.switch_to.default_content()
+                except Exception:
+                    pass
             except NoSuchElementException as e:
                 is_robot = self._check_if_robot()
                 if is_robot and not is_retry:
@@ -175,7 +301,12 @@ class UdemyActionsUI:
             element_present = EC.presence_of_element_located(
                 (By.XPATH, buy_course_button_xpath)
             )
-            WebDriverWait(self.driver, 10).until(element_present).click()
+            element = WebDriverWait(self.driver, 10).until(element_present)
+            try:
+                element.click()
+            except StaleElementReferenceException:
+                element = WebDriverWait(self.driver, 5).until(element_present)
+                element.click()
 
             # Enroll Now 2
             enroll_button_xpath = "//div[starts-with(@class, 'checkout-button--checkout-button--container')]//button"
@@ -240,10 +371,13 @@ class UdemyActionsUI:
                 WebDriverWait(self.driver, 10).until(element_present).click()
 
             # Hit the final Enroll now button
-            enroll_button_is_clickable = EC.element_to_be_clickable(
-                (By.XPATH, enroll_button_xpath)
-            )
-            WebDriverWait(self.driver, 10).until(enroll_button_is_clickable).click()
+            enroll_button_is_clickable = EC.element_to_be_clickable((By.XPATH, enroll_button_xpath))
+            btn = WebDriverWait(self.driver, 10).until(enroll_button_is_clickable)
+            try:
+                btn.click()
+            except StaleElementReferenceException:
+                btn = WebDriverWait(self.driver, 5).until(enroll_button_is_clickable)
+                btn.click()
 
             # Wait for success page to load
             success_element_class = (
