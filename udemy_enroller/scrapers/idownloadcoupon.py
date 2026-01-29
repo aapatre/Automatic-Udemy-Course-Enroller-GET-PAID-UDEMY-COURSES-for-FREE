@@ -1,8 +1,10 @@
 """IDownloadCoupon scraper."""
 import asyncio
+import re
 import urllib.parse
 from typing import List
 
+import aiohttp
 from bs4 import BeautifulSoup
 
 from udemy_enroller.http_utils import http_get
@@ -70,13 +72,20 @@ class IDownloadCouponScraper(BaseScraper):
             soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
 
             links = soup.find_all("li", class_="product")
-            course_links = [link.find_all("a")[1].get("href") for link in links]
+            course_links = []
+            for link in links:
+                anchors = link.find_all("a")
+                if len(anchors) > 1 and anchors[1].get("href"):
+                    course_links.append(anchors[1].get("href"))
 
-            self.last_page = int(
-                soup.find("ul", class_="page-numbers")
-                .find_all("a", class_="page-numbers")[-2]
-                .text.replace(",", "")
-            )
+            # Handle pagination with safety checks
+            page_numbers = soup.find("ul", class_="page-numbers")
+            if page_numbers:
+                page_links = page_numbers.find_all("a", class_="page-numbers")
+                if len(page_links) >= 2:
+                    self.last_page = int(
+                        page_links[-2].text.replace(",", "")
+                    )
 
             return course_links
 
@@ -88,9 +97,51 @@ class IDownloadCouponScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
         """
-        urls = url.split("murl=")
-        if urls:
-            return cls.validate_coupon_url(urllib.parse.unquote(urls[1]))
+        # The product page does a 302 redirect with the Udemy URL in the murl parameter
+        # We need to capture the redirect Location header without following it
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+        
+        try:
+            async with aiohttp.ClientSession() as session:
+                # Don't follow redirects - we want to capture the Location header
+                async with session.get(url, headers=headers, allow_redirects=False, timeout=10) as response:
+                    if response.status in [301, 302, 303, 307, 308]:
+                        location = response.headers.get('Location', '')
+                        
+                        # The Location header contains a linksynergy URL with murl parameter
+                        if "murl=" in location:
+                            # Extract the murl parameter
+                            murl_match = re.search(r'[?&]murl=([^&]+)', location)
+                            if murl_match:
+                                # Decode the URL
+                                decoded_url = urllib.parse.unquote(murl_match.group(1))
+                                # Validate it's a proper Udemy coupon URL
+                                validated = cls.validate_coupon_url(decoded_url)
+                                if validated:
+                                    return validated
+                        
+                        # Sometimes the Location might directly be a Udemy URL
+                        validated = cls.validate_coupon_url(location)
+                        if validated:
+                            return validated
+        except Exception as e:
+            logger.debug(f"Error getting redirect for {url}: {e}")
+        
+        # Fallback to the old method if redirect capture fails
+        text = await http_get(url)
+        if text is not None:
+            soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
+            
+            # Check for any direct Udemy links on the page
+            for link in soup.find_all("a", href=True):
+                href = link.get("href", "")
+                validated = cls.validate_coupon_url(href)
+                if validated:
+                    return validated
+        
+        return None
 
     async def gather_udemy_course_links(self, courses: List[str]):
         """

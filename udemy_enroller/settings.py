@@ -4,7 +4,7 @@ import os.path
 from distutils.util import strtobool
 from typing import Dict, List, Tuple
 
-from ruamel.yaml import YAML, dump
+from ruamel.yaml import YAML
 
 from udemy_enroller.logger import get_logger
 from udemy_enroller.utils import get_app_dir
@@ -188,7 +188,7 @@ class Settings:
 
         with open(self._settings_path, "w+") as f:
             yaml = YAML(pure=True)
-            yaml.dump(yaml_structure, stream=f)
+            yaml.dump(yaml_structure, f)
         logger.info(f"Saved your settings in {self._settings_path}")
 
         # Log some details for the user

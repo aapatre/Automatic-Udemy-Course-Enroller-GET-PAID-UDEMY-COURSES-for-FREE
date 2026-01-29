@@ -6,7 +6,6 @@ from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.ie.service import Service as IEService
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.os_manager import ChromeType
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager, IEDriverManager
 from webdriver_manager.opera import OperaDriverManager
@@ -53,7 +52,7 @@ class DriverManager:
         elif self.browser.lower() in VALID_CHROMIUM_STRINGS:
             self.driver = webdriver.Chrome(
                 service=ChromeService(
-                    ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+                    ChromeDriverManager(chrome_type="chromium").install()
                 )
             )
         elif self.browser.lower() in VALID_EDGE_STRINGS:
