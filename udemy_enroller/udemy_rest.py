@@ -418,9 +418,59 @@ class UdemyActions:
         """
         response = requests.get(url)
         response.raise_for_status()
+
+        html_text = response.text
         soup = BeautifulSoup(response.content, "html.parser")
 
-        return int(soup.find("body")["data-clp-course-id"])
+        # Primary: course pages usually set this attribute on <body>
+        body = soup.find("body")
+        if body and body.has_attr("data-clp-course-id"):
+            return int(body["data-clp-course-id"])
+
+        # Fallback: search the HTML for the attribute (some variants omit it from the parsed <body>)
+        match = re.search(r'data-clp-course-id=["\'](\d+)["\']', html_text)
+        if match:
+            return int(match.group(1))
+
+        # Fallback: some Udemy variants (behind Cloudflare JS challenges)
+        # hide data-clp-course-id but still include the course id in Udemy CDN image URLs.
+        # Example: https://img-c.udemycdn.com/course/480x270/<COURSE_ID>_....jpg
+        candidates = []
+
+        for key, value in (("property", "og:image"), ("name", "image")):
+            tag = soup.find("meta", {key: value})
+            if tag and tag.get("content"):
+                candidates.append(tag.get("content"))
+
+        for link in soup.find_all("link", {"as": "image"}):
+            if link.get("href"):
+                candidates.append(link.get("href"))
+            # Some pages use imageSrcSet/imagesrcset
+            for srcset_key in ("imageSrcSet", "imagesrcset"):
+                if link.get(srcset_key):
+                    candidates.append(link.get(srcset_key))
+
+        for img in soup.find_all("img"):
+            if img.get("src"):
+                candidates.append(img.get("src"))
+            for srcset_key in ("srcset", "srcSet"):
+                if img.get(srcset_key):
+                    candidates.append(img.get(srcset_key))
+
+        for candidate in candidates:
+            if not candidate:
+                continue
+            m = re.search(r"/course/\d+x\d+/(\d+)_", candidate)
+            if m:
+                return int(m.group(1))
+
+        # Last resort: regex over full HTML
+        m = re.search(r"/course/\d+x\d+/(\d+)_", html_text)
+        if m:
+            return int(m.group(1))
+
+        # Preserve previous behavior
+        raise KeyError("data-clp-course-id")
 
     def _checkout(
         self,
