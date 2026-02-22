@@ -67,9 +67,9 @@ class CoursevaniaScraper(BaseScraper):
         :return: None
         """
         if self._nonce is None:
-            response = await http_get(f"{self.DOMAIN}/courses")
-            if response is not None:
-                soup = BeautifulSoup(response, "html.parser")
+            res = await http_get(f"{self.DOMAIN}/courses")
+            if res.ok and res.value is not None:
+                soup = BeautifulSoup(res.value, "html.parser")
                 for script_element in soup.find_all("script"):
                     if "var stm_lms_nonces" in str(script_element):
                         data = json.loads(
@@ -103,11 +103,9 @@ class CoursevaniaScraper(BaseScraper):
             "TE": "Trailers",
         }
         query_string = urlencode(query_params)
-        response = await http_get(
-            f"{self.DOMAIN}/wp-admin/admin-ajax.php?{query_string}", headers=headers
-        )
-        if response is not None:
-            json_data = json.loads(response)
+        res = await http_get(f"{self.DOMAIN}/wp-admin/admin-ajax.php?{query_string}", headers=headers)
+        if res.ok and res.value is not None:
+            json_data = json.loads(res.value)
             coupons_data = json_data.get("content")
             soup = BeautifulSoup(coupons_data, "html.parser")
             links = soup.find_all("a", class_="heading_font")
@@ -125,9 +123,9 @@ class CoursevaniaScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
         """
-        text = await http_get(url)
-        if text is not None:
-            soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
+        res = await http_get(url)
+        if res.ok and res.value is not None:
+            soup = BeautifulSoup(res.value.decode("utf-8"), "html.parser")
             udemy_link = (
                 soup.find("div", class_="stm-lms-buy-buttons").find("a").get("href")
             )

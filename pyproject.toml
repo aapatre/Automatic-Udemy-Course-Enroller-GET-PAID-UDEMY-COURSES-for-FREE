@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "udemy-enroller"
-version = "4.1.4"
+version = "4.1.5"
 description = ""
 homepage = "https://github.com/aapatre/Automatic-Udemy-Course-Enroller-GET-PAID-UDEMY-COURSES-for-FREE"
 authors = ["aapatre <udemyenroller@gmail.com>", "fakeid <udemyenroller@gmail.com>", "cullzie <udemyenroller@gmail.com>"]
@@ -10,21 +10,21 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Education",
     "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
-    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 # Rest based dependencies
-beautifulsoup4 = "4.11.1"
-"ruamel.yaml" = "0.17.32"
+beautifulsoup4 = "4.14.0"
+"ruamel.yaml" = "0.18.15"
 cloudscraper = "1.2.71"
-requests = "2.31.0"
-aiohttp = {extras = ["speedups"], version = "3.8.4"}
-price-parser = "0.3.4"
+requests = "2.32.5"
+aiohttp = {extras = ["speedups"], version = "3.12.15"}
+price-parser = "0.4.0"
 # UI based dependencies
-selenium = "4.10.0"
-webdriver-manager = "3.8.6"
+selenium = "4.35.0"
+webdriver-manager = "4.0.2"
 
 [tool.poetry.dev-dependencies]
 black = "^22.12.0"

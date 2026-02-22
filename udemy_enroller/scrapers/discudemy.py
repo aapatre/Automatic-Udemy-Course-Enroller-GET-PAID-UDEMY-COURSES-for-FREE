@@ -47,8 +47,10 @@ class DiscUdemyScraper(BaseScraper):
         """
         discudemy_links = []
         self.current_page += 1
-        coupons_data = await http_get(f"{self.DOMAIN}/all/{self.current_page}")
-        soup = BeautifulSoup(coupons_data.decode("utf-8"), "html.parser")
+        res = await http_get(f"{self.DOMAIN}/all/{self.current_page}")
+        if not res.ok or res.value is None:
+            return []
+        soup = BeautifulSoup(res.value.decode("utf-8"), "html.parser")
         for course_card in soup.find_all("a", class_="card-header"):
             url_end = course_card["href"].split("/")[-1]
             discudemy_links.append(f"{self.DOMAIN}/go/{url_end}")
@@ -70,8 +72,10 @@ class DiscUdemyScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
         """
-        data = await http_get(url)
-        soup = BeautifulSoup(data.decode("utf-8"), "html.parser")
+        res = await http_get(url)
+        if not res.ok or res.value is None:
+            return None
+        soup = BeautifulSoup(res.value.decode("utf-8"), "html.parser")
         for link in soup.find_all("a", href=True):
             udemy_link = cls.validate_coupon_url(link["href"])
             if udemy_link is not None:
