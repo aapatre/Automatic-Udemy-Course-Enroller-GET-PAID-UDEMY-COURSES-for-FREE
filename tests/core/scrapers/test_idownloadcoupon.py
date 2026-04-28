@@ -117,13 +117,9 @@ async def test_get_course_links_none(mock_http_get):
 @pytest.mark.asyncio
 @mock.patch("udemy_enroller.scrapers.idownloadcoupon.http_get_no_redirect")
 async def test_get_udemy_course_link(mock_http_get):
-    mock_response = MockResponse(
-        b"",
-        headers={
-            "location": "https://click.linksynergy.com/fs-bin/click?id=abc&murl=https%3A%2F%2Fwww.udemy.com%2Fcourse%2Ftest%2F%3FcouponCode%3DABC123",
-        },
-    )
-    mock_http_get.return_value = mock_response
+    mock_http_get.return_value = {
+        "location": "https://click.linksynergy.com/fs-bin/click?id=abc&murl=https%3A%2F%2Fwww.udemy.com%2Fcourse%2Ftest%2F%3FcouponCode%3DABC123",
+    }
     link = await IDownloadCouponScraper.get_udemy_course_link(
         "https://www.idownloadcoupon.com/course_1"
     )
@@ -133,13 +129,9 @@ async def test_get_udemy_course_link(mock_http_get):
 @pytest.mark.asyncio
 @mock.patch("udemy_enroller.scrapers.idownloadcoupon.http_get_no_redirect")
 async def test_get_udemy_course_link_no_linksynergy(mock_http_get):
-    mock_response = MockResponse(
-        b"",
-        headers={
-            "location": "https://other.com/redirect?murl=https%3A%2F%2Fwww.udemy.com%2Fcourse%2Ftest%2F%3FcouponCode%3DABC123",
-        },
-    )
-    mock_http_get.return_value = mock_response
+    mock_http_get.return_value = {
+        "location": "https://other.com/redirect?murl=https%3A%2F%2Fwww.udemy.com%2Fcourse%2Ftest%2F%3FcouponCode%3DABC123",
+    }
     link = await IDownloadCouponScraper.get_udemy_course_link(
         "https://www.idownloadcoupon.com/course_1"
     )

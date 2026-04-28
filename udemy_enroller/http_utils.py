@@ -2,7 +2,6 @@
 
 import asyncio
 import random
-from typing import Any
 
 import aiohttp
 
@@ -44,7 +43,7 @@ async def close_session() -> None:
         _CONNECTOR = None
 
 
-async def http_get(url: str, headers: dict[str, Any] | None = None) -> bytes | None:
+async def http_get(url: str, headers: dict[str, str] | None = None) -> bytes | None:
     """
     Send GET request with retry/backoff and session reuse.
 
@@ -73,14 +72,14 @@ async def http_get(url: str, headers: dict[str, Any] | None = None) -> bytes | N
 
 
 async def http_get_no_redirect(
-    url: str, headers: dict[str, Any] | None = None
-) -> Any | None:
+    url: str, headers: dict[str, str] | None = None
+) -> dict[str, str] | None:
     """
     Send GET request without following redirects.
 
     :param url: The URL to send GET request to
     :param headers: Optional headers to pass with the request
-    :return: Response object or None on failure
+    :return: Response headers dict or None on failure
     """
     if headers is None:
         headers = {}
@@ -90,7 +89,7 @@ async def http_get_no_redirect(
             async with session.get(
                 url, headers=headers, allow_redirects=False
             ) as response:
-                return response
+                return dict(response.headers)
         except Exception as e:
             if attempt < MAX_RETRIES - 1:
                 delay = BASE_DELAY * (2 ** attempt) + random.uniform(0, 0.5)

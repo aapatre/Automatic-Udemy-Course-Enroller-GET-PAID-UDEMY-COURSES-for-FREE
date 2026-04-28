@@ -87,8 +87,11 @@ class IDownloadCouponScraper(BaseScraper):
         :param str url: The url to scrape data from
         :return: Coupon link of the udemy course
         """
-        response = await http_get_no_redirect(url)
-        link = urllib.parse.unquote(response.headers["location"])
+        headers = await http_get_no_redirect(url)
+        if headers is None:
+            return None
+        location = headers.get("location", "")
+        link = urllib.parse.unquote(location)
         urls = link.split("murl=")
         if urls and link.startswith("https://click.linksynergy.com"):
             return IDownloadCouponScraper.validate_coupon_url(urllib.parse.unquote(urls[1]))

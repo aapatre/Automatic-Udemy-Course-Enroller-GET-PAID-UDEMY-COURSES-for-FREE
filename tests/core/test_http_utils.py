@@ -92,17 +92,17 @@ class TestHttpGetNoRedirect:
 
         with mock.patch("udemy_enroller.http_utils._get_session", return_value=mock_session):
             result = await http_get_no_redirect("https://example.com")
-            assert result == mock_response
+            assert result == {"Location": "https://other.com"}
 
     @pytest.mark.asyncio
     async def test_http_get_no_redirect_with_headers(self):
         headers = {"X-Custom": "value"}
-        mock_response = MockResponse(data=b"ok")
+        mock_response = MockResponse(data=b"ok", headers={"Content-Type": "text/plain"})
         mock_session = MockSession(response=mock_response)
 
         with mock.patch("udemy_enroller.http_utils._get_session", return_value=mock_session):
             result = await http_get_no_redirect("https://example.com", headers=headers)
-            assert result == mock_response
+            assert result == {"Content-Type": "text/plain"}
 
     @pytest.mark.asyncio
     async def test_http_get_no_redirect_exception(self, caplog):
