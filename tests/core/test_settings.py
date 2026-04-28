@@ -351,29 +351,29 @@ def test_delete_settings_file_exists_confirmed():
     """Test delete_settings when file exists and user confirms (lines 244-250)."""
     with mock.patch.object(Settings, "_init_settings"):
         s = Settings(settings_path="test_tmp/noop.yaml")
-    with mock.patch("os.path.isfile", return_value=True):
-        with mock.patch("os.remove") as mock_remove:
+    with mock.patch.object(type(s._settings_path), "is_file", return_value=True):
+        with mock.patch.object(type(s._settings_path), "unlink") as mock_unlink:
             with mock.patch("builtins.input", return_value="y"):
                 s.delete_settings()
-                mock_remove.assert_called_once_with(s._settings_path)
+                mock_unlink.assert_called_once()
 
 
 def test_delete_settings_file_exists_declined():
     """Test delete_settings when file exists but user declines."""
     with mock.patch.object(Settings, "_init_settings"):
         s = Settings(settings_path="test_tmp/noop.yaml")
-    with mock.patch("os.path.isfile", return_value=True):
-        with mock.patch("os.remove") as mock_remove:
+    with mock.patch.object(type(s._settings_path), "is_file", return_value=True):
+        with mock.patch.object(type(s._settings_path), "unlink") as mock_unlink:
             with mock.patch("builtins.input", return_value="n"):
                 s.delete_settings()
-                mock_remove.assert_not_called()
+                mock_unlink.assert_not_called()
 
 
 def test_delete_settings_no_file():
     """Test delete_settings when no settings file exists (line 252)."""
     with mock.patch.object(Settings, "_init_settings"):
         s = Settings(settings_path="test_tmp/noop.yaml")
-    with mock.patch("os.path.isfile", return_value=False):
+    with mock.patch.object(type(s._settings_path), "is_file", return_value=False):
         s.delete_settings()
 
 
@@ -381,17 +381,17 @@ def test_delete_cookie_file_exists():
     """Test delete_cookie when file exists (lines 260-262)."""
     with mock.patch.object(Settings, "_init_settings"):
         s = Settings(settings_path="test_tmp/noop.yaml")
-    with mock.patch("os.path.isfile", return_value=True):
-        with mock.patch("os.remove") as mock_remove:
+    with mock.patch.object(type(s._cookies_path), "is_file", return_value=True):
+        with mock.patch.object(type(s._cookies_path), "unlink") as mock_unlink:
             s.delete_cookie()
-            mock_remove.assert_called_once_with(s._cookies_path)
+            mock_unlink.assert_called_once()
 
 
 def test_delete_cookie_no_file():
     """Test delete_cookie when no cookie file exists (line 264)."""
     with mock.patch.object(Settings, "_init_settings"):
         s = Settings(settings_path="test_tmp/noop.yaml")
-    with mock.patch("os.path.isfile", return_value=False):
+    with mock.patch.object(type(s._cookies_path), "is_file", return_value=False):
         s.delete_cookie()
 
 

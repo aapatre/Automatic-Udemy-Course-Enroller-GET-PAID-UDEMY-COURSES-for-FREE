@@ -26,6 +26,10 @@ class ConcreteScraper(BaseScraper):
     async def get_links(self):
         return ["https://www.udemy.com/course/test/?couponCode=TEST123"]
 
+    @staticmethod
+    async def get_udemy_course_link(url):
+        return url
+
 
 class TestScraperStates:
     def test_scraper_states_enum(self):
@@ -128,6 +132,10 @@ class TestBaseScraper:
             async def run(self):
                 return await self.get_links()
 
+            @staticmethod
+            async def get_udemy_course_link(url):
+                return url
+
         scraper = TimedScraper()
         links = await scraper.run()
         assert links == ["https://www.udemy.com/course/test/?couponCode=TEST123"]
@@ -141,6 +149,10 @@ class TestBaseScraper:
             @BaseScraper.time_run
             async def run(self):
                 raise ValueError("scraper error")
+
+            @staticmethod
+            async def get_udemy_course_link(url):
+                return url
 
         scraper = FailingScraper()
         links = await scraper.run()
@@ -192,6 +204,10 @@ class TestBaseScraper:
             async def get_links(self):
                 return []
 
+            @staticmethod
+            async def get_udemy_course_link(url):
+                return url
+
         scraper = MinimalScraper()
         result = await scraper.run()
         assert result is None
@@ -208,6 +224,10 @@ class TestBaseScraper:
 
             async def get_links(self):
                 return await BaseScraper.get_links(self)
+
+            @staticmethod
+            async def get_udemy_course_link(url):
+                return url
 
         scraper = MinimalScraper()
         result = await scraper.get_links()

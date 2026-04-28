@@ -5,7 +5,6 @@ import logging
 import platform
 import sys
 from argparse import Namespace
-from typing import Tuple, Union
 
 from importlib.metadata import PackageNotFoundError, distribution
 
@@ -66,7 +65,7 @@ def determine_if_scraper_enabled(
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
     coursevania_enabled: bool,
-) -> Tuple[bool, bool, bool, bool, bool]:
+) -> tuple[bool, bool, bool, bool, bool]:
     """
     Determine what scrapers should be enabled and disabled.
 
@@ -104,7 +103,7 @@ def run(
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
     coursevania_enabled: bool,
-    max_pages: Union[int, None],
+    max_pages: int | None,
     delete_settings: bool,
     delete_cookie: bool,
 ):

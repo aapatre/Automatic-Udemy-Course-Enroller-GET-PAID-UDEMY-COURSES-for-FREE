@@ -1,6 +1,5 @@
 """Tutorialbar scraper."""
 
-import asyncio
 from typing import List
 
 from bs4 import BeautifulSoup
@@ -90,11 +89,11 @@ class TutorialBarScraper(BaseScraper):
             links = soup.find_all("h3")
             course_links = [link.find("a").get("href") for link in links]
 
-            self.last_page = (
-                soup.find("li", class_="next_paginate_link")
-                .find_previous_sibling()
-                .text
-            )
+            next_page_el = soup.find("li", class_="next_paginate_link")
+            if next_page_el is not None:
+                prev_sibling = next_page_el.find_previous_sibling()
+                if prev_sibling is not None:
+                    self.last_page = prev_sibling.text
 
             return course_links
 
@@ -113,16 +112,3 @@ class TutorialBarScraper(BaseScraper):
                 soup.find("span", class_="rh_button_wrapper").find("a").get("href")
             )
             return udemy_link
-
-    async def gather_udemy_course_links(self, courses: List[str]):
-        """
-        Async fetching of the udemy course links from tutorialbar.com.
-
-        :param list courses: A list of tutorialbar.com course links we want to fetch the udemy links for
-        :return: list of udemy links
-        """
-        return [
-            link
-            for link in await asyncio.gather(*map(self.get_udemy_course_link, courses))
-            if link is not None
-        ]

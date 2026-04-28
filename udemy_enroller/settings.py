@@ -1,7 +1,8 @@
 """Settings."""
 
 import getpass
-import os.path
+import os
+from pathlib import Path
 
 from ruamel.yaml import YAML
 
@@ -15,22 +16,22 @@ class Settings:
     """Contains all logic related to the scripts settings."""
 
     def __init__(
-        self, delete_settings=False, delete_cookie=False, settings_path="settings.yaml"
+        self, delete_settings: bool = False, delete_cookie: bool = False, settings_path: str = "settings.yaml"
     ):
         """Initialize."""
-        self.email = None
-        self.password = None
-        self.zip_code = None
-        self.languages = []
-        self.categories = []
-        self.authors = []
-        self.years = []
+        self.email: str | None = None
+        self.password: str | None = None
+        self.zip_code: str | None = None
+        self.languages: list[str] = []
+        self.categories: list[str] = []
+        self.authors: list[str] = []
+        self.years: list[str] = []
 
-        self._settings_path = os.path.join(get_app_dir(), settings_path)
-        self._cookies_path = os.path.join(get_app_dir(), ".cookie")
-        self._should_store_email = False
-        self._should_store_password = False
-        self.is_ci_build = os.environ.get("CI_TEST", "").lower() in ("true", "1", "yes")
+        self._settings_path: Path = get_app_dir() / settings_path
+        self._cookies_path: Path = get_app_dir() / ".cookie"
+        self._should_store_email: bool = False
+        self._should_store_password: bool = False
+        self.is_ci_build: bool = os.environ.get("CI_TEST", "").lower() in ("true", "1", "yes")
         if delete_settings:
             self.delete_settings()
         if delete_cookie:
@@ -38,11 +39,7 @@ class Settings:
         self._init_settings()
 
     def _init_settings(self) -> None:
-        """
-        Initialize the settings to be used in the script.
-
-        :return:
-        """
+        """Initialize the settings to be used in the script."""
         if self.is_ci_build:
             self._load_ci_settings()
         else:
@@ -51,26 +48,18 @@ class Settings:
                 self._generate_settings()
                 self._save_settings()
 
-    def _load_ci_settings(self):
-        """
-        Load environment variables for CI run.
-
-        :return:
-        """
+    def _load_ci_settings(self) -> None:
+        """Load environment variables for CI run."""
         logger.info("Loading CI settings")
         self.email = os.environ["UDEMY_EMAIL"]
         self.password = os.environ["UDEMY_PASSWORD"]
 
-    def _load_user_settings(self) -> Dict:
-        """
-        Load the settings from the yaml file if it exists.
-
-        :return: dictionary containing the script settings
-        """
+    def _load_user_settings(self) -> dict | None:
+        """Load the settings from the yaml file if it exists."""
         yaml = YAML()
 
         settings = None
-        if os.path.isfile(self._settings_path):
+        if self._settings_path.is_file():
             logger.info("Loading existing settings")
             with open(self._settings_path) as f:
                 settings = yaml.load(f)
@@ -86,11 +75,7 @@ class Settings:
         return settings
 
     def _generate_settings(self) -> None:
-        """
-        Generate the settings for the script.
-
-        :return:
-        """
+        """Generate the settings for the script."""
         self.email, self._should_store_email = self._get_email()
         self.password, self._should_store_password = self._get_password()
         self.zip_code = self._get_zip_code()
@@ -99,12 +84,8 @@ class Settings:
         self.authors = self._get_authors()
         self.years = self._get_years()
 
-    def _get_email(self, prompt_save=True) -> Tuple[str, bool]:
-        """
-        Get input from user on the email to use for udemy.
-
-        :return: The users udemy email and if it should be saved
-        """
+    def _get_email(self, prompt_save: bool = True) -> tuple[str, bool]:
+        """Get input from user on the email to use for udemy."""
         email = input("Please enter your udemy email address: ")
         if len(email) == 0:
             logger.warning("You must provide your email")
@@ -116,12 +97,8 @@ class Settings:
             should_store = False
         return email, should_store
 
-    def _get_password(self, prompt_save=True) -> Tuple[str, bool]:
-        """
-        Get input from user on the password to use for udemy.
-
-        :return: The users udemy password and if it should be saved
-        """
+    def _get_password(self, prompt_save: bool = True) -> tuple[str, bool]:
+        """Get input from user on the password to use for udemy."""
         password = getpass.getpass(prompt="Please enter your udemy password: ")
         if len(password) == 0:
             logger.warning("You must provide your password")
@@ -137,33 +114,21 @@ class Settings:
 
     @staticmethod
     def _get_zip_code() -> str:
-        """
-        Get input from user on the zip code to use for udemy.
-
-        :return: The users udemy zip code
-        """
+        """Get input from user on the zip code to use for udemy."""
         zip_code = input("Please enter your zipcode (Not necessary in some regions): ")
         return zip_code
 
     @staticmethod
-    def _get_languages() -> List[str]:
-        """
-        Get input from user on the languages they want to get courses in.
-
-        :return: list of languages the user wants to redeem udemy courses in
-        """
+    def _get_languages() -> list[str]:
+        """Get input from user on the languages they want to get courses in."""
         languages = input(
             "Please enter your language preferences (comma separated list e.g. English,German): "
         )
         return [lang.strip() for lang in languages.split(",")] if languages else []
 
     @staticmethod
-    def _get_categories() -> List[str]:
-        """
-        Get the categories the user wants.
-
-        :return: list of categories the user wants.
-        """
+    def _get_categories() -> list[str]:
+        """Get the categories the user wants."""
         categories = input(
             "Please enter in a list of comma separated values of"
             " the course categories you like, for example:\n"
@@ -176,12 +141,8 @@ class Settings:
         )
 
     @staticmethod
-    def _get_authors() -> List[str]:
-        """
-        Get the authors the user wants.
-
-        :return: list of authors the user wants.
-        """
+    def _get_authors() -> list[str]:
+        """Get the authors the user wants."""
         authors = input(
             "Please enter in a list of semicolon separated values of"
             " the authors you like, for example:\n"
@@ -190,12 +151,8 @@ class Settings:
         return [author.strip() for author in authors.split(";")] if authors else []
 
     @staticmethod
-    def _get_years() -> List[str]:
-        """
-        Get the years the user wants.
-
-        :return: list of years the user wants.
-        """
+    def _get_years() -> list[str]:
+        """Get the years the user wants."""
         years = input(
             "Please enter in a list of comma separated values of"
             " the years you like, for example:\n"
@@ -204,11 +161,7 @@ class Settings:
         return [year.strip() for year in years.split(",")] if years else []
 
     def _save_settings(self) -> None:
-        """
-        Confirm if the user wants to save settings to file.
-
-        :return:
-        """
+        """Save settings to file."""
         yaml_structure = {
             "udemy": {
                 "email": str(self.email) if self._should_store_email else None,
@@ -223,11 +176,10 @@ class Settings:
 
         yaml = YAML()
         yaml.default_flow_style = False
-        with open(self._settings_path, "w+") as f:
+        with open(self._settings_path, "w") as f:
             yaml.dump(yaml_structure, stream=f)
         logger.info(f"Saved your settings in {self._settings_path}")
 
-        # Log some details for the user
         if not self._should_store_email:
             logger.info("Your email has not been saved to settings.")
         if not self._should_store_password:
@@ -238,45 +190,29 @@ class Settings:
             )
 
     def delete_settings(self) -> None:
-        """
-        Delete the settings file.
-
-        :return: None
-        """
-        if os.path.isfile(self._settings_path):
+        """Delete the settings file."""
+        if self._settings_path.is_file():
             delete_settings = input(
                 "Please confirm that you want to delete your saved settings (Y/N): "
             )
             if delete_settings.lower() == "y":
-                os.remove(self._settings_path)
+                self._settings_path.unlink()
                 logger.info(f"Settings file deleted: {self._settings_path}")
         else:
             logger.info("No settings to delete")
 
     def delete_cookie(self) -> None:
-        """
-        Delete the cookie file.
-
-        :return: None
-        """
-        if os.path.isfile(self._cookies_path):
-            os.remove(self._cookies_path)
+        """Delete the cookie file."""
+        if self._cookies_path.is_file():
+            self._cookies_path.unlink()
             logger.info(f"Cookie file deleted: {self._cookies_path}")
         else:
             logger.info("No cookie file to delete")
 
     def prompt_email(self) -> None:
-        """
-        Prompt for Udemy email only. Does not prompt for saving.
-
-        :return: None
-        """
+        """Prompt for Udemy email only. Does not prompt for saving."""
         self.email, _ = self._get_email(prompt_save=False)
 
     def prompt_password(self) -> None:
-        """
-        Prompt for Udemy password only. Does not prompt for saving.
-
-        :return: None
-        """
+        """Prompt for Udemy password only. Does not prompt for saving."""
         self.password, _ = self._get_password(prompt_save=False)

@@ -1,16 +1,15 @@
 """Tests for udemy_rest module."""
 
 import json
-import os
+from pathlib import Path
 from unittest import mock
 
 import pytest
 import requests
 
+from udemy_enroller.models import RunStatistics, UdemyStatus
 from udemy_enroller.udemy_rest import (
     UdemyActions,
-    UdemyStatus,
-    RunStatistics,
     format_requests,
 )
 
@@ -102,7 +101,7 @@ class TestUdemyActionsInit:
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_init(self, mock_get_app_dir, mock_create_scraper, mock_settings):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         actions = UdemyActions(mock_settings)
         assert actions.settings == mock_settings
         assert actions.user_has_preferences == []
@@ -112,13 +111,13 @@ class TestUdemyActionsInit:
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_init_with_preferences(self, mock_get_app_dir, mock_create_scraper, mock_settings):
         mock_settings.categories = ["Development"]
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         actions = UdemyActions(mock_settings)
         assert bool(actions.user_has_preferences) is True
 
 
 class TestLogin:
-    @mock.patch("udemy_enroller.udemy_rest.os.path.isfile")
+    @mock.patch("pathlib.Path.is_file")
     @mock.patch("udemy_enroller.udemy_rest.open", mock.mock_open(read_data='{"access_token":"t","client_id":"c","csrftoken":"csrf"}'))
     @mock.patch("udemy_enroller.udemy_rest.json.loads")
     @mock.patch("udemy_enroller.udemy_rest.requests.get")
@@ -127,7 +126,7 @@ class TestLogin:
     def test_login_with_cached_cookies(
         self, mock_get_app_dir, mock_create_scraper, mock_requests_get, mock_json_loads, mock_isfile, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_isfile.return_value = True
         mock_json_loads.return_value = {
             "access_token": "tok",
@@ -152,13 +151,13 @@ class TestLogin:
         assert actions._cookies["access_token"] == "tok"
         assert actions._currency == "USD"
 
-    @mock.patch("udemy_enroller.udemy_rest.os.path.isfile")
+    @mock.patch("pathlib.Path.is_file")
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_login_fresh_no_csrf(
         self, mock_get_app_dir, mock_create_scraper, mock_isfile, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_isfile.return_value = False
 
         scraper = mock.MagicMock()
@@ -169,13 +168,13 @@ class TestLogin:
         with pytest.raises(Exception, match="Unable to get csrf_token"):
             actions.login()
 
-    @mock.patch("udemy_enroller.udemy_rest.os.path.isfile")
+    @mock.patch("pathlib.Path.is_file")
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_login_fresh_success(
         self, mock_get_app_dir, mock_create_scraper, mock_isfile, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_isfile.return_value = False
 
         scraper = mock.MagicMock()
@@ -200,13 +199,13 @@ class TestLogin:
 
         assert actions._cookies is not None
 
-    @mock.patch("udemy_enroller.udemy_rest.os.path.isfile")
+    @mock.patch("pathlib.Path.is_file")
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_login_fresh_with_error_in_response(
         self, mock_get_app_dir, mock_create_scraper, mock_isfile, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_isfile.return_value = False
 
         scraper = mock.MagicMock()
@@ -221,13 +220,13 @@ class TestLogin:
         with pytest.raises(Exception, match="Error detected on login"):
             actions.login()
 
-    @mock.patch("udemy_enroller.udemy_rest.os.path.isfile")
+    @mock.patch("pathlib.Path.is_file")
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_login_non_200_auth(
         self, mock_get_app_dir, mock_create_scraper, mock_isfile, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_isfile.return_value = False
 
         scraper = mock.MagicMock()
@@ -239,7 +238,7 @@ class TestLogin:
         with pytest.raises(Exception, match="Could not login"):
             actions.login()
 
-    @mock.patch("udemy_enroller.udemy_rest.os.path.isfile")
+    @mock.patch("pathlib.Path.is_file")
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_login_prompt_email_password(
@@ -247,7 +246,7 @@ class TestLogin:
     ):
         mock_settings.email = None
         mock_settings.password = None
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_isfile.return_value = False
 
         scraper = mock.MagicMock()
@@ -273,13 +272,13 @@ class TestLogin:
         mock_settings.prompt_email.assert_called_once()
         mock_settings.prompt_password.assert_called_once()
 
-    @mock.patch("udemy_enroller.udemy_rest.os.path.isfile")
+    @mock.patch("pathlib.Path.is_file")
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_login_httperror_retry_raises(
         self, mock_get_app_dir, mock_create_scraper, mock_isfile, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_isfile.return_value = True
 
         scraper = mock.MagicMock()
@@ -300,13 +299,13 @@ class TestLogin:
             with pytest.raises(requests.HTTPError):
                 actions.login()
 
-    @mock.patch("udemy_enroller.udemy_rest.os.path.isfile")
+    @mock.patch("pathlib.Path.is_file")
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_login_httperror_retry_fails_again(
         self, mock_get_app_dir, mock_create_scraper, mock_isfile, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_isfile.return_value = True
 
         scraper = mock.MagicMock()
@@ -335,7 +334,7 @@ class TestLoadMyCourses:
     def test_load_my_courses_single_page(
         self, mock_get_app_dir, mock_create_scraper, mock_requests_get, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(
             json_data={"results": [{"id": 1}, {"id": 2}]}
         )
@@ -352,7 +351,7 @@ class TestLoadMyCourses:
     def test_load_my_courses_pagination(
         self, mock_get_app_dir, mock_create_scraper, mock_requests_get, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         call_count = [0]
 
         def side_effect(*args, **kwargs):
@@ -377,19 +376,19 @@ class TestLoadMyCourses:
 class TestIsEnrolled:
     def test_is_enrolled_true(self, mock_settings):
         actions = UdemyActions(mock_settings)
-        actions._all_course_ids = [1, 2, 3]
+        actions._all_course_ids = {1, 2, 3}
         assert actions.is_enrolled(2) is True
 
     def test_is_enrolled_false(self, mock_settings):
         actions = UdemyActions(mock_settings)
-        actions._all_course_ids = [1, 2, 3]
+        actions._all_course_ids = {1, 2, 3}
         assert actions.is_enrolled(99) is False
 
 
 class TestAddEnrolledCourse:
     def test_add_enrolled_course(self, mock_settings):
         actions = UdemyActions(mock_settings)
-        actions._all_course_ids = [1]
+        actions._all_course_ids = {1}
         actions.stats.course_ids_end = 1
         actions._add_enrolled_course(2)
         assert 2 in actions._all_course_ids
@@ -403,7 +402,7 @@ class TestIsCouponValid:
     def test_coupon_valid(
         self, mock_get_app_dir, mock_create_scraper, mock_requests_get, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(
             json_data={
                 "price_text": {
@@ -429,7 +428,7 @@ class TestIsCouponValid:
     def test_coupon_not_free(
         self, mock_get_app_dir, mock_create_scraper, mock_requests_get, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(
             json_data={
                 "price_text": {
@@ -454,7 +453,7 @@ class TestIsCouponValid:
     def test_coupon_always_free(
         self, mock_get_app_dir, mock_create_scraper, mock_requests_get, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(
             json_data={
                 "price_text": {
@@ -570,7 +569,7 @@ class TestDecoratedMethods:
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_my_courses(self, mock_get_app_dir, mock_create_scraper, mock_requests_get, mock_settings):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(json_data={"results": []})
 
         actions = UdemyActions(mock_settings)
@@ -582,7 +581,7 @@ class TestDecoratedMethods:
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_coupon_details(self, mock_get_app_dir, mock_create_scraper, mock_requests_get, mock_settings):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(json_data={"price": 0})
 
         actions = UdemyActions(mock_settings)
@@ -593,7 +592,7 @@ class TestDecoratedMethods:
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_course_details(self, mock_get_app_dir, mock_create_scraper, mock_requests_get, mock_settings):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(json_data={"title": "Test Course"})
 
         actions = UdemyActions(mock_settings)
@@ -604,7 +603,7 @@ class TestDecoratedMethods:
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_course_units(self, mock_get_app_dir, mock_create_scraper, mock_requests_get, mock_settings):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(json_data={"units": []})
 
         actions = UdemyActions(mock_settings)
@@ -615,7 +614,7 @@ class TestDecoratedMethods:
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_load_user_details(self, mock_get_app_dir, mock_create_scraper, mock_requests_get, mock_settings):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(
             json_data={"Config": {"price_country": {"currency": "USD", "currency_symbol": "$"}}}
         )
@@ -634,7 +633,7 @@ class TestEnroll:
     def test_enroll_already_enrolled(
         self, mock_get_app_dir, mock_create_scraper, mock_bs, mock_requests_get, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(
             json_data={"title": "Test Course"},
             content=b'<html><body data-clp-course-id="123"></body></html>',
@@ -642,7 +641,7 @@ class TestEnroll:
         mock_bs.return_value.find.return_value = {"data-clp-course-id": "123"}
 
         actions = UdemyActions(mock_settings)
-        actions._all_course_ids = [123]
+        actions._all_course_ids = {123}
 
         result = actions.enroll("https://www.udemy.com/course/test/?couponCode=CODE")
         assert result == UdemyStatus.ALREADY_ENROLLED.value
@@ -655,7 +654,7 @@ class TestEnroll:
         self, mock_get_app_dir, mock_create_scraper, mock_bs, mock_requests_get, mock_settings
     ):
         mock_settings.languages = ["English"]
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(
             json_data={
                 "title": "Test Course",
@@ -677,7 +676,7 @@ class TestEnroll:
         self, mock_get_app_dir, mock_create_scraper, mock_bs, mock_requests_get, mock_settings
     ):
         mock_settings.categories = ["Music"]
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(
             json_data={
                 "title": "Test Course",
@@ -700,7 +699,7 @@ class TestEnroll:
         self, mock_get_app_dir, mock_create_scraper, mock_bs, mock_requests_get, mock_settings
     ):
         mock_settings.authors = ["Bad Author"]
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(
             json_data={
                 "title": "Test Course",
@@ -722,7 +721,7 @@ class TestEnroll:
         self, mock_get_app_dir, mock_create_scraper, mock_bs, mock_requests_get, mock_settings
     ):
         mock_settings.years = ["2024"]
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
 
         def get_side_effect(*args, **kwargs):
             if "courses/" in args[0] and "discovery-units" not in args[0]:
@@ -744,7 +743,7 @@ class TestEnroll:
     def test_enroll_expired_coupon(
         self, mock_get_app_dir, mock_create_scraper, mock_bs, mock_requests_post, mock_requests_get, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = MockResponse(
             json_data={
                 "title": "Test Course",
@@ -789,7 +788,7 @@ class TestEnroll:
     def test_enroll_success(
         self, mock_get_app_dir, mock_create_scraper, mock_bs, mock_requests_post, mock_requests_get, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
 
         def get_side_effect(*args, **kwargs):
             if "course-landing-components" in args[0]:
@@ -839,7 +838,7 @@ class TestEnroll:
     def test_enroll_malformed_url(
         self, mock_get_app_dir, mock_create_scraper, mock_bs, mock_requests_post, mock_requests_get, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         actions = UdemyActions(mock_settings)
         result = actions.enroll("https://www.udemy.com/course/test/")
         assert result == UdemyStatus.EXPIRED.value
@@ -852,7 +851,7 @@ class TestGetCourseId:
     def test_get_course_id(
         self, mock_get_app_dir, mock_create_scraper, mock_requests_get, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_get.return_value = mock.MagicMock(
             status_code=200,
             content=b'<html><body data-clp-course-id="12345"></body></html>',
@@ -874,7 +873,7 @@ class TestCheckout:
     def test_checkout_success(
         self, mock_get_app_dir, mock_create_scraper, mock_requests_post, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_post.return_value = MockResponse(
             json_data={"status": "succeeded"}, status_code=200
         )
@@ -891,7 +890,7 @@ class TestCheckout:
     def test_checkout_failed(
         self, mock_get_app_dir, mock_create_scraper, mock_requests_post, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_post.return_value = MockResponse(
             json_data={"status": "failed"}, status_code=200
         )
@@ -908,7 +907,7 @@ class TestCheckout:
     def test_checkout_rate_limited_retry(
         self, mock_get_app_dir, mock_create_scraper, mock_requests_post, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         call_count = [0]
 
         def post_side_effect(*args, **kwargs):
@@ -935,7 +934,7 @@ class TestCheckout:
     def test_checkout_rate_limited_retry_fails(
         self, mock_get_app_dir, mock_create_scraper, mock_requests_post, mock_settings
     ):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_requests_post.return_value = mock.MagicMock(
             ok=False, status_code=429, text="Rate limited. Please wait 2 seconds"
         )
@@ -959,26 +958,24 @@ class TestBuildCheckoutPayload:
 
 
 class TestCacheCookies:
-    @mock.patch("udemy_enroller.udemy_rest.os.path.join")
     @mock.patch("udemy_enroller.udemy_rest.create_scraper")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
-    def test_cache_cookies(self, mock_get_app_dir, mock_create_scraper, mock_path_join):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
-        mock_path_join.return_value = "/tmp/test_dir/.cookie"
+    def test_cache_cookies(self, mock_get_app_dir, mock_create_scraper):
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
 
         actions = UdemyActions(mock.MagicMock())
         m = mock.mock_open()
         with mock.patch("builtins.open", m):
             with mock.patch("udemy_enroller.udemy_rest.json.dumps", return_value='{"a":"b"}'):
                 actions._cache_cookies({"a": "b"})
-        m.assert_called_once_with("/tmp/test_dir/.cookie", "a+")
+        m.assert_called_once_with(actions._cookie_file, "w")
 
 
 class TestLoadCookies:
-    @mock.patch("udemy_enroller.udemy_rest.os.path.isfile")
+    @mock.patch("pathlib.Path.is_file")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_load_cookies_exists(self, mock_get_app_dir, mock_isfile):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_isfile.return_value = True
 
         actions = UdemyActions(mock.MagicMock())
@@ -988,10 +985,10 @@ class TestLoadCookies:
                 result = actions._load_cookies()
         assert result == {"token": "abc"}
 
-    @mock.patch("udemy_enroller.udemy_rest.os.path.isfile")
+    @mock.patch("pathlib.Path.is_file")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_load_cookies_not_exists(self, mock_get_app_dir, mock_isfile):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
         mock_isfile.return_value = False
 
         actions = UdemyActions(mock.MagicMock())
@@ -1000,10 +997,10 @@ class TestLoadCookies:
 
 
 class TestDeleteCookies:
-    @mock.patch("udemy_enroller.udemy_rest.os.remove")
+    @mock.patch("pathlib.Path.unlink")
     @mock.patch("udemy_enroller.udemy_rest.get_app_dir")
     def test_delete_cookies(self, mock_get_app_dir, mock_remove):
-        mock_get_app_dir.return_value = "/tmp/test_dir"
+        mock_get_app_dir.return_value = Path("/tmp/test_dir")
 
         actions = UdemyActions(mock.MagicMock())
         actions._delete_cookies()

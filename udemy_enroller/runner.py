@@ -3,7 +3,6 @@
 import asyncio
 import random
 import time
-from typing import Union
 
 from selenium.common.exceptions import (
     NoSuchElementException,
@@ -24,58 +23,6 @@ from udemy_enroller.logger import get_logger
 logger = get_logger()
 
 
-def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
-    """
-    Scrape courses from the supported sites and enroll in them on udemy.
-
-    :param Settings settings: Core settings used for Udemy
-    :param ScraperManager scrapers:
-    :return:
-    """
-    udemy_actions = UdemyActions(settings)
-    udemy_actions.login()
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    try:
-        while True:
-            udemy_course_links = loop.run_until_complete(scrapers.run())
-            logger.info(f"Total courses this time: {len(udemy_course_links)}")
-            if udemy_course_links:
-                for course_link in udemy_course_links:
-                    should_exit = False
-                    try:
-                        status = udemy_actions.enroll(course_link)
-
-                        if status == UdemyStatus.ENROLLED.value:
-                            # Try to avoid udemy throttling by sleeping for 1-5 seconds
-                            sleep_time = random.choice(range(1, 5))
-                            logger.debug(
-                                f"Sleeping for {sleep_time} seconds between enrolments"
-                            )
-                            time.sleep(sleep_time)
-                    except KeyboardInterrupt:
-                        udemy_actions.stats.table()
-                        logger.error("Exiting the script")
-                        should_exit = True
-                    except Exception as e:
-                        logger.error(f"Unexpected exception: {e}")
-                    finally:
-                        if settings.is_ci_build:
-                            logger.info("We have attempted to subscribe to 1 udemy course")
-                            logger.info("Ending test")
-                            should_exit = True
-
-                    if should_exit:
-                        return
-            else:
-                udemy_actions.stats.table()
-                logger.info("All scrapers complete")
-                return
-    finally:
-        loop.close()
-
-
 def redeem_courses(
     settings: Settings,
     idownloadcoupon_enabled: bool,
@@ -83,19 +30,18 @@ def redeem_courses(
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
     coursevania_enabled: bool,
-    max_pages: Union[int, None],
+    max_pages: int | None,
 ) -> None:
     """
-    Wrap _redeem_courses to catch unhandled exceptions.
+    Scrape courses and enroll via REST API.
 
-    :param Settings settings: Core settings used for Udemy
-    :param bool idownloadcoupon_enabled: Boolean signifying if idownloadcoupon scraper should run
-    :param bool freebiesglobal_enabled: Boolean signifying if freebiesglobal scraper should run
-    :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
-    :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
-    :param bool coursevania_enabled: Boolean signifying if coursevania scraper should run
-    :param int max_pages: Max pages to scrape from sites (if pagination exists)
-    :return:
+    :param settings: Core settings used for Udemy
+    :param idownloadcoupon_enabled: Enable idownloadcoupon scraper
+    :param freebiesglobal_enabled: Enable freebiesglobal scraper
+    :param tutorialbar_enabled: Enable tutorialbar scraper
+    :param discudemy_enabled: Enable discudemy scraper
+    :param coursevania_enabled: Enable coursevania scraper
+    :param max_pages: Max pages to scrape (None for unlimited)
     """
     try:
         scrapers = ScraperManager(
@@ -106,76 +52,47 @@ def redeem_courses(
             coursevania_enabled,
             max_pages,
         )
-        _redeem_courses(settings, scrapers)
+        udemy_actions = UdemyActions(settings)
+        udemy_actions.login()
+
+        async def _run() -> None:
+            while True:
+                udemy_course_links = await scrapers.run()
+                logger.info(f"Total courses this time: {len(udemy_course_links)}")
+                if udemy_course_links:
+                    for course_link in udemy_course_links:
+                        should_exit = False
+                        try:
+                            status = udemy_actions.enroll(course_link)
+                            if status == UdemyStatus.ENROLLED.value:
+                                sleep_time = random.choice(range(1, 6))
+                                logger.debug(
+                                    f"Sleeping for {sleep_time}s between enrolments"
+                                )
+                                time.sleep(sleep_time)
+                        except KeyboardInterrupt:
+                            udemy_actions.stats.table()
+                            logger.error("Exiting the script")
+                            should_exit = True
+                        except Exception as e:
+                            logger.error(f"Unexpected exception: {e}")
+                        finally:
+                            if settings.is_ci_build:
+                                logger.info("We have attempted to subscribe to 1 udemy course")
+                                logger.info("Ending test")
+                                should_exit = True
+                        if should_exit:
+                            return
+                else:
+                    udemy_actions.stats.table()
+                    logger.info("All scrapers complete")
+                    return
+
+        asyncio.run(_run())
+    except KeyboardInterrupt:
+        pass
     except Exception as e:
         logger.error(f"Exception in redeem courses: {e}")
-
-
-def _redeem_courses_ui(
-    driver,
-    settings: Settings,
-    scrapers: ScraperManager,
-) -> None:
-    """
-    Scrape courses from the supported sites and enroll in them on udemy.
-
-    :param WebDriver driver: WebDriver to use to complete enrolment
-    :param Settings settings: Core settings used for Udemy
-    :param ScraperManager scrapers:
-    :return:
-    """
-    udemy_actions = UdemyActionsUI(driver, settings)
-    udemy_actions.login()
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    try:
-        while True:
-            udemy_course_links = loop.run_until_complete(scrapers.run())
-
-            if udemy_course_links:
-                for course_link in set(
-                    udemy_course_links
-                ):  # Cast to set to remove duplicate links
-                    should_exit = False
-                    try:
-                        status = udemy_actions.enroll(course_link)
-                        if status == UdemyStatus.ENROLLED.value:
-                            # Try to avoid udemy throttling by sleeping for 1-5 seconds
-                            sleep_time = random.choice(range(1, 5))
-                            logger.debug(
-                                f"Sleeping for {sleep_time} seconds between enrolments"
-                            )
-                            time.sleep(sleep_time)
-                    except NoSuchElementException as e:
-                        logger.error(f"No such element: {e}")
-                    except TimeoutException:
-                        logger.error(f"Timeout on link: {course_link}")
-                    except WebDriverException:
-                        logger.error(f"Webdriver exception on link: {course_link}")
-                    except KeyboardInterrupt:
-                        udemy_actions.stats.table()
-                        logger.warning("Exiting the script")
-                        should_exit = True
-                    except exceptions.RobotException as e:
-                        logger.error(e)
-                        should_exit = True
-                    except Exception as e:
-                        logger.error(f"Unexpected exception: {e}")
-                    finally:
-                        if settings.is_ci_build:
-                            logger.info("We have attempted to subscribe to 1 udemy course")
-                            logger.info("Ending test")
-                            should_exit = True
-
-                    if should_exit:
-                        return
-            else:
-                udemy_actions.stats.table()
-                logger.info("All scrapers complete")
-                return
-    finally:
-        loop.close()
 
 
 def redeem_courses_ui(
@@ -186,20 +103,19 @@ def redeem_courses_ui(
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
     coursevania_enabled: bool,
-    max_pages: Union[int, None],
+    max_pages: int | None,
 ) -> None:
     """
-    Wrap _redeem_courses so we always close browser on completion.
+    Scrape courses and enroll via Selenium UI.
 
-    :param WebDriver driver: WebDriver to use to complete enrolment
-    :param Settings settings: Core settings used for Udemy
-    :param bool idownloadcoupon_enabled: Boolean signifying if idownloadcoupon scraper should run
-    :param bool freebiesglobal_enabled: Boolean signifying if freebiesglobal scraper should run
-    :param bool tutorialbar_enabled: Boolean signifying if tutorialbar scraper should run
-    :param bool discudemy_enabled: Boolean signifying if discudemy scraper should run
-    :param bool coursevania_enabled: Boolean signifying if coursevania scraper should run
-    :param int max_pages: Max pages to scrape from sites (if pagination exists)
-    :return:
+    :param driver: WebDriver to use to complete enrolment
+    :param settings: Core settings used for Udemy
+    :param idownloadcoupon_enabled: Enable idownloadcoupon scraper
+    :param freebiesglobal_enabled: Enable freebiesglobal scraper
+    :param tutorialbar_enabled: Enable tutorialbar scraper
+    :param discudemy_enabled: Enable discudemy scraper
+    :param coursevania_enabled: Enable coursevania scraper
+    :param max_pages: Max pages to scrape (None for unlimited)
     """
     try:
         scrapers = ScraperManager(
@@ -210,7 +126,54 @@ def redeem_courses_ui(
             coursevania_enabled,
             max_pages,
         )
-        _redeem_courses_ui(driver, settings, scrapers)
+        udemy_actions = UdemyActionsUI(driver, settings)
+        udemy_actions.login()
+
+        async def _run() -> None:
+            while True:
+                udemy_course_links = list(set(await scrapers.run()))
+
+                if udemy_course_links:
+                    for course_link in udemy_course_links:
+                        should_exit = False
+                        try:
+                            status = udemy_actions.enroll(course_link)
+                            if status == UdemyStatus.ENROLLED.value:
+                                sleep_time = random.choice(range(1, 6))
+                                logger.debug(
+                                    f"Sleeping for {sleep_time}s between enrolments"
+                                )
+                                time.sleep(sleep_time)
+                        except NoSuchElementException as e:
+                            logger.error(f"No such element: {e}")
+                        except TimeoutException:
+                            logger.error(f"Timeout on link: {course_link}")
+                        except WebDriverException:
+                            logger.error(f"Webdriver exception on link: {course_link}")
+                        except KeyboardInterrupt:
+                            udemy_actions.stats.table()
+                            logger.warning("Exiting the script")
+                            should_exit = True
+                        except exceptions.RobotException as e:
+                            logger.error(e)
+                            should_exit = True
+                        except Exception as e:
+                            logger.error(f"Unexpected exception: {e}")
+                        finally:
+                            if settings.is_ci_build:
+                                logger.info("We have attempted to subscribe to 1 udemy course")
+                                logger.info("Ending test")
+                                should_exit = True
+                        if should_exit:
+                            return
+                else:
+                    udemy_actions.stats.table()
+                    logger.info("All scrapers complete")
+                    return
+
+        asyncio.run(_run())
+    except KeyboardInterrupt:
+        pass
     except Exception as e:
         logger.error(f"Exception in redeem courses: {e}")
     finally:

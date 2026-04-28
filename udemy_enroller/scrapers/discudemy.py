@@ -1,6 +1,5 @@
 """Discudemy scraper."""
 
-import asyncio
 from typing import List
 
 from bs4 import BeautifulSoup
@@ -62,8 +61,8 @@ class DiscUdemyScraper(BaseScraper):
 
         return links
 
-    @classmethod
-    async def get_udemy_course_link(cls, url: str) -> str:
+    @staticmethod
+    async def get_udemy_course_link(url: str) -> str | None:
         """
         Get the udemy course link.
 
@@ -73,22 +72,9 @@ class DiscUdemyScraper(BaseScraper):
         data = await http_get(url)
         soup = BeautifulSoup(data.decode("utf-8"), "html.parser")
         for link in soup.find_all("a", href=True):
-            udemy_link = cls.validate_coupon_url(link["href"])
+            udemy_link = DiscUdemyScraper.validate_coupon_url(link["href"])
             if udemy_link is not None:
                 return udemy_link
-
-    async def gather_udemy_course_links(self, courses: List[str]):
-        """
-        Async fetching of the udemy course links from discudemy.com.
-
-        :param list courses: A list of discudemy.com course links we want to fetch the udemy links for
-        :return: list of udemy links
-        """
-        return [
-            link
-            for link in await asyncio.gather(*map(self.get_udemy_course_link, courses))
-            if link is not None
-        ]
 
     @staticmethod
     def _get_last_page(soup: BeautifulSoup) -> int:

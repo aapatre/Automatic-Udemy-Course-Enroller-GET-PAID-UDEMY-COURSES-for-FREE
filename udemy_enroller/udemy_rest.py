@@ -1,19 +1,17 @@
 """Udemy REST."""
 
 import json
-import os
 import re
 import time
-from dataclasses import dataclass, field
-from enum import Enum
 from functools import wraps
-from typing import Dict, List
+from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
 from cloudscraper import create_scraper
 
 from udemy_enroller.logger import get_logger
+from udemy_enroller.models import RunStatistics, UdemyStatus
 from udemy_enroller.settings import Settings
 from udemy_enroller.utils import get_app_dir
 
@@ -24,67 +22,12 @@ def format_requests(func):
     """Handle requests response."""
 
     @wraps(func)
-    def formatting(*args, **kwargs):
+    def formatting(*args, **kwargs) -> dict:
         result = func(*args, **kwargs)
         result.raise_for_status()
         return result.json()
 
     return formatting
-
-
-@dataclass(unsafe_hash=True)
-class RunStatistics:
-    """Gather statistics on courses enrolled in."""
-
-    prices: List[float] = field(default_factory=list)
-
-    expired: int = 0
-    enrolled: int = 0
-    already_enrolled: int = 0
-    unwanted_language: int = 0
-    unwanted_category: int = 0
-    unwanted_author: int = 0
-    unwanted_year: int = 0
-
-    course_ids_start: int = 0
-    course_ids_end: int = 0
-
-    start_time = None
-    end_time = None
-
-    currency_symbol = "$"
-
-    def savings(self):
-        """Calculate the savings made from enrolling to these courses."""
-        return sum(self.prices) or 0
-
-    def table(self):
-        """Log table of statistics to output."""
-        logger.info("================== Run Statistics ==================")
-        logger.info(f"Enrolled:                   {self.enrolled}")
-        logger.info(f"Unwanted Category:          {self.unwanted_category}")
-        logger.info(f"Unwanted Language:          {self.unwanted_language}")
-        logger.info(f"Unwanted Author:            {self.unwanted_author}")
-        logger.info(f"Unwanted Year:              {self.unwanted_year}")
-        logger.info(f"Already Claimed:            {self.already_enrolled}")
-        logger.info(f"Expired:                    {self.expired}")
-        logger.info(f"Total Enrolments:           {self.course_ids_end}")
-        logger.info(
-            f"Savings:                    {self.currency_symbol}{self.savings():.2f}"
-        )
-        logger.info("================== Run Statistics ==================")
-
-
-class UdemyStatus(Enum):
-    """Possible statuses of udemy course."""
-
-    ALREADY_ENROLLED = "ALREADY_ENROLLED"
-    ENROLLED = "ENROLLED"
-    EXPIRED = "EXPIRED"
-    UNWANTED_LANGUAGE = "UNWANTED_LANGUAGE"
-    UNWANTED_CATEGORY = "UNWANTED_CATEGORY"
-    UNWANTED_AUTHOR = "UNWANTED_AUTHOR"
-    UNWANTED_YEAR = "UNWANTED_YEAR"
 
 
 class UdemyActions:
@@ -118,15 +61,15 @@ class UdemyActions:
 
     def __init__(self, settings: Settings, cookie_file_name: str = ".cookie"):
         """Initialize."""
-        self._cookies = None
+        self._cookies: dict | None = None
         self.settings = settings
         self.user_has_preferences = self.settings.categories or self.settings.languages or self.settings.authors or self.settings.years
         self.udemy_scraper = create_scraper(ecdhCurve="secp384r1")
-        self._cookie_file = os.path.join(get_app_dir(), cookie_file_name)
-        self._enrolled_course_info = []
-        self._all_course_ids = []
-        self._currency_symbol = None
-        self._currency = None
+        self._cookie_file: Path = get_app_dir() / cookie_file_name
+        self._enrolled_course_info: list = []
+        self._all_course_ids: set = set()
+        self._currency_symbol: str | None = None
+        self._currency: str | None = None
 
         self.stats = RunStatistics()
 
@@ -189,9 +132,9 @@ class UdemyActions:
             self._currency_symbol = user_details["Config"]["price_country"][
                 "currency_symbol"
             ]
-            self._all_course_ids = [
+            self._all_course_ids = {
                 course["id"] for course in self._enrolled_course_info
-            ]
+            }
             self.stats.course_ids_start = len(self._all_course_ids)
             self.stats.currency_symbol = self._currency_symbol
         except Exception as e:
@@ -210,7 +153,7 @@ class UdemyActions:
                 )
                 raise e
 
-    def load_my_courses(self) -> List:
+    def load_my_courses(self) -> list:
         """
         Load users currently enrolled courses from Udemy.
 
@@ -253,14 +196,13 @@ class UdemyActions:
         """
         return course_id in self._all_course_ids
 
-    def _add_enrolled_course(self, course_id):
+    def _add_enrolled_course(self, course_id: int) -> None:
         """
-        Add enrolled course to the list of enrolled course ids.
+        Add enrolled course to the set of enrolled course ids.
 
-        :param int course_id: The course_id to add to the list
-        :return:
+        :param int course_id: The course_id to add
         """
-        self._all_course_ids.append(course_id)
+        self._all_course_ids.add(course_id)
         self.stats.course_ids_end = len(self._all_course_ids)
 
     def is_coupon_valid(
@@ -300,7 +242,7 @@ class UdemyActions:
         return coupon_valid
 
     def is_preferred_language(
-        self, course_details: Dict, course_identifier: str
+        self, course_details: dict, course_identifier: str
     ) -> bool:
         """
         Check if the course is in one of the languages preferred by the user.
@@ -320,7 +262,7 @@ class UdemyActions:
         return is_preferred_language
 
     def is_preferred_category(
-        self, course_details: Dict, course_identifier: str
+        self, course_details: dict, course_identifier: str
     ) -> bool:
         """
         Check if the course is in one of the categories preferred by the user.
@@ -343,7 +285,7 @@ class UdemyActions:
         return is_preferred_category
 
     def is_preferred_year(
-        self, course_units: Dict, course_identifier: str
+        self, course_units: dict, course_identifier: str
     ) -> bool:
         """
         Check if the course is in one of the years preferred by the user.
@@ -364,10 +306,10 @@ class UdemyActions:
         return is_preferred_year
 
     def is_exclude_author(
-        self, course_details: Dict, course_identifier: str
+        self, course_details: dict, course_identifier: str
     ) -> bool:
         """
-        Check if the course is in one of the authors exclude by the user.
+        Check if the course is in one of the categories preferred by the user.
 
         :param dict course_details: Dictionary containing course details from Udemy
         :param str course_identifier: Name of the course used for logging
@@ -385,7 +327,7 @@ class UdemyActions:
         return is_exclude_author
 
     @format_requests
-    def my_courses(self, page: int, page_size: int) -> Dict:
+    def my_courses(self, page: int, page_size: int) -> dict:
         """
         Load the current logged in users courses.
 
@@ -400,7 +342,7 @@ class UdemyActions:
         )
 
     @format_requests
-    def coupon_details(self, course_id: int, coupon_code: str) -> Dict:
+    def coupon_details(self, course_id: int, coupon_code: str) -> dict:
         """
         Check that the coupon is valid for the current course.
 
@@ -411,7 +353,7 @@ class UdemyActions:
         return requests.get(self.CHECK_PRICE.format(course_id, coupon_code))
 
     @format_requests
-    def course_details(self, course_id: int) -> Dict:
+    def course_details(self, course_id: int) -> dict:
         """
         Retrieve details relating to the course passed in.
 
@@ -421,7 +363,7 @@ class UdemyActions:
         return requests.get(self.COURSE_DETAILS.format(course_id))
 
     @format_requests
-    def course_units(self, course_id: int) -> Dict:
+    def course_units(self, course_id: int) -> dict:
         """
         Retrieve details relating to the course passed in.
 
@@ -524,7 +466,7 @@ class UdemyActions:
                     f"Script has been rate limited. Sleeping for {seconds} seconds"
                 )
                 time.sleep(seconds)
-                self._checkout(course_id, coupon_code, course_identifier, retry=True)
+                return self._checkout(course_id, coupon_code, course_identifier, retry=True)
             else:
                 raise Exception(f"Checkout failed: Code: {checkout_result.status_code}")
         else:
@@ -540,7 +482,7 @@ class UdemyActions:
                 # TODO: Shouldn't happen. Need to monitor if it does
                 return UdemyStatus.EXPIRED.value
 
-    def _build_checkout_payload(self, course_id: int, coupon_code: str) -> Dict:
+    def _build_checkout_payload(self, course_id: int, coupon_code: str) -> dict:
         """
         Build the payload for checkout.
 
@@ -568,7 +510,7 @@ class UdemyActions:
             },
         }
 
-    def _cache_cookies(self, cookies: Dict) -> None:
+    def _cache_cookies(self, cookies: dict) -> None:
         """
         Cache cookies for future logins.
 
@@ -576,10 +518,10 @@ class UdemyActions:
         :return:
         """
         logger.info("Caching cookie for future use")
-        with open(self._cookie_file, "a+") as f:
+        with open(self._cookie_file, "w") as f:
             f.write(json.dumps(cookies))
 
-    def _load_cookies(self) -> Dict:
+    def _load_cookies(self) -> dict | None:
         """
         Load existing cookie file.
 
@@ -587,7 +529,7 @@ class UdemyActions:
         """
         cookies = None
 
-        if os.path.isfile(self._cookie_file):
+        if self._cookie_file.is_file():
             logger.info("Loading cookie from file")
             with open(self._cookie_file) as f:
                 cookies = json.loads(f.read())
@@ -602,4 +544,4 @@ class UdemyActions:
         :return:
         """
         logger.info("Deleting cookie")
-        os.remove(self._cookie_file)
+        self._cookie_file.unlink(missing_ok=True)

@@ -1,12 +1,12 @@
 """Base Scraper."""
 
+import asyncio
 import logging
 import re
 import typing
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Optional
 
 logger = logging.getLogger("udemy_enroller")
 
@@ -40,6 +40,27 @@ class BaseScraper(ABC):
         """Get links method that must be implemented in subclasses."""
         return
 
+    @staticmethod
+    @abstractmethod
+    async def get_udemy_course_link(url: str) -> str | None:
+        """Get the udemy course link from an intermediate page. Must be implemented in subclasses."""
+        return
+
+    async def gather_udemy_course_links(self, courses: typing.List[str]) -> typing.List[str]:
+        """
+        Async fetching of udemy course links from a list of intermediate pages.
+
+        :param list courses: A list of intermediate course links to fetch udemy links for
+        :return: list of udemy links (None values filtered out)
+        """
+        return [
+            link
+            for link in await asyncio.gather(
+                *map(self.get_udemy_course_link, courses)
+            )
+            if link is not None
+        ]
+
     @property
     def state(self) -> str:
         """State property."""
@@ -48,7 +69,7 @@ class BaseScraper(ABC):
     @state.setter
     def state(self, value) -> None:
         """Set the state of the scraper."""
-        if any([ss for ss in ScraperStates if ss.value == value]):
+        if any(ss.value == value for ss in ScraperStates):
             self._state = value
 
     def set_state_disabled(self) -> None:
@@ -93,7 +114,7 @@ class BaseScraper(ABC):
                 logger.exception(
                     f"Error while running {self.scraper_name} scraper: {e}"
                 )
-                self.is_complete()
+                self.set_state_complete()
                 return []
             end_time = datetime.now(timezone.utc)
             logger.info(
@@ -129,7 +150,7 @@ class BaseScraper(ABC):
         return should_run
 
     @staticmethod
-    def validate_coupon_url(url: str) -> Optional[str]:
+    def validate_coupon_url(url: str) -> str | None:
         """
         Validate the udemy coupon url passed in.
 

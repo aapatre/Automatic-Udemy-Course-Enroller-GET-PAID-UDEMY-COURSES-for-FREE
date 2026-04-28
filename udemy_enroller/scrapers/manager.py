@@ -1,7 +1,6 @@
-"""Manager for scapers."""
+"""Manager for scrapers."""
 
 import asyncio
-import typing
 from functools import reduce
 
 from udemy_enroller.scrapers.coursevania import CoursevaniaScraper
@@ -16,12 +15,12 @@ class ScraperManager:
 
     def __init__(
         self,
-        idownloadcoupon_enabled,
-        freebiesglobal_enabled,
-        tutorialbar_enabled,
-        discudemy_enabled,
-        coursevania_enabled,
-        max_pages,
+        idownloadcoupon_enabled: bool,
+        freebiesglobal_enabled: bool,
+        tutorialbar_enabled: bool,
+        discudemy_enabled: bool,
+        coursevania_enabled: bool,
+        max_pages: int | None,
     ):
         """Initialize."""
         self.idownloadcoupons_scraper = IDownloadCouponScraper(
@@ -48,13 +47,13 @@ class ScraperManager:
             self.coursevania_scraper,
         )
 
-    async def run(self) -> typing.List[str]:
+    async def run(self) -> list[str]:
         """
         Run any enabled scrapers and returns a list of links.
 
-        :return: list
+        :return: list of udemy course URLs
         """
-        urls = []
+        urls: list[str] = []
         enabled_scrapers = self._enabled_scrapers()
         if enabled_scrapers:
             urls = reduce(
@@ -63,10 +62,6 @@ class ScraperManager:
             )
         return urls
 
-    def _enabled_scrapers(self) -> typing.List:
-        """
-        Return a list of scrapers that should run.
-
-        :return:
-        """
+    def _enabled_scrapers(self) -> list:
+        """Return a list of scrapers that should run."""
         return list(filter(lambda sc: sc.should_run(), self._scrapers))

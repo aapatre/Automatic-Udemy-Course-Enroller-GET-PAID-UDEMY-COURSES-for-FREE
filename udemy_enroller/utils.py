@@ -1,17 +1,14 @@
 """Utility functions."""
 
-import os
+from pathlib import Path
 
 
-def get_app_dir() -> str:
+def get_app_dir() -> Path:
     """
     Get the app directory where all data related to the script is stored.
 
-    :return:
+    :return: Path to the app directory
     """
-    app_dir = os.path.join(os.path.expanduser("~"), ".udemy_enroller")
-
-    if not os.path.isdir(app_dir):
-        # If the app data dir does not exist create it
-        os.mkdir(app_dir)
+    app_dir = Path.home() / ".udemy_enroller"
+    app_dir.mkdir(exist_ok=True)
     return app_dir

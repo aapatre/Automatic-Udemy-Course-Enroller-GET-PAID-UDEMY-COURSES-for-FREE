@@ -1,6 +1,5 @@
 """Coursevania Scraper."""
 
-import asyncio
 import json
 from typing import List
 from urllib.parse import urlencode
@@ -118,7 +117,7 @@ class CoursevaniaScraper(BaseScraper):
             return course_links
 
     @staticmethod
-    async def get_udemy_course_link(url: str) -> str:
+    async def get_udemy_course_link(url: str) -> str | None:
         """
         Get the udemy course link.
 
@@ -132,16 +131,3 @@ class CoursevaniaScraper(BaseScraper):
                 soup.find("div", class_="stm-lms-buy-buttons").find("a").get("href")
             )
             return udemy_link
-
-    async def gather_udemy_course_links(self, courses: List[str]):
-        """
-        Async fetching of the udemy course links from coursevania.com.
-
-        :param list courses: A list of coursevania.com course links we want to fetch the udemy links for
-        :return: list of udemy links
-        """
-        return [
-            link
-            for link in await asyncio.gather(*map(self.get_udemy_course_link, courses))
-            if link is not None
-        ]

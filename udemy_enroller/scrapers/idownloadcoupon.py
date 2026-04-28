@@ -1,6 +1,5 @@
 """IDownloadCoupon scraper."""
 
-import asyncio
 import urllib.parse
 from typing import List
 
@@ -72,16 +71,16 @@ class IDownloadCouponScraper(BaseScraper):
             links = soup.find_all("li", class_="product")
             course_links = [link.find_all("a")[1].get("href") for link in links]
 
-            self.last_page = int(
-                soup.find("ul", class_="page-numbers")
-                .find_all("a", class_="page-numbers")[-2]
-                .text.replace(",", "")
-            )
+            page_numbers_el = soup.find("ul", class_="page-numbers")
+            if page_numbers_el is not None:
+                page_links = page_numbers_el.find_all("a", class_="page-numbers")
+                if len(page_links) >= 2:
+                    self.last_page = int(page_links[-2].text.replace(",", ""))
 
             return course_links
 
-    @classmethod
-    async def get_udemy_course_link(cls, url: str) -> str:
+    @staticmethod
+    async def get_udemy_course_link(url: str) -> str | None:
         """
         Get the udemy course link.
 
@@ -92,17 +91,4 @@ class IDownloadCouponScraper(BaseScraper):
         link = urllib.parse.unquote(response.headers["location"])
         urls = link.split("murl=")
         if urls and link.startswith("https://click.linksynergy.com"):
-            return cls.validate_coupon_url(urllib.parse.unquote(urls[1]))
-
-    async def gather_udemy_course_links(self, courses: List[str]):
-        """
-        Async fetching of the udemy course links.
-
-        :param list courses: A list of course links we want to fetch the udemy links for
-        :return: list of udemy links
-        """
-        return [
-            link
-            for link in await asyncio.gather(*map(self.get_udemy_course_link, courses))
-            if link is not None
-        ]
+            return IDownloadCouponScraper.validate_coupon_url(urllib.parse.unquote(urls[1]))

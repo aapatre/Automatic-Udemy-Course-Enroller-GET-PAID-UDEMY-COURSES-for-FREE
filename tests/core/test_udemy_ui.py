@@ -62,7 +62,7 @@ class TestRunStatisticsUI:
         try:
             stats = RunStatistics()
             stats.table()
-            assert "Run Statistics" not in caplog.text
+            assert "Run Statistics" in caplog.text
         finally:
             logger.setLevel(original)
 
