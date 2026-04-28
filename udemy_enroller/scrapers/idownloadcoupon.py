@@ -1,8 +1,6 @@
 """IDownloadCoupon scraper."""
 
 import urllib.parse
-from typing import List
-
 from bs4 import BeautifulSoup
 
 from udemy_enroller.http_utils import http_get, http_get_no_redirect
@@ -27,7 +25,7 @@ class IDownloadCouponScraper(BaseScraper):
         self.max_pages = max_pages
 
     @BaseScraper.time_run
-    async def run(self) -> List:
+    async def run(self) -> list:
         """
         Run the steps to scrape links.
 
@@ -57,7 +55,7 @@ class IDownloadCouponScraper(BaseScraper):
 
         return udemy_links
 
-    async def get_course_links(self, url: str) -> List:
+    async def get_course_links(self, url: str) -> list:
         """
         Get the url of pages which contain the udemy link we want to get.
 

@@ -1,7 +1,6 @@
 """Coursevania Scraper."""
 
 import json
-from typing import List
 from urllib.parse import urlencode
 
 from bs4 import BeautifulSoup
@@ -29,7 +28,7 @@ class CoursevaniaScraper(BaseScraper):
         self._nonce = None
 
     @BaseScraper.time_run
-    async def run(self) -> List:
+    async def run(self) -> list:
         """
         Gather the udemy links.
 
@@ -76,7 +75,7 @@ class CoursevaniaScraper(BaseScraper):
                         )
                         self._nonce = data.get("load_content")
 
-    async def get_course_links(self) -> List:
+    async def get_course_links(self) -> list:
         """
         Get the url of pages which contain the udemy link we want to get.
 

@@ -1,7 +1,5 @@
 """Freebiesglobal Scraper."""
 
-from typing import List
-
 from bs4 import BeautifulSoup
 
 from udemy_enroller.http_utils import http_get
@@ -25,7 +23,7 @@ class FreebiesglobalScraper(BaseScraper):
         self.max_pages = max_pages
 
     @BaseScraper.time_run
-    async def run(self) -> List:
+    async def run(self) -> list:
         """
         Gathers the udemy links.
 
@@ -38,7 +36,7 @@ class FreebiesglobalScraper(BaseScraper):
         self.max_pages_reached()
         return links
 
-    async def get_links(self) -> List:
+    async def get_links(self) -> list:
         """
         Scrape udemy links from freebiesglobal.com.
 

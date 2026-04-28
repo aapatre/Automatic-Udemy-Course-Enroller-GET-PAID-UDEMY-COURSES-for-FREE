@@ -1,7 +1,5 @@
 """Tutorialbar scraper."""
 
-from typing import List
-
 from bs4 import BeautifulSoup
 
 from udemy_enroller.http_utils import http_get
@@ -27,7 +25,7 @@ class TutorialBarScraper(BaseScraper):
         self.max_pages = max_pages
 
     @BaseScraper.time_run
-    async def run(self) -> List:
+    async def run(self) -> list:
         """
         Run the steps to scrape links from tutorialbar.com.
 
@@ -59,7 +57,7 @@ class TutorialBarScraper(BaseScraper):
 
         return links
 
-    def _filter_ad_domains(self, udemy_links) -> List:
+    def _filter_ad_domains(self, udemy_links) -> list:
         """
         Filter out any known ad domains from the links scraped.
 
@@ -75,7 +73,7 @@ class TutorialBarScraper(BaseScraper):
             logger.info(f"Removing ad links from courses: {ad_links}")
         return list(set(udemy_links) - ad_links)
 
-    async def get_course_links(self, url: str) -> List:
+    async def get_course_links(self, url: str) -> list:
         """
         Get the url of pages which contain the udemy link we want to get.
 
@@ -87,7 +85,11 @@ class TutorialBarScraper(BaseScraper):
             soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
 
             links = soup.find_all("h3")
-            course_links = [link.find("a").get("href") for link in links]
+            course_links = []
+            for link in links:
+                a_tag = link.find("a")
+                if a_tag is not None:
+                    course_links.append(a_tag.get("href"))
 
             next_page_el = soup.find("li", class_="next_paginate_link")
             if next_page_el is not None:
@@ -98,7 +100,7 @@ class TutorialBarScraper(BaseScraper):
             return course_links
 
     @staticmethod
-    async def get_udemy_course_link(url: str) -> str:
+    async def get_udemy_course_link(url: str) -> str | None:
         """
         Get the udemy course link.
 
@@ -108,7 +110,9 @@ class TutorialBarScraper(BaseScraper):
         text = await http_get(url)
         if text is not None:
             soup = BeautifulSoup(text.decode("utf-8"), "html.parser")
-            udemy_link = (
-                soup.find("span", class_="rh_button_wrapper").find("a").get("href")
-            )
-            return udemy_link
+            wrapper = soup.find("span", class_="rh_button_wrapper")
+            if wrapper is not None:
+                a_tag = wrapper.find("a")
+                if a_tag is not None:
+                    return a_tag.get("href")
+        return None

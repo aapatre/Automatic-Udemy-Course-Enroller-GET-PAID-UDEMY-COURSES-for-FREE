@@ -3,7 +3,6 @@
 import asyncio
 import logging
 import re
-import typing
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 from enum import Enum
@@ -36,7 +35,7 @@ class BaseScraper(ABC):
         return
 
     @abstractmethod
-    async def get_links(self) -> typing.List[str]:
+    async def get_links(self) -> list[str]:
         """Get links method that must be implemented in subclasses."""
         return
 
@@ -46,7 +45,7 @@ class BaseScraper(ABC):
         """Get the udemy course link from an intermediate page. Must be implemented in subclasses."""
         return
 
-    async def gather_udemy_course_links(self, courses: typing.List[str]) -> typing.List[str]:
+    async def gather_udemy_course_links(self, courses: list[str]) -> list[str]:
         """
         Async fetching of udemy course links from a list of intermediate pages.
 

@@ -4,8 +4,6 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from decimal import Decimal
 from enum import Enum
-from typing import List
-
 from udemy_enroller.logger import get_logger
 
 logger = get_logger()
@@ -27,7 +25,7 @@ class UdemyStatus(Enum):
 class RunStatistics:
     """Gather statistics on courses enrolled in."""
 
-    prices: List[Decimal] = field(default_factory=list)
+    prices: list[Decimal] = field(default_factory=list)
 
     expired: int = 0
     enrolled: int = 0

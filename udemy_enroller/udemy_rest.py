@@ -461,7 +461,10 @@ class UdemyActions:
         )
         if not checkout_result.ok:
             if not retry:
-                seconds = int(re.search("\\d+", checkout_result.text).group()) + 1
+                match = re.search("\\d+", checkout_result.text)
+                if match is None:
+                    raise Exception(f"Checkout rate-limited but no retry seconds found. Code: {checkout_result.status_code}")
+                seconds = int(match.group()) + 1
                 logger.info(
                     f"Script has been rate limited. Sleeping for {seconds} seconds"
                 )
