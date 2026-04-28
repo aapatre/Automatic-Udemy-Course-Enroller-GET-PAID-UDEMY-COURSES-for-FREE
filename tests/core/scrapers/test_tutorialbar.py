@@ -103,3 +103,67 @@ def test_enable_status(
 
     tbs = TutorialBarScraper(enabled=enabled)
     assert tbs.is_disabled() is not enabled
+
+
+@pytest.mark.parametrize(
+    "input_links,expected",
+    [
+        ([], []),
+        (
+            ["https://www.udemy.com/course/test/?couponCode=ABC"],
+            ["https://www.udemy.com/course/test/?couponCode=ABC"],
+        ),
+        (["https://amzn.to/something"], []),
+        (["https://bit.ly/something"], []),
+        (
+            [
+                "https://amzn.to/something",
+                "https://bit.ly/another",
+                "https://www.udemy.com/course/test/?couponCode=ABC",
+            ],
+            ["https://www.udemy.com/course/test/?couponCode=ABC"],
+        ),
+    ],
+)
+def test_filter_ad_domains(input_links, expected):
+    tbs = TutorialBarScraper(enabled=True)
+    result = tbs._filter_ad_domains(input_links)
+    assert sorted(result) == sorted(expected)
+
+
+@pytest.mark.asyncio
+@mock.patch("udemy_enroller.scrapers.tutorialbar.http_get")
+async def test_get_udemy_course_link(mock_http_get, tutorialbar_course_page):
+    mock_http_get.return_value = tutorialbar_course_page
+    link = await TutorialBarScraper.get_udemy_course_link(
+        "https://www.tutorialbar.com/some-course/"
+    )
+    assert (
+        link
+        == "https://www.udemy.com/course/mindfulness-meditation-for-pain-relief-stress-management/?couponCode=BA2B8F43AF87E121C75D"
+    )
+
+
+@pytest.mark.asyncio
+@mock.patch("udemy_enroller.scrapers.tutorialbar.http_get")
+async def test_get_udemy_course_link_none(mock_http_get):
+    mock_http_get.return_value = None
+    link = await TutorialBarScraper.get_udemy_course_link(
+        "https://www.tutorialbar.com/some-course/"
+    )
+    assert link is None
+
+
+@pytest.mark.asyncio
+@mock.patch("udemy_enroller.scrapers.tutorialbar.http_get")
+async def test_gather_udemy_course_links(mock_http_get, tutorialbar_course_page):
+    mock_http_get.return_value = tutorialbar_course_page
+    tbs = TutorialBarScraper(enabled=True)
+    courses = [
+        "https://www.tutorialbar.com/course_1",
+        "https://www.tutorialbar.com/course_2",
+    ]
+    links = await tbs.gather_udemy_course_links(courses)
+    assert len(links) == 2
+    for link in links:
+        assert "udemy.com" in link

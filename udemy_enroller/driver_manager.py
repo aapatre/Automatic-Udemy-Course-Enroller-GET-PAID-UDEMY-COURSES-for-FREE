@@ -23,7 +23,14 @@ VALID_INTERNET_EXPLORER_STRINGS = {"internet_explorer", "ie"}
 VALID_OPERA_STRINGS = {"opera"}
 VALID_EDGE_STRINGS = {"edge"}
 
-ALL_VALID_BROWSER_STRINGS = VALID_CHROME_STRINGS.union(VALID_CHROMIUM_STRINGS)
+ALL_VALID_BROWSER_STRINGS = (
+    VALID_CHROME_STRINGS
+    | VALID_CHROMIUM_STRINGS
+    | VALID_FIREFOX_STRINGS
+    | VALID_EDGE_STRINGS
+    | VALID_OPERA_STRINGS
+    | VALID_INTERNET_EXPLORER_STRINGS
+)
 
 
 class DriverManager:
@@ -105,7 +112,7 @@ class DriverManager:
         options = ChromeOptions()
         # We need to run headless when using github CI
         options.add_argument("--headless")
-        options.add_argument("user-agent={0}".format(user_agent))
+        options.add_argument(f"user-agent={user_agent}")
         options.add_argument("accept-language=en-GB,en-US;q=0.9,en;q=0.8")
         options.add_argument("--window-size=1325x744")
         logger.info("This is a CI run")

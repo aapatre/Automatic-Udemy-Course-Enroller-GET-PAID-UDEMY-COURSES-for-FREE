@@ -2,8 +2,6 @@
 
 import getpass
 import os.path
-from distutils.util import strtobool
-from typing import Dict, List, Tuple
 
 from ruamel.yaml import YAML, dump
 
@@ -32,7 +30,7 @@ class Settings:
         self._cookies_path = os.path.join(get_app_dir(), ".cookie")
         self._should_store_email = False
         self._should_store_password = False
-        self.is_ci_build = strtobool(os.environ.get("CI_TEST", "False"))
+        self.is_ci_build = os.environ.get("CI_TEST", "").lower() in ("true", "1", "yes")
         if delete_settings:
             self.delete_settings()
         if delete_cookie:
@@ -110,7 +108,7 @@ class Settings:
         email = input("Please enter your udemy email address: ")
         if len(email) == 0:
             logger.warning("You must provide your email")
-            return self._get_email()
+            return self._get_email(prompt_save=prompt_save)
         if prompt_save:
             save_email = input("Do you want to save your email for future use (Y/N): ")
             should_store = save_email.lower() == "y"
@@ -127,7 +125,7 @@ class Settings:
         password = getpass.getpass(prompt="Please enter your udemy password: ")
         if len(password) == 0:
             logger.warning("You must provide your password")
-            return self._get_password()
+            return self._get_password(prompt_save=prompt_save)
         if prompt_save:
             save_password = input(
                 "Do you want to save your password for future use (Y/N): "
@@ -219,7 +217,7 @@ class Settings:
                 "languages": self.languages,
                 "categories": self.categories,
                 "authors": self.authors,
-                "years": str(self.years),
+                "years": self.years,
             }
         }
 

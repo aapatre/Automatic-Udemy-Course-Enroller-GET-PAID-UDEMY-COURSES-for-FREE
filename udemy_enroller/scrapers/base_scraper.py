@@ -1,10 +1,10 @@
 """Base Scraper."""
 
-import datetime
 import logging
 import re
 import typing
 from abc import ABC, abstractmethod
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional
 
@@ -86,7 +86,7 @@ class BaseScraper(ABC):
         """Log execution time of the function that is wrapped."""
 
         async def wrapper(self):
-            start_time = datetime.datetime.utcnow()
+            start_time = datetime.now(timezone.utc)
             try:
                 response = await func(self)
             except Exception as e:
@@ -95,7 +95,7 @@ class BaseScraper(ABC):
                 )
                 self.is_complete()
                 return []
-            end_time = datetime.datetime.utcnow()
+            end_time = datetime.now(timezone.utc)
             logger.info(
                 f"Got {len(response)} links from {self.DOMAIN} in {(end_time - start_time).total_seconds():.2f} seconds"
             )

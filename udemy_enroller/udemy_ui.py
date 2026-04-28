@@ -2,7 +2,7 @@
 
 import time
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 from enum import Enum
 from typing import List
@@ -50,7 +50,7 @@ class RunStatistics:
             if self.currency_symbol is None:
                 self.currency_symbol = "¤"
             run_time_seconds = int(
-                (datetime.utcnow() - self.start_time).total_seconds()
+                (datetime.now(timezone.utc) - self.start_time).total_seconds()
             )
 
             logger.info("==================Run Statistics==================")
@@ -91,7 +91,7 @@ class UdemyActionsUI:
         self.settings = settings
         self.logged_in = False
         self.stats = RunStatistics()
-        self.stats.start_time = datetime.utcnow()
+        self.stats.start_time = datetime.now(timezone.utc)
 
     def login(self, is_retry=False) -> None:
         """
@@ -349,7 +349,7 @@ class UdemyActionsUI:
                 )
                 self.stats.unwanted_author += 1
                 is_valid_author = False
-        return is_valid_authors
+        return is_valid_author
 
     def _check_years(self, course_identifier):
         is_valid_year = True

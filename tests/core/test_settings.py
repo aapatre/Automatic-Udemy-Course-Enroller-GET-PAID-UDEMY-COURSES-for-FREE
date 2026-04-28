@@ -78,6 +78,8 @@ def test_settings(
             zip_code,
             languages,
             categories,
+            "",     # authors
+            "",     # years
         ],
     ):
         with mock.patch("getpass.getpass", return_value=password):
@@ -220,6 +222,8 @@ def test_load_existing_settings(
             zip_code,
             languages,
             categories,
+            "",     # authors
+            "",     # years
         ],
     ):
         with mock.patch("getpass.getpass", return_value=password):
@@ -269,3 +273,151 @@ def test_load_ci_settings(_, monkeypatch, is_ci_run, email, password):
     if is_ci_run:
         assert settings.email == email
         assert settings.password == password
+
+
+# --- Tests for uncovered lines in settings.py ---
+
+
+def test_get_email_empty_input_retry():
+    """Test _get_email retry on empty input (lines 110-111)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch(
+        "builtins.input", side_effect=["", "user@mail.com", "y"]
+    ):
+        email, should_store = s._get_email()
+        assert email == "user@mail.com"
+        assert should_store is True
+
+
+def test_get_email_prompt_save_false():
+    """Test _get_email with prompt_save=False (line 116)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch("builtins.input", return_value="user@mail.com"):
+        email, should_store = s._get_email(prompt_save=False)
+        assert email == "user@mail.com"
+        assert should_store is False
+
+
+def test_get_email_empty_input_no_prompt():
+    """Test _get_email empty input retry with prompt_save=False (lines 110-111, 116)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch(
+        "builtins.input", side_effect=["", "user@mail.com"]
+    ):
+        email, should_store = s._get_email(prompt_save=False)
+        assert email == "user@mail.com"
+        assert should_store is False
+
+
+def test_get_password_empty_input_retry():
+    """Test _get_password retry on empty input (lines 127-128)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch("builtins.input", side_effect=["y"]):
+        with mock.patch(
+            "getpass.getpass", side_effect=["", "p@ssword"]
+        ):
+            password, should_store = s._get_password()
+            assert password == "p@ssword"
+            assert should_store is True
+
+
+def test_get_password_prompt_save_false():
+    """Test _get_password with prompt_save=False (line 135)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch("getpass.getpass", return_value="p@ssword"):
+        password, should_store = s._get_password(prompt_save=False)
+        assert password == "p@ssword"
+        assert should_store is False
+
+
+def test_get_password_empty_input_no_prompt():
+    """Test _get_password empty input retry with prompt_save=False (lines 127-128, 135)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch(
+        "getpass.getpass", side_effect=["", "p@ssword"]
+    ):
+        password, should_store = s._get_password(prompt_save=False)
+        assert password == "p@ssword"
+        assert should_store is False
+
+
+def test_delete_settings_file_exists_confirmed():
+    """Test delete_settings when file exists and user confirms (lines 244-250)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch("os.path.isfile", return_value=True):
+        with mock.patch("os.remove") as mock_remove:
+            with mock.patch("builtins.input", return_value="y"):
+                s.delete_settings()
+                mock_remove.assert_called_once_with(s._settings_path)
+
+
+def test_delete_settings_file_exists_declined():
+    """Test delete_settings when file exists but user declines."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch("os.path.isfile", return_value=True):
+        with mock.patch("os.remove") as mock_remove:
+            with mock.patch("builtins.input", return_value="n"):
+                s.delete_settings()
+                mock_remove.assert_not_called()
+
+
+def test_delete_settings_no_file():
+    """Test delete_settings when no settings file exists (line 252)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch("os.path.isfile", return_value=False):
+        s.delete_settings()
+
+
+def test_delete_cookie_file_exists():
+    """Test delete_cookie when file exists (lines 260-262)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch("os.path.isfile", return_value=True):
+        with mock.patch("os.remove") as mock_remove:
+            s.delete_cookie()
+            mock_remove.assert_called_once_with(s._cookies_path)
+
+
+def test_delete_cookie_no_file():
+    """Test delete_cookie when no cookie file exists (line 264)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch("os.path.isfile", return_value=False):
+        s.delete_cookie()
+
+
+def test_prompt_email():
+    """Test prompt_email method (line 272)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch("builtins.input", return_value="user@mail.com"):
+        s.prompt_email()
+        assert s.email == "user@mail.com"
+
+
+def test_prompt_password():
+    """Test prompt_password method (line 280)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        s = Settings(settings_path="test_tmp/noop.yaml")
+    with mock.patch("getpass.getpass", return_value="p@ssword"):
+        s.prompt_password()
+        assert s.password == "p@ssword"
+
+
+def test_init_with_delete_flags():
+    """Test __init__ with delete_settings and delete_cookie flags (lines 35, 37)."""
+    with mock.patch.object(Settings, "_init_settings"):
+        with mock.patch.object(Settings, "delete_settings") as mock_del_settings:
+            with mock.patch.object(Settings, "delete_cookie") as mock_del_cookie:
+                s = Settings(delete_settings=True, delete_cookie=True)
+                mock_del_settings.assert_called_once()
+                mock_del_cookie.assert_called_once()

@@ -34,7 +34,8 @@ def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
     """
     udemy_actions = UdemyActions(settings)
     udemy_actions.login()
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
     while True:
         udemy_course_links = loop.run_until_complete(scrapers.run())
@@ -118,7 +119,8 @@ def _redeem_courses_ui(
     """
     udemy_actions = UdemyActionsUI(driver, settings)
     udemy_actions.login()
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
     while True:
         udemy_course_links = loop.run_until_complete(scrapers.run())

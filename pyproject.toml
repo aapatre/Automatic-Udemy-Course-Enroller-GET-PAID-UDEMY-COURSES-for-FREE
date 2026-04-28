@@ -10,33 +10,36 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Education",
     "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
-    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-# Rest based dependencies
-beautifulsoup4 = "4.11.1"
+python = "^3.10"
+# REST based dependencies
+beautifulsoup4 = "4.14.3"
 "ruamel.yaml" = "0.17.32"
 cloudscraper = "1.2.71"
-requests = "2.31.0"
-aiohttp = {extras = ["speedups"], version = "3.8.4"}
-price-parser = "0.3.4"
+requests = "2.33.1"
+aiohttp = {extras = ["speedups"], version = "3.13.5"}
+price-parser = "0.5.1"
 # UI based dependencies
-selenium = "4.10.0"
+selenium = "4.43.0"
 webdriver-manager = "3.8.6"
 
 [tool.poetry.dev-dependencies]
-black = "^22.12.0"
-isort = "^5.12.0"
-pytest = "^7.4.0"
-pytest-cov = "^3.0.0"
-pytest-asyncio = "^0.18.3"
-bumpver = "^2022.1120"
-flake8 = "^5.0.4"
-flake8-bugbear = "^22.12.6"
+black = "^25.0"
+isort = "^6.0"
+pytest = "^8.0"
+pytest-cov = "^6.0"
+pytest-asyncio = "^0.25.0"
+bumpver = "^2025.0"
+flake8 = "^7.0"
+flake8-bugbear = "^25.0"
 flake8-docstrings = "^1.7.0"
-flake8-isort = "^5.0.3"
+flake8-isort = "^6.0"
 
 [tool.isort]
 profile = "black"
@@ -64,3 +67,16 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 udemy_enroller = "udemy_enroller.cli:main"
+
+[tool.pytest.ini_options]
+addopts = "--cov=. --cov-report xml --cov-report term"
+testpaths = ["tests"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+omit = [
+    "tests/*",
+    "setup.py",
+    "requirements.py",
+]
