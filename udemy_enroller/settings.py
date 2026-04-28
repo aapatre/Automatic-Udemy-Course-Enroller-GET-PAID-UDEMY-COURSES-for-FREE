@@ -3,7 +3,7 @@
 import getpass
 import os.path
 
-from ruamel.yaml import YAML, dump
+from ruamel.yaml import YAML
 
 from udemy_enroller.logger import get_logger
 from udemy_enroller.utils import get_app_dir
@@ -221,8 +221,10 @@ class Settings:
             }
         }
 
+        yaml = YAML()
+        yaml.default_flow_style = False
         with open(self._settings_path, "w+") as f:
-            dump(yaml_structure, stream=f, default_flow_style=False)
+            yaml.dump(yaml_structure, stream=f)
         logger.info(f"Saved your settings in {self._settings_path}")
 
         # Log some details for the user

@@ -37,36 +37,43 @@ def _redeem_courses(settings: Settings, scrapers: ScraperManager) -> None:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    while True:
-        udemy_course_links = loop.run_until_complete(scrapers.run())
-        logger.info(f"Total courses this time: {len(udemy_course_links)}")
-        if udemy_course_links:
-            for course_link in udemy_course_links:
-                try:
-                    status = udemy_actions.enroll(course_link)
+    try:
+        while True:
+            udemy_course_links = loop.run_until_complete(scrapers.run())
+            logger.info(f"Total courses this time: {len(udemy_course_links)}")
+            if udemy_course_links:
+                for course_link in udemy_course_links:
+                    should_exit = False
+                    try:
+                        status = udemy_actions.enroll(course_link)
 
-                    if status == UdemyStatus.ENROLLED.value:
-                        # Try to avoid udemy throttling by sleeping for 1-5 seconds
-                        sleep_time = random.choice(range(1, 5))
-                        logger.debug(
-                            f"Sleeping for {sleep_time} seconds between enrolments"
-                        )
-                        time.sleep(sleep_time)
-                except KeyboardInterrupt:
-                    udemy_actions.stats.table()
-                    logger.error("Exiting the script")
-                    return
-                except Exception as e:
-                    logger.error(f"Unexpected exception: {e}")
-                finally:
-                    if settings.is_ci_build:
-                        logger.info("We have attempted to subscribe to 1 udemy course")
-                        logger.info("Ending test")
-                        return  # noqa: B012
-        else:
-            udemy_actions.stats.table()
-            logger.info("All scrapers complete")
-            return
+                        if status == UdemyStatus.ENROLLED.value:
+                            # Try to avoid udemy throttling by sleeping for 1-5 seconds
+                            sleep_time = random.choice(range(1, 5))
+                            logger.debug(
+                                f"Sleeping for {sleep_time} seconds between enrolments"
+                            )
+                            time.sleep(sleep_time)
+                    except KeyboardInterrupt:
+                        udemy_actions.stats.table()
+                        logger.error("Exiting the script")
+                        should_exit = True
+                    except Exception as e:
+                        logger.error(f"Unexpected exception: {e}")
+                    finally:
+                        if settings.is_ci_build:
+                            logger.info("We have attempted to subscribe to 1 udemy course")
+                            logger.info("Ending test")
+                            should_exit = True
+
+                    if should_exit:
+                        return
+            else:
+                udemy_actions.stats.table()
+                logger.info("All scrapers complete")
+                return
+    finally:
+        loop.close()
 
 
 def redeem_courses(
@@ -122,46 +129,53 @@ def _redeem_courses_ui(
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    while True:
-        udemy_course_links = loop.run_until_complete(scrapers.run())
+    try:
+        while True:
+            udemy_course_links = loop.run_until_complete(scrapers.run())
 
-        if udemy_course_links:
-            for course_link in set(
-                udemy_course_links
-            ):  # Cast to set to remove duplicate links
-                try:
-                    status = udemy_actions.enroll(course_link)
-                    if status == UdemyStatus.ENROLLED.value:
-                        # Try to avoid udemy throttling by sleeping for 1-5 seconds
-                        sleep_time = random.choice(range(1, 5))
-                        logger.debug(
-                            f"Sleeping for {sleep_time} seconds between enrolments"
-                        )
-                        time.sleep(sleep_time)
-                except NoSuchElementException as e:
-                    logger.error(f"No such element: {e}")
-                except TimeoutException:
-                    logger.error(f"Timeout on link: {course_link}")
-                except WebDriverException:
-                    logger.error(f"Webdriver exception on link: {course_link}")
-                except KeyboardInterrupt:
-                    udemy_actions.stats.table()
-                    logger.warning("Exiting the script")
-                    return
-                except exceptions.RobotException as e:
-                    logger.error(e)
-                    return
-                except Exception as e:
-                    logger.error(f"Unexpected exception: {e}")
-                finally:
-                    if settings.is_ci_build:
-                        logger.info("We have attempted to subscribe to 1 udemy course")
-                        logger.info("Ending test")
-                        return  # noqa: B012
-        else:
-            udemy_actions.stats.table()
-            logger.info("All scrapers complete")
-            return
+            if udemy_course_links:
+                for course_link in set(
+                    udemy_course_links
+                ):  # Cast to set to remove duplicate links
+                    should_exit = False
+                    try:
+                        status = udemy_actions.enroll(course_link)
+                        if status == UdemyStatus.ENROLLED.value:
+                            # Try to avoid udemy throttling by sleeping for 1-5 seconds
+                            sleep_time = random.choice(range(1, 5))
+                            logger.debug(
+                                f"Sleeping for {sleep_time} seconds between enrolments"
+                            )
+                            time.sleep(sleep_time)
+                    except NoSuchElementException as e:
+                        logger.error(f"No such element: {e}")
+                    except TimeoutException:
+                        logger.error(f"Timeout on link: {course_link}")
+                    except WebDriverException:
+                        logger.error(f"Webdriver exception on link: {course_link}")
+                    except KeyboardInterrupt:
+                        udemy_actions.stats.table()
+                        logger.warning("Exiting the script")
+                        should_exit = True
+                    except exceptions.RobotException as e:
+                        logger.error(e)
+                        should_exit = True
+                    except Exception as e:
+                        logger.error(f"Unexpected exception: {e}")
+                    finally:
+                        if settings.is_ci_build:
+                            logger.info("We have attempted to subscribe to 1 udemy course")
+                            logger.info("Ending test")
+                            should_exit = True
+
+                    if should_exit:
+                        return
+            else:
+                udemy_actions.stats.table()
+                logger.info("All scrapers complete")
+                return
+    finally:
+        loop.close()
 
 
 def redeem_courses_ui(
